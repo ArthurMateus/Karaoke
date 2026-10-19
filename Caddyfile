@@ -1,13 +1,14 @@
-# Caddy is the single HTTPS entry point. Browsers only allow microphone
-# access on https:// pages, so phones on your Wi-Fi need this.
-# "tls internal" makes a self-signed certificate: the browser warns once.
+# Caddy is the single entry point in front of the API and the website.
+#
+# Browsers only allow microphone access on https:// pages, or on localhost.
+#  - On this PC:     http://localhost:8080   (no certificate warning)
+#  - Phones on Wi-Fi: https://<LAN_IP>:8443  ("tls internal" = self-signed
+#                     certificate, the browser warns once)
 {
 	auto_https disable_redirects
 }
 
-https://localhost:8443, https://{$LAN_IP:127.0.0.1}:8443 {
-	tls internal
-
+(app) {
 	handle /api/* {
 		reverse_proxy api:8000
 	}
@@ -17,4 +18,13 @@ https://localhost:8443, https://{$LAN_IP:127.0.0.1}:8443 {
 	handle {
 		reverse_proxy web:5173
 	}
+}
+
+http://localhost:8080 {
+	import app
+}
+
+https://localhost:8443, https://{$LAN_IP:127.0.0.1}:8443 {
+	tls internal
+	import app
 }

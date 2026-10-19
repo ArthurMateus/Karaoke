@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://redis:6379/0"
 
     # The address people open in the browser; used in emails and QR codes.
-    public_base_url: str = "https://localhost:8443"
+    public_base_url: str = "http://localhost:8080"
     # Other browser origins allowed to open WebSockets (comma separated).
     extra_origins: str = ""
 

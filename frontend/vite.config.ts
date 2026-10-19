@@ -8,9 +8,9 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    // The browser reaches Vite through Caddy (https://<host>:8443), not directly.
+    // The browser reaches Vite through Caddy (:8080 or :8443), not directly.
+    // Live reload then connects back on whichever port the page came from.
     allowedHosts: true,
-    hmr: { clientPort: 8443 },
     // Docker on Windows doesn't forward file-change events into containers.
     watch: { usePolling: process.env.CHOKIDAR_USEPOLLING === 'true' },
   },
