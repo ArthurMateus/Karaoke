@@ -11,6 +11,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
 )
 os.environ["PUBLIC_BASE_URL"] = "https://testserver"
 os.environ["EXTRA_ORIGINS"] = ""
+os.environ["S3_BUCKET"] = "karaoke-test"
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -21,6 +22,7 @@ from app import models  # noqa: E402,F401
 from app.db import Base, get_engine, get_sessionmaker  # noqa: E402
 from app.deps import SESSION_COOKIE  # noqa: E402
 from app.main import app  # noqa: E402
+from app.services import queue, storage  # noqa: E402
 from app.services.email import OutgoingEmail, get_mailer  # noqa: E402
 
 ORIGIN = "https://testserver"
@@ -39,6 +41,7 @@ def _ensure_test_database() -> None:
 @pytest.fixture(scope="session", autouse=True)
 def _schema():
     _ensure_test_database()
+    storage.ensure_bucket()
     engine = get_engine()
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
@@ -50,6 +53,15 @@ def _schema():
 def _clean_tables():
     with get_engine().begin() as conn:
         conn.execute(text("TRUNCATE " + ", ".join(t.name for t in Base.metadata.sorted_tables) + " CASCADE"))
+
+
+@pytest.fixture(autouse=True)
+def jobs(monkeypatch):
+    """Background jobs are recorded instead of sent to the worker."""
+    queued: list[tuple[str, str]] = []
+    monkeypatch.setattr(queue, "enqueue_conversion", lambda song_id: queued.append(("convert", str(song_id))))
+    monkeypatch.setattr(queue, "enqueue_import", lambda song_id: queued.append(("import", str(song_id))))
+    return queued
 
 
 @pytest.fixture
@@ -98,14 +110,23 @@ class Player:
             headers["cookie"] = f"{SESSION_COOKIE}={self.token}"
         return headers
 
+    def request(self, method: str, url: str, headers: dict | None = None, **kw):
+        return self.client.request(method, url, headers={**self.headers(), **(headers or {})}, **kw)
+
     def get(self, url: str, **kw):
-        return self.client.get(url, headers=self.headers(), **kw)
+        return self.request("GET", url, **kw)
 
     def post(self, url: str, **kw):
-        return self.client.post(url, headers=self.headers(), **kw)
+        return self.request("POST", url, **kw)
+
+    def put(self, url: str, **kw):
+        return self.request("PUT", url, **kw)
 
     def patch(self, url: str, **kw):
-        return self.client.patch(url, headers=self.headers(), **kw)
+        return self.request("PATCH", url, **kw)
+
+    def delete(self, url: str, **kw):
+        return self.request("DELETE", url, **kw)
 
     def ws(self, code: str, origin: str = ORIGIN):
         return self.client.websocket_connect(f"/ws/rooms/{code}", headers={**self.headers(), "origin": origin})

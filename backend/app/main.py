@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import auth, me, rooms
+from app.api import auth, me, rooms, songs
 from app.config import get_settings
 from app.services.limits import get_limits
 from app.ws import routes as ws_routes
@@ -21,6 +21,7 @@ app = FastAPI(title="Karaoke Party API", lifespan=lifespan)
 app.include_router(auth.router)
 app.include_router(me.router)
 app.include_router(rooms.router)
+app.include_router(songs.router)
 app.include_router(ws_routes.router)
 
 

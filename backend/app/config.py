@@ -33,6 +33,18 @@ class Settings(BaseSettings):
 
     limits_file: Path = Path("/config/limits.yaml")
 
+    # S3-compatible file storage (SeaweedFS locally; S3, R2, ... in production).
+    s3_endpoint_url: str = "http://storage:8333"
+    s3_access_key: str = "karaoke"
+    s3_secret_key: str = "karaoke-secret"
+    s3_bucket: str = "karaoke"
+    s3_region: str = "us-east-1"
+
+    # Song conversion. Bigger Whisper models understand lyrics better but are slower.
+    whisper_model_cpu: str = "small"
+    whisper_model_gpu: str = "large-v3"
+    conversion_timeout_seconds: int = 3600
+
     @property
     def allowed_origins(self) -> set[str]:
         origins = {self.public_base_url.rstrip("/")}

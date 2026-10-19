@@ -17,8 +17,16 @@ class PlanLimits(BaseModel):
     tournaments: bool
 
 
+class UploadLimits(BaseModel):
+    max_file_mb: float = Field(gt=0)
+    min_duration_seconds: float = Field(ge=0)
+    max_duration_seconds: float = Field(gt=0)
+    formats: list[str]
+
+
 class Limits(BaseModel):
     plans: dict[str, PlanLimits]
+    uploads: UploadLimits
 
 
 def load_limits(path: Path) -> Limits:

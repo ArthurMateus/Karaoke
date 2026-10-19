@@ -1,0 +1,6 @@
+# Heavy machine-learning packages, only installed in the worker image.
+# torch/torchaudio/torchvision are installed first in Dockerfile.worker
+# (CPU or CUDA build), so pip keeps that build here.
+whisperx==3.8.6
+demucs==4.1.0
+torchcrepe==0.0.24

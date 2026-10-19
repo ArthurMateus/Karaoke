@@ -14,3 +14,10 @@ plans:
     modes: [sing_together, spotlight]
     replays: true
     tournaments: true
+
+# Uploaded audio files (same for every plan).
+uploads:
+  max_file_mb: 50
+  min_duration_seconds: 15
+  max_duration_seconds: 480 # 8 minutes
+  formats: [mp3, wav, m4a, ogg]

@@ -1,0 +1,23 @@
+# The background worker: converts uploaded songs into karaoke charts and
+# renders the starter library. Much bigger than the API image (PyTorch + models).
+FROM python:3.12-slim
+
+# ffmpeg: audio decoding/encoding. fluidsynth + soundfont: starter library.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg fluidsynth fluid-soundfont-gm \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
+
+# CPU build by default. docker-compose.gpu.yml switches this to the CUDA 12.8
+# build (needed for RTX 50-series cards).
+ARG TORCH_INDEX=https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir torch==2.8.0 torchaudio==2.8.0 torchvision==0.23.0 --index-url ${TORCH_INDEX}
+
+COPY requirements.txt requirements-ml.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-ml.txt
+
+COPY . .
+
+CMD ["rq", "worker", "--url", "redis://redis:6379/0", "songs"]
