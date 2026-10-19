@@ -18,7 +18,7 @@ type FrameListener = (frame: MicFrame) => void
 
 export class MicUnavailableError extends Error {
   code: string
-  constructor(code: 'mic_denied' | 'mic_missing' | 'mic_unsupported') {
+  constructor(code: 'mic_denied' | 'mic_missing' | 'mic_unsupported' | 'mic_insecure') {
     super(code)
     this.code = code
   }
@@ -42,6 +42,8 @@ export class AudioEngine {
 
   /** Call from a click/tap handler. `simulated` replaces the mic with a robot singer (development only). */
   static async create(simulated = false): Promise<AudioEngine> {
+    // On plain http:// pages (other than localhost) browsers hide the mic and audio worklets.
+    if (!window.isSecureContext) throw new MicUnavailableError('mic_insecure')
     const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     if (!Ctx || !('audioWorklet' in Ctx.prototype)) throw new MicUnavailableError('mic_unsupported')
     const ctx = new Ctx({ latencyHint: 'interactive' })

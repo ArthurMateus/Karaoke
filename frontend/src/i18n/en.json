@@ -137,6 +137,7 @@
     "mic_denied": "Microphone access was blocked. Allow it in your browser's site settings, then try again.",
     "mic_missing": "No microphone was found on this device.",
     "mic_unsupported": "This browser can't do live singing. Try a recent Chrome, Edge, Firefox or Safari.",
+    "mic_insecure": "The microphone only works on secure pages. Open the app at its https:// address (the one in the QR code).",
     "unknown_error": "Something went wrong. Please try again."
   },
   "songs": {

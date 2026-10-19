@@ -137,6 +137,7 @@
     "mic_denied": "O acesso ao microfone foi bloqueado. Permita nas configurações do site no navegador e tente de novo.",
     "mic_missing": "Nenhum microfone foi encontrado neste aparelho.",
     "mic_unsupported": "Este navegador não consegue cantar ao vivo. Tente um Chrome, Edge, Firefox ou Safari recente.",
+    "mic_insecure": "O microfone só funciona em páginas seguras. Abra o app pelo endereço https:// (o do QR code).",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
