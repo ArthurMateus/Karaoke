@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useParams } from 'react-router'
 import { useMe, useRoomInfo } from '../api/hooks'
@@ -7,6 +7,14 @@ import ErrorText from '../components/ErrorText'
 import QrCode from '../components/QrCode'
 import { playerColor } from '../lib/colors'
 import { formatCode, normalizeCode } from '../lib/roomCode'
+import { savedLatency } from '../audio/calibration'
+import type { AudioEngine } from '../audio/engine'
+import { useClockSync } from '../game/useClockSync'
+import { useSongAssets } from '../game/useSongAssets'
+import ReadyPanel from '../room/ReadyPanel'
+import ResultsView, { type UploadState } from '../room/ResultsView'
+import SingView from '../room/SingView'
+import SongPicker from '../room/SongPicker'
 import type { LobbyPlayer } from '../room/protocol'
 import { useRoomSocket } from '../room/useRoomSocket'
 
@@ -24,9 +32,32 @@ export default function LobbyPage() {
 
 function Lobby({ code, user }: { code: string; user: User }) {
   const { t } = useTranslation()
-  const { state, send } = useRoomSocket(code)
+  const { state, send, subscribe } = useRoomSocket(code)
+  const { clock } = useClockSync(state.status === 'open', send, subscribe)
   const roomInfo = useRoomInfo(code)
   const joinUrl = roomInfo.data?.join_url ?? `${location.origin}/join/${code}`
+
+  const [engine, setEngine] = useState<AudioEngine | null>(null)
+  useEffect(() => () => engine?.close(), [engine])
+  const [latency, setLatency] = useState<number | null>(savedLatency)
+  const assets = useSongAssets(code, state.room?.song ?? null, engine)
+  // Upload status of my recording, per performance.
+  const [upload, setUpload] = useState<{ id: string; state: UploadState } | null>(null)
+  const onUpload = useCallback((id: string, pending: Promise<void>) => {
+    setUpload({ id, state: 'uploading' })
+    pending.then(() => setUpload({ id, state: 'done' })).catch(() => setUpload({ id, state: 'failed' }))
+  }, [])
+
+  const room = state.room
+  const players = room?.players ?? []
+  const me = players.find((p) => p.id === user.id)
+  const performanceId = room?.performance_id
+
+  // Back from a reload without a mic: not ready to sing any more.
+  useEffect(() => {
+    if (me?.ready && !engine) send({ type: 'set_ready', ready: false })
+  }, [me?.ready, engine, send])
+  const uploadState: UploadState = upload && upload.id === performanceId ? upload.state : 'idle'
 
   if (state.status === 'ended') {
     return (
@@ -44,67 +75,131 @@ function Lobby({ code, user }: { code: string; user: User }) {
     )
   }
 
-  const room = state.room
-  const players = room?.players ?? []
+  if (room && (room.phase === 'countdown' || room.phase === 'playing')) {
+    return (
+      <SingView
+        room={room}
+        me={user.id}
+        engine={engine}
+        clock={clock}
+        chart={assets.chart}
+        buffer={assets.buffer}
+        latencyMs={latency ?? 0}
+        send={send}
+        onUpload={onUpload}
+      />
+    )
+  }
+
   const iAmHost = room?.host_id === user.id
-  const me = players.find((p) => p.id === user.id)
+  const anyoneReady = players.some((p) => p.ready && p.connected)
+  const song = room?.song ?? null
 
   return (
-    <div className="lobby">
-      <section className="card invite">
-        <p className="eyebrow">{t('lobby.code')}</p>
-        <p className="room-code">{formatCode(code)}</p>
-        <QrCode text={joinUrl} label={t('lobby.scanToJoin')} />
-        <p className="muted small">{t('lobby.scanToJoin')}</p>
-        <CopyLink url={joinUrl} />
-      </section>
+    <div className="stack">
+      {room?.phase === 'results' && (
+        <ResultsView room={room} isHost={iAmHost} upload={uploadState} onNext={() => send({ type: 'back_to_lobby' })} />
+      )}
 
-      <section className="card stack">
-        {state.status !== 'open' && (
-          <p className="banner">{state.status === 'connecting' ? t('lobby.connecting') : t('lobby.reconnecting')}</p>
-        )}
-        <h2>{t('lobby.players', { count: players.length, capacity: room?.capacity ?? '–' })}</h2>
-        <ul className="players">
-          {players.map((p, index) => (
-            <PlayerRow
-              key={p.id}
-              player={p}
-              color={playerColor(index)}
-              isMe={p.id === user.id}
-              canKick={iAmHost && p.id !== user.id}
-              onKick={() => {
-                if (confirm(t('lobby.confirmKick', { name: p.name }))) send({ type: 'kick', player_id: p.id })
-              }}
+      <div className="lobby">
+        <section className="card invite">
+          <p className="eyebrow">{t('lobby.code')}</p>
+          <p className="room-code">{formatCode(code)}</p>
+          <QrCode text={joinUrl} label={t('lobby.scanToJoin')} />
+          <p className="muted small">{t('lobby.scanToJoin')}</p>
+          <CopyLink url={joinUrl} />
+        </section>
+
+        <div className="stack">
+          <section className="card stack">
+            {state.status !== 'open' && (
+              <p className="banner">{state.status === 'connecting' ? t('lobby.connecting') : t('lobby.reconnecting')}</p>
+            )}
+            <h2>{t('lobby.players', { count: players.length, capacity: room?.capacity ?? '–' })}</h2>
+            <ul className="players">
+              {players.map((p, index) => (
+                <PlayerRow
+                  key={p.id}
+                  player={p}
+                  color={playerColor(index)}
+                  isMe={p.id === user.id}
+                  canKick={iAmHost && p.id !== user.id}
+                  onKick={() => {
+                    if (confirm(t('lobby.confirmKick', { name: p.name }))) send({ type: 'kick', player_id: p.id })
+                  }}
+                />
+              ))}
+            </ul>
+            {state.lastError && <ErrorText error={state.lastError} />}
+          </section>
+
+          <section className="card stack">
+            <ReadyPanel
+              engine={engine}
+              onEngine={setEngine}
+              latency={latency}
+              onLatency={setLatency}
+              ready={!!me?.ready}
+              onReady={(ready) => send({ type: 'set_ready', ready })}
             />
-          ))}
-        </ul>
+          </section>
 
-        {me && (
-          <button
-            className={`button ${me.ready ? '' : 'primary'}`}
-            onClick={() => send({ type: 'set_ready', ready: !me.ready })}
-          >
-            {me.ready ? t('lobby.notReady') : t('lobby.imReady')}
-          </button>
-        )}
-        <p className="muted small">{t('lobby.comingSoon')}</p>
-        {state.lastError && <ErrorText error={state.lastError} />}
+          <section className="card stack">
+            <span className="eyebrow">{t('game.song.next')}</span>
+            {song ? (
+              <div className="chosen-song">
+                <div className="pick-main">
+                  <strong>{song.title}</strong>
+                  <span className="muted small">{song.artist}</span>
+                </div>
+                <span className={`small ${assets.failed ? 'error' : 'muted'}`}>
+                  {assets.failed
+                    ? t('game.song.loadFailed')
+                    : engine
+                      ? assets.buffer && assets.chart
+                        ? `✓ ${t('game.song.loaded')}`
+                        : t('game.song.loading')
+                      : ''}
+                </span>
+              </div>
+            ) : (
+              <p className="muted">{iAmHost ? t('game.song.noneHost') : t('game.song.none')}</p>
+            )}
 
-        <div className="row end">
-          {iAmHost ? (
-            <button
-              className="link-button danger"
-              onClick={() => confirm(t('lobby.confirmClose')) && send({ type: 'close_room' })}
-            >
-              {t('lobby.closeRoom')}
-            </button>
-          ) : (
-            <button className="link-button" onClick={() => send({ type: 'leave' })}>
-              {t('lobby.leave')}
-            </button>
-          )}
+            {iAmHost ? (
+              <>
+                <button className="button primary big" disabled={!song || !anyoneReady} onClick={() => send({ type: 'start' })}>
+                  {t('game.start.button')}
+                </button>
+                {(!song || !anyoneReady) && (
+                  <p className="muted small">{!song ? t('game.start.needSong') : t('game.start.needReady')}</p>
+                )}
+                <details className="picker" open={!song}>
+                  <summary>{t('game.song.pick')}</summary>
+                  <SongPicker code={code} selectedId={song?.id ?? null} onPick={(id) => send({ type: 'select_song', song_id: id })} />
+                </details>
+              </>
+            ) : (
+              <p className="muted small">{t('game.start.waiting')}</p>
+            )}
+          </section>
+
+          <div className="row end">
+            {iAmHost ? (
+              <button
+                className="link-button danger"
+                onClick={() => confirm(t('lobby.confirmClose')) && send({ type: 'close_room' })}
+              >
+                {t('lobby.closeRoom')}
+              </button>
+            ) : (
+              <button className="link-button" onClick={() => send({ type: 'leave' })}>
+                {t('lobby.leave')}
+              </button>
+            )}
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   )
 }

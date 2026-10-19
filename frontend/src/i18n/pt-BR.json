@@ -129,6 +129,15 @@
     "chart_failed": "A montagem da cifra falhou.",
     "upload_failed": "Não conseguimos salvar os arquivos convertidos.",
     "internal_error": "Algo deu errado do nosso lado.",
+    "no_song_selected": "Escolha uma música primeiro.",
+    "nobody_ready": "Pelo menos um jogador precisa estar pronto.",
+    "wrong_phase": "Isso não é possível enquanto uma música está tocando.",
+    "performance_not_found": "Não encontramos essa apresentação.",
+    "replay_not_ready": "O replay ainda não está pronto.",
+    "empty_recording": "A gravação veio vazia.",
+    "mic_denied": "O acesso ao microfone foi bloqueado. Permita nas configurações do site no navegador e tente de novo.",
+    "mic_missing": "Nenhum microfone foi encontrado neste aparelho.",
+    "mic_unsupported": "Este navegador não consegue cantar ao vivo. Tente um Chrome, Edge, Firefox ou Safari recente.",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
@@ -245,6 +254,76 @@
       "overlap": "Linha {{line}}: notas sobrepostas.",
       "empty_text": "Linha {{line}}: uma nota está sem texto.",
       "no_notes": "A cifra não tem notas."
+    }
+  },
+  "game": {
+    "mic": {
+      "title": "Seu microfone",
+      "turnOn": "Ligar meu microfone",
+      "turningOn": "Ligando…",
+      "on": "Microfone ligado",
+      "robot": "Modo de teste: um robô canta no lugar do seu microfone.",
+      "level": "Volume do microfone"
+    },
+    "calibrate": {
+      "title": "Teste de atraso do microfone",
+      "intro": "Celulares têm um pequeno atraso entre a sua voz e o app. Medimos isso uma vez para pontuar seu tempo de forma justa.",
+      "start": "Começar o teste",
+      "instructions": "Diga \"tá\" (ou bata palma) em cada clique.",
+      "listening": "Ouvindo…",
+      "result": "Atraso do seu microfone: {{ms}} ms",
+      "failed": "Não conseguimos ouvir você direito. Chegue mais perto do microfone e tente de novo.",
+      "redo": "Testar de novo",
+      "skip": "Pular (usar um atraso comum)"
+    },
+    "ready": {
+      "needMic": "Ligue o microfone para cantar.",
+      "imReady": "Estou pronto para cantar",
+      "notReady": "Não estou pronto"
+    },
+    "song": {
+      "pick": "Escolha uma música",
+      "next": "Música",
+      "none": "O anfitrião ainda não escolheu uma música.",
+      "noneHost": "Escolha uma música abaixo.",
+      "choose": "Escolher",
+      "chosen": "Escolhida",
+      "loading": "Carregando a música…",
+      "loaded": "Música carregada",
+      "loadFailed": "Não foi possível carregar a música.",
+      "mine": "Suas músicas",
+      "starter": "Biblioteca inicial"
+    },
+    "start": {
+      "button": "Começar a música",
+      "needSong": "Escolha uma música primeiro.",
+      "needReady": "Pelo menos um jogador precisa estar pronto.",
+      "waiting": "Esperando o anfitrião começar…"
+    },
+    "sing": {
+      "getReady": "Prepare-se…",
+      "youSing": "Você canta {{part}}",
+      "watching": "Você está assistindo esta. Ligue o microfone e prepare-se para cantar a próxima.",
+      "points": "pontos",
+      "ratings": {
+        "perfect": "Perfeito!",
+        "great": "Ótimo!",
+        "good": "Bom",
+        "ok": "OK",
+        "miss": "Errou"
+      }
+    },
+    "results": {
+      "title": "Resultado",
+      "points": "{{score}} pontos",
+      "replay": "Replay do grupo",
+      "replayWaiting": "Mixando a voz de todo mundo…",
+      "replayFailed": "Não foi possível fazer o replay.",
+      "replayNone": "Nenhuma gravação chegou, então não há replay.",
+      "uploading": "Enviando sua gravação…",
+      "uploadFailed": "Não foi possível enviar sua gravação.",
+      "again": "Escolher a próxima música",
+      "waitingHost": "Esperando o anfitrião escolher a próxima música…"
     }
   }
 }

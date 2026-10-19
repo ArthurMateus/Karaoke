@@ -49,6 +49,9 @@ describe('translations', () => {
       // conversion worker (backend/app/pipeline/jobs.py)
       'audio_decode_failed', 'separation_failed', 'transcription_failed', 'no_lyrics_found', 'melody_failed',
       'chart_failed', 'upload_failed', 'internal_error',
+      // Sing Together (backend/app/ws/game.py, app/api/performances.py) and the mic
+      'no_song_selected', 'nobody_ready', 'wrong_phase', 'performance_not_found', 'replay_not_ready',
+      'empty_recording', 'mic_denied', 'mic_missing', 'mic_unsupported',
     ]
     for (const code of backendCodes) expect(Object.keys(en.errors)).toContain(code)
   })

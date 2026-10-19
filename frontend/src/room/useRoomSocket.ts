@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
+import { wallNow } from '../game/clock'
 import { reconnectDelayMs } from '../lib/backoff'
 import { endReasonFor, initialLobbyState, lobbyReducer } from './lobbyReducer'
 import type { ClientMessage, ServerMessage } from './protocol'
@@ -6,10 +7,13 @@ import type { ClientMessage, ServerMessage } from './protocol'
 const KEEPALIVE_MS = 25_000
 const FINAL_MESSAGES = new Set(['kicked', 'replaced', 'room_closed'])
 
+type Listener = (message: ServerMessage) => void
+
 /** Connects to a room and keeps reconnecting until the room tells us to stop. */
 export function useRoomSocket(code: string) {
   const [state, dispatch] = useReducer(lobbyReducer, initialLobbyState)
   const socketRef = useRef<WebSocket | null>(null)
+  const listeners = useRef(new Set<Listener>())
 
   useEffect(() => {
     let attempt = 0
@@ -28,7 +32,7 @@ export function useRoomSocket(code: string) {
         attempt = 0
         dispatch({ kind: 'open' })
         // Regular pings keep proxies from closing an idle connection (and feed clock sync later).
-        keepalive = setInterval(() => send(ws, { type: 'ping', t0: performance.now() }), KEEPALIVE_MS)
+        keepalive = setInterval(() => send(ws, { type: 'ping', t0: wallNow() }), KEEPALIVE_MS)
       }
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data) as ServerMessage
@@ -36,6 +40,7 @@ export function useRoomSocket(code: string) {
         if (message.type === 'welcome') lastError = null
         if (FINAL_MESSAGES.has(message.type)) finished = true
         dispatch({ kind: 'message', message })
+        listeners.current.forEach((listener) => listener(message))
       }
       ws.onclose = (event) => {
         clearInterval(keepalive)
@@ -60,7 +65,15 @@ export function useRoomSocket(code: string) {
     if (socketRef.current) send(socketRef.current, message)
   }, [])
 
-  return { state, send: sendMessage }
+  /** Listen to raw messages (e.g. pongs for clock sync). Returns an unsubscribe function. */
+  const subscribe = useCallback((listener: Listener) => {
+    listeners.current.add(listener)
+    return () => {
+      listeners.current.delete(listener)
+    }
+  }, [])
+
+  return { state, send: sendMessage, subscribe }
 }
 
 function send(ws: WebSocket, message: ClientMessage) {

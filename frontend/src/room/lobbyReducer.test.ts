@@ -8,6 +8,11 @@ const room: LobbyRoom = {
   capacity: 4,
   phase: 'lobby',
   players: [{ id: 'h', name: 'Host', is_guest: false, is_host: true, connected: true, ready: false }],
+  song: null,
+  performance_id: null,
+  start_at: null,
+  parts: {},
+  scores: {},
 }
 
 function run(...events: LobbyEvent[]): LobbyState {
@@ -54,6 +59,15 @@ describe('lobbyReducer', () => {
     [CloseCode.left, 'left'],
   ])('close code %i ends with %s', (code, reason) => {
     expect(run({ kind: 'closed', code }).endReason).toBe(reason)
+  })
+
+  it('updates live scores without a full room update', () => {
+    const state = run(
+      { kind: 'message', message: { type: 'lobby_state', room } },
+      { kind: 'message', message: { type: 'scores', scores: { h: 4200 } } },
+    )
+    expect(state.room?.scores).toEqual({ h: 4200 })
+    expect(state.room?.players).toBe(room.players)
   })
 
   it('stays ended no matter what arrives afterwards', () => {

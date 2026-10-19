@@ -9,18 +9,34 @@ export interface LobbyPlayer {
   ready: boolean
 }
 
+export interface RoomSong {
+  id: string
+  title: string
+  artist: string
+  duration_seconds: number
+  is_duet: boolean
+}
+
+export type Phase = 'lobby' | 'countdown' | 'playing' | 'results'
+
 export interface LobbyRoom {
   code: string
   host_id: string
   capacity: number
-  phase: 'lobby'
+  phase: Phase
   players: LobbyPlayer[]
+  song: RoomSong | null
+  performance_id: string | null
+  start_at: number | null // server time (ms) the song starts
+  parts: Record<string, 'P1' | 'P2'> // who sings, and which part
+  scores: Record<string, number>
 }
 
 export type ServerMessage =
   | { type: 'welcome'; you: string; server_time: number }
   | { type: 'lobby_state'; room: LobbyRoom }
   | { type: 'pong'; t0: number; server_time: number }
+  | { type: 'scores'; scores: Record<string, number> }
   | { type: 'error'; code: string }
   | { type: 'kicked' }
   | { type: 'replaced' }
@@ -32,6 +48,11 @@ export type ClientMessage =
   | { type: 'kick'; player_id: string }
   | { type: 'leave' }
   | { type: 'close_room' }
+  | { type: 'select_song'; song_id: string }
+  | { type: 'start' }
+  | { type: 'score'; total: number }
+  | { type: 'finished'; total: number }
+  | { type: 'back_to_lobby' }
 
 export const CloseCode = {
   left: 4000,

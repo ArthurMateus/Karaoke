@@ -129,6 +129,15 @@
     "chart_failed": "Building the chart failed.",
     "upload_failed": "Saving the converted files failed.",
     "internal_error": "Something went wrong on our side.",
+    "no_song_selected": "Pick a song first.",
+    "nobody_ready": "At least one player must be ready.",
+    "wrong_phase": "That's not possible while a song is playing.",
+    "performance_not_found": "We couldn't find that performance.",
+    "replay_not_ready": "The replay isn't ready yet.",
+    "empty_recording": "The recording was empty.",
+    "mic_denied": "Microphone access was blocked. Allow it in your browser's site settings, then try again.",
+    "mic_missing": "No microphone was found on this device.",
+    "mic_unsupported": "This browser can't do live singing. Try a recent Chrome, Edge, Firefox or Safari.",
     "unknown_error": "Something went wrong. Please try again."
   },
   "songs": {
@@ -245,6 +254,76 @@
       "overlap": "Line {{line}}: notes overlap.",
       "empty_text": "Line {{line}}: a note has no text.",
       "no_notes": "The chart has no notes."
+    }
+  },
+  "game": {
+    "mic": {
+      "title": "Your microphone",
+      "turnOn": "Turn on my microphone",
+      "turningOn": "Turning on…",
+      "on": "Microphone on",
+      "robot": "Test mode: a robot sings instead of your mic.",
+      "level": "Mic level"
+    },
+    "calibrate": {
+      "title": "Mic delay check",
+      "intro": "Phones add a small delay between your voice and the app. We measure it once so your timing is scored fairly.",
+      "start": "Start the check",
+      "instructions": "Say \"ta\" (or clap) on every click.",
+      "listening": "Listening…",
+      "result": "Your mic delay: {{ms}} ms",
+      "failed": "We couldn't hear you clearly. Get closer to the mic and try again.",
+      "redo": "Check again",
+      "skip": "Skip (use a typical delay)"
+    },
+    "ready": {
+      "needMic": "Turn on your microphone to sing.",
+      "imReady": "I'm ready to sing",
+      "notReady": "Not ready"
+    },
+    "song": {
+      "pick": "Pick a song",
+      "next": "Song",
+      "none": "The host hasn't picked a song yet.",
+      "noneHost": "Pick a song below.",
+      "choose": "Choose",
+      "chosen": "Chosen",
+      "loading": "Loading the song…",
+      "loaded": "Song loaded",
+      "loadFailed": "The song couldn't be loaded.",
+      "mine": "Your songs",
+      "starter": "Starter library"
+    },
+    "start": {
+      "button": "Start the song",
+      "needSong": "Pick a song first.",
+      "needReady": "At least one player must be ready.",
+      "waiting": "Waiting for the host to start…"
+    },
+    "sing": {
+      "getReady": "Get ready…",
+      "youSing": "You sing {{part}}",
+      "watching": "You're watching this one. Turn on your mic and get ready to sing the next song.",
+      "points": "points",
+      "ratings": {
+        "perfect": "Perfect!",
+        "great": "Great!",
+        "good": "Good",
+        "ok": "OK",
+        "miss": "Missed"
+      }
+    },
+    "results": {
+      "title": "Results",
+      "points": "{{score}} points",
+      "replay": "Group replay",
+      "replayWaiting": "Mixing everyone's voices…",
+      "replayFailed": "The replay couldn't be made.",
+      "replayNone": "No recordings arrived, so there's no replay.",
+      "uploading": "Sending your recording…",
+      "uploadFailed": "Your recording couldn't be sent.",
+      "again": "Pick the next song",
+      "waitingHost": "Waiting for the host to pick the next song…"
     }
   }
 }

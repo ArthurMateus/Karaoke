@@ -46,6 +46,8 @@ export function lobbyReducer(state: LobbyState, event: LobbyEvent): LobbyState {
           return { ...state, status: 'open', you: message.you, lastError: null }
         case 'lobby_state':
           return { ...state, room: message.room }
+        case 'scores':
+          return state.room ? { ...state, room: { ...state.room, scores: message.scores } } : state
         case 'error':
           return { ...state, lastError: message.code }
         case 'kicked':
