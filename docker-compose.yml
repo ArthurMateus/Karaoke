@@ -31,7 +31,7 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_USE_TLS: ${SMTP_USE_TLS:-false}
       MAIL_FROM: ${MAIL_FROM:-Karaoke Party <no-reply@karaoke.local>}
-      S3_ENDPOINT_URL: http://minio:9000
+      S3_ENDPOINT_URL: http://storage:8333
       S3_ACCESS_KEY: karaoke
       S3_SECRET_KEY: karaoke-secret
       S3_BUCKET: karaoke
@@ -45,7 +45,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      minio-init:
+      storage-init:
         condition: service_completed_successfully
 
   web:
@@ -78,30 +78,29 @@ services:
       interval: 3s
       retries: 20
 
-  minio:
-    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: karaoke
-      MINIO_ROOT_PASSWORD: karaoke-secret
+  # S3-compatible file storage (songs, recordings). The app talks plain S3,
+  # so any S3 service (AWS S3, Cloudflare R2, ...) can replace it in production.
+  storage:
+    image: chrislusf/seaweedfs:4.48
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
     ports:
-      - "9001:9001" # storage web console
+      - "8888:8888" # file browser
     volumes:
-      - minio_data:/data
+      - storage_data:/data
+      - ./infra/seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:9333/cluster/status"]
       interval: 3s
-      retries: 20
+      retries: 30
 
   # Creates the storage bucket once, then exits.
-  minio-init:
-    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+  storage-init:
+    image: chrislusf/seaweedfs:4.48
     depends_on:
-      minio:
+      storage:
         condition: service_healthy
     entrypoint: >
-      sh -c "mc alias set local http://minio:9000 karaoke karaoke-secret &&
-             mc mb --ignore-existing local/karaoke"
+      sh -c "echo 's3.bucket.create -name karaoke' | weed shell -master=storage:9333 2>&1 | grep -v 'already exists' ; true"
 
   mailpit:
     image: axllent/mailpit:v1.27
@@ -110,6 +109,6 @@ services:
 
 volumes:
   pgdata:
-  minio_data:
+  storage_data:
   caddy_data:
   web_node_modules:
