@@ -104,14 +104,16 @@ def _frame(track: PitchTrack) -> float:
 
 
 def group_lines(words: list[Word], pause: float = 0.6, max_words: int = 10, max_seconds: float = 8.0) -> list[list[Word]]:
-    """Lyric lines break at pauses, or when a line gets too long to read."""
+    """Lyric lines break at pauses, at the end of sentences, or when a line gets too long to read."""
     lines: list[list[Word]] = []
     for word in words:
         if lines:
             line = lines[-1]
             gap = word.start - line[-1].end
             too_long = len(line) >= max_words or word.end - line[0].start > max_seconds
-            if gap < pause and not (too_long and gap > 0.1) and len(line) < max_words + 4:
+            previous = line[-1].text.rstrip()
+            sentence_end = previous.endswith((".", "!", "?", ";")) or (previous.endswith(",") and len(line) >= 6)
+            if gap < pause and not sentence_end and not (too_long and gap > 0.1) and len(line) < max_words + 4:
                 line.append(word)
                 continue
         lines.append([word])

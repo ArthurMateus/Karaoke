@@ -190,6 +190,7 @@ def test_starter_songs_are_listed_for_everyone(client, owner, db):
     listing = anonymous(client).get("/api/songs").json()
     assert [s["title"] for s in listing["starter"]] == ["Amazing Grace"]
     assert listing["conversions_left"] is None
+    assert listing["upload_limits"] == {"max_file_mb": 50, "max_duration_seconds": 480, "formats": ["mp3", "wav", "m4a", "ogg"]}
     assert owner.get("/api/songs").json()["conversions_left"] == 3
 
 

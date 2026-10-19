@@ -45,11 +45,18 @@ class SongOut(BaseModel):
     created_at: datetime
 
 
+class UploadLimitsOut(BaseModel):
+    max_file_mb: float
+    max_duration_seconds: float
+    formats: list[str]
+
+
 class SongList(BaseModel):
     starter: list[SongOut]
     mine: list[SongOut]
     conversions_left: int | None  # None when not signed in with an account
     conversions_per_month: int | None
+    upload_limits: UploadLimitsOut
 
 
 def song_out(song: Song, user: User | None) -> SongOut:
@@ -124,10 +131,11 @@ def list_songs(db: Db, user: OptionalUser) -> SongList:
     songs = song_service.visible_songs(db, user)
     account = user is not None and not user.is_guest
     return SongList(
-        starter=[song_out(s, user) for s in songs if s.owner_id is None],
+        starter=[song_out(s, user) for s in sorted(songs, key=lambda s: s.title.lower()) if s.owner_id is None],
         mine=[song_out(s, user) for s in songs if s.owner_id is not None],
         conversions_left=song_service.conversions_left(db, user, utcnow()) if account else None,
         conversions_per_month=plan_for(user).conversions_per_month if account else None,
+        upload_limits=UploadLimitsOut(**get_limits().uploads.model_dump(include={"max_file_mb", "max_duration_seconds", "formats"})),
     )
 
 

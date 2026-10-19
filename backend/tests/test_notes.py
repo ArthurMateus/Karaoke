@@ -64,6 +64,12 @@ def test_lines_break_at_pauses_and_length():
     assert all(len(line) <= 10 for line in group_lines(many))
 
 
+def test_lines_break_at_sentence_ends_even_without_a_pause():
+    text = "Twinkle, twinkle, little star. How I wonder"
+    words = [Word(w, i * 0.4, i * 0.4 + 0.38) for i, w in enumerate(text.split())]
+    assert [" ".join(w.text for w in line) for line in group_lines(words)] == ["Twinkle, twinkle, little star.", "How I wonder"]
+
+
 def test_median_filter():
     assert list(median_filter(np.array([1.0, 1, 9, 1, 1]), 3)) == [1, 1, 1, 1, 1]
 
