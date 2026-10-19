@@ -23,7 +23,7 @@ Bugs fixed during the test:
 Known limits:
 - Live room state (song, ready, phase) is in the api's memory and resets when the api restarts.
 - The robot's measured delay is about -20 ms (no real mic path). Real devices should show a positive number.
-- The built-in browser pane refuses `https://127.0.0.1:8443` (self-signed certificate), so the HTTPS path was only checked with a direct request, not in a browser.
+- HTTPS on an IP address (what phones use) failed the TLS handshake: browsers send no SNI for IPs. Fixed with `default_sni` in the Caddyfile and checked with curl. The built-in browser pane refuses the self-signed certificate, so it was not checked in a browser.
 
 ## Next steps
 1. The user tries Milestone 3 on real phones (README "Try Milestone 3 by hand"). Fix what they report.

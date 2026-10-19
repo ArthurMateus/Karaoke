@@ -6,6 +6,9 @@
 #                     certificate, the browser warns once)
 {
 	auto_https disable_redirects
+	# Browsers don't send a host name (SNI) when the address is an IP, as on
+	# phones (https://192.168.x.x:8443). Use the LAN_IP certificate for those.
+	default_sni {$LAN_IP:127.0.0.1}
 }
 
 (app) {
