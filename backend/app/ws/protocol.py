@@ -3,7 +3,8 @@
 Server -> browser messages are plain dicts with a "type":
   welcome     {you, server_time}
   lobby_state {room: RoomState.snapshot()}
-  pong        {t0, server_time}           (clock sync groundwork for Milestone 3)
+  scores      {scores: {player id: 0..10000}}   (live scoreboard while singing)
+  pong        {t0, server_time}           (clock sync: the phone measures its offset)
   error       {code}
   kicked / replaced / room_closed         (the socket closes after these)
 The TypeScript mirror lives in frontend/src/room/protocol.ts.
@@ -37,7 +38,35 @@ class CloseRoom(BaseModel):
     type: Literal["close_room"]
 
 
-ClientMessage = Annotated[Ping | SetReady | Kick | Leave | CloseRoom, Field(discriminator="type")]
+class SelectSong(BaseModel):
+    type: Literal["select_song"]
+    song_id: str = Field(max_length=64)
+
+
+class Start(BaseModel):
+    type: Literal["start"]
+
+
+class Score(BaseModel):
+    """A singer's running total, sent after each lyric line."""
+
+    type: Literal["score"]
+    total: int = Field(ge=0, le=10_000)
+
+
+class Finished(BaseModel):
+    type: Literal["finished"]
+    total: int = Field(ge=0, le=10_000)
+
+
+class BackToLobby(BaseModel):
+    type: Literal["back_to_lobby"]
+
+
+ClientMessage = Annotated[
+    Ping | SetReady | Kick | Leave | CloseRoom | SelectSong | Start | Score | Finished | BackToLobby,
+    Field(discriminator="type"),
+]
 client_message = TypeAdapter(ClientMessage)
 
 # WebSocket close codes (4000-4999 are free for apps to use).

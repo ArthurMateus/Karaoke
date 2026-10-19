@@ -53,8 +53,19 @@ class RoomHub:
         return len(room.state.players) if room else 0
 
     async def broadcast_state(self, room: LiveRoom) -> None:
-        message = {"type": "lobby_state", "room": room.state.snapshot()}
+        await self.broadcast(room, {"type": "lobby_state", "room": room.state.snapshot()})
+
+    async def broadcast(self, room: LiveRoom, message: dict) -> None:
         await asyncio.gather(*(_send(ws, message) for ws in list(room.sockets.values())))
+
+    async def send(self, ws: WebSocket, message: dict) -> None:
+        await _send(ws, message)
+
+    def spawn(self, coro) -> None:
+        """Run a background task tied to the hub (cancelled on shutdown)."""
+        task = asyncio.create_task(coro)
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
 
     async def attach(self, room: LiveRoom, player_id: str, ws: WebSocket) -> None:
         """Register a player's socket. The same player opening a second tab replaces the first."""
@@ -95,6 +106,10 @@ class RoomHub:
                 # Handled by the route, which also updates the database.
                 if player_id != state.host_id:
                     await _send(ws, {"type": "error", "code": "not_allowed"})
+            case _:
+                from app.ws import game  # game imports the hub's helpers
+
+                return await game.handle(self, room, player_id, msg, ws)
         return True
 
     async def on_disconnect(self, room: LiveRoom, player_id: str, ws: WebSocket) -> None:
@@ -103,9 +118,7 @@ class RoomHub:
         del room.sockets[player_id]
         room.state.disconnect(player_id, time.monotonic())
         await self.broadcast_state(room)
-        task = asyncio.create_task(self._drop_after_grace(room))
-        self._tasks.add(task)
-        task.add_done_callback(self._tasks.discard)
+        self.spawn(self._drop_after_grace(room))
 
     async def _drop_after_grace(self, room: LiveRoom) -> None:
         await asyncio.sleep(self.grace_seconds)

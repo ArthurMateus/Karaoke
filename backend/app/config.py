@@ -31,6 +31,13 @@ class Settings(BaseSettings):
     # How long a disconnected player keeps their spot in a room.
     room_reconnect_grace_seconds: float = 60
 
+    # Sing Together: time between pressing Start and the music starting (lets every
+    # phone sync up), how long after the song's end the room moves to the results,
+    # and how long after the song the group replay is mixed with whatever arrived.
+    game_countdown_ms: int = 6000
+    song_end_grace_seconds: float = 4
+    replay_wait_seconds: float = 90
+
     limits_file: Path = Path("/config/limits.yaml")
 
     # S3-compatible file storage (SeaweedFS locally; S3, R2, ... in production).

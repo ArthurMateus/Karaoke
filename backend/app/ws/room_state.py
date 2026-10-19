@@ -10,7 +10,18 @@ class JoinRefused(Exception):
 
 
 class NotAllowed(Exception):
-    pass
+    """Only the host may do that."""
+
+
+class WrongPhase(Exception):
+    """Not possible right now, e.g. picking a song while one is playing."""
+
+    def __init__(self, code: str = "wrong_phase"):
+        super().__init__(code)
+        self.code = code
+
+
+MAX_SCORE = 10_000
 
 
 @dataclass
@@ -25,12 +36,20 @@ class Player:
 
 @dataclass
 class RoomState:
+    """Phases: lobby -> countdown -> playing -> results -> lobby."""
+
     code: str
     host_id: str
     capacity: int
     phase: str = "lobby"
     players: dict[str, Player] = field(default_factory=dict)  # in join order
     kicked: set[str] = field(default_factory=set)
+    song: dict | None = None  # {id, title, artist, duration_seconds, is_duet}
+    performance_id: str | None = None
+    start_at: float | None = None  # server time (ms) when the song starts
+    parts: dict[str, str] = field(default_factory=dict)  # singer id -> "P1" | "P2"
+    scores: dict[str, int] = field(default_factory=dict)
+    finished: set[str] = field(default_factory=set)
 
     def join(self, player_id: str, name: str, is_guest: bool) -> Player:
         """Add a player, or reconnect one who still holds a spot."""
@@ -81,6 +100,64 @@ class RoomState:
         if player_id in self.players:
             self.players[player_id].ready = ready
 
+    # --- the song ---
+
+    def select_song(self, by: str, song: dict) -> None:
+        if by != self.host_id:
+            raise NotAllowed()
+        if self.phase not in ("lobby", "results"):
+            raise WrongPhase()
+        self.song = song
+        self.phase = "lobby"
+
+    def start(self, by: str, performance_id: str, start_at: float) -> list[str]:
+        """Everyone who is ready and connected sings. Returns the singers' ids."""
+        if by != self.host_id:
+            raise NotAllowed()
+        if self.phase not in ("lobby", "results"):
+            raise WrongPhase()
+        if self.song is None:
+            raise WrongPhase("no_song_selected")
+        singers = [p.id for p in self.players.values() if p.ready and p.connected]
+        if not singers:
+            raise WrongPhase("nobody_ready")
+        duet = bool(self.song.get("is_duet"))
+        self.parts = {pid: ("P2" if duet and i % 2 else "P1") for i, pid in enumerate(singers)}
+        self.scores = dict.fromkeys(singers, 0)
+        self.finished = set()
+        self.performance_id, self.start_at, self.phase = performance_id, start_at, "countdown"
+        return singers
+
+    def begin_playing(self, performance_id: str) -> bool:
+        if self.phase == "countdown" and self.performance_id == performance_id:
+            self.phase = "playing"
+            return True
+        return False
+
+    def record_score(self, player_id: str, total: int) -> bool:
+        if self.phase not in ("countdown", "playing") or player_id not in self.parts:
+            return False
+        self.scores[player_id] = max(0, min(MAX_SCORE, int(total)))
+        return True
+
+    def finish(self, player_id: str, total: int) -> bool:
+        """A singer's song ended. Returns True when every singer is done."""
+        if not self.record_score(player_id, total):
+            return False
+        self.finished.add(player_id)
+        return self.finished >= set(self.parts)
+
+    def show_results(self, performance_id: str) -> bool:
+        if self.phase in ("countdown", "playing") and self.performance_id == performance_id:
+            self.phase = "results"
+            return True
+        return False
+
+    def back_to_lobby(self, by: str) -> None:
+        if by != self.host_id:
+            raise NotAllowed()
+        self.phase = "lobby"
+
     @property
     def is_empty(self) -> bool:
         return not self.players
@@ -91,6 +168,11 @@ class RoomState:
             "host_id": self.host_id,
             "capacity": self.capacity,
             "phase": self.phase,
+            "song": self.song,
+            "performance_id": self.performance_id,
+            "start_at": self.start_at,
+            "parts": self.parts,
+            "scores": self.scores,
             "players": [
                 {
                     "id": p.id,

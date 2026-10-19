@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Index, String, Text, text
+from sqlalchemy import JSON, BigInteger, DateTime, ForeignKey, Index, String, Text, UniqueConstraint, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base, utcnow
@@ -112,3 +112,47 @@ class ConversionUsage(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     song_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("songs.id", ondelete="SET NULL"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Performance(Base):
+    """One song sung together in a room: who sang which part, and the group replay."""
+
+    __tablename__ = "performances"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    room_code: Mapped[str] = mapped_column(String(6), index=True)
+    host_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    song_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("songs.id", ondelete="SET NULL"))
+    song_title: Mapped[str] = mapped_column(String(200))
+    start_at_ms: Mapped[int] = mapped_column(BigInteger)  # server time the song started
+    # [{"id": user id, "name": display name, "part": "P1" | "P2"}]
+    singers: Mapped[list] = mapped_column(JSON, default=list)
+    replay_status: Mapped[str] = mapped_column(String(16), default="waiting")  # waiting | mixing | ready | failed
+    replay_key: Mapped[str | None] = mapped_column(String(300))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    takes: Mapped[list["PerformanceTake"]] = relationship(
+        back_populates="performance", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+    def singer_ids(self) -> set[str]:
+        return {s["id"] for s in self.singers}
+
+
+class PerformanceTake(Base):
+    """One singer's part of a performance: score and voice recording."""
+
+    __tablename__ = "performance_takes"
+    __table_args__ = (UniqueConstraint("performance_id", "user_id", name="uq_take_per_singer"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    performance_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("performances.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    score: Mapped[int] = mapped_column(default=0)
+    recording_key: Mapped[str | None] = mapped_column(String(300))
+    # How the recording lines up with the song (see app/pipeline/mix.py).
+    record_start_ms: Mapped[int | None] = mapped_column(BigInteger)
+    mic_latency_ms: Mapped[float] = mapped_column(default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    performance: Mapped[Performance] = relationship(back_populates="takes")
