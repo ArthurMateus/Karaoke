@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { api } from '../api/client'
 import { playerColor } from '../lib/colors'
+import { formatScore } from '../lib/format'
 import type { LobbyRoom } from './protocol'
 
 interface PerformanceInfo {
@@ -15,7 +16,7 @@ export type UploadState = 'idle' | 'uploading' | 'done' | 'failed'
 
 /** Final scores, and the group replay once the worker has mixed it. */
 export default function ResultsView({ room, isHost, upload, onNext }: { room: LobbyRoom; isHost: boolean; upload: UploadState; onNext: () => void }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const performanceId = room.performance_id
   const order = room.players.map((p) => p.id)
   const performance = useQuery({
@@ -58,7 +59,7 @@ export default function ResultsView({ room, isHost, upload, onNext }: { room: Lo
               {entry.name.slice(0, 1).toUpperCase()}
             </span>
             <span className="player-name">{entry.name}</span>
-            <b className="rank-score">{t('game.results.points', { score: entry.score.toLocaleString() })}</b>
+            <b className="rank-score">{t('game.results.points', { score: formatScore(entry.score, i18n.language) })}</b>
           </li>
         ))}
       </ol>
