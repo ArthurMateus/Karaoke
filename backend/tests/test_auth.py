@@ -3,6 +3,7 @@ from datetime import timedelta
 import pytest
 from sqlalchemy import select
 
+from app.config import get_settings
 from app.db import utcnow
 from app.models import MagicLinkToken
 from app.security import clean_display_name, hash_token, safe_next_path
@@ -70,6 +71,14 @@ def test_link_keeps_only_safe_next_path(client, mailer):
     assert link_from(mailer).endswith("&next=%2F")
     client.post("/api/auth/magic-link", json={"email": "h@example.com", "next": "/join/ABC234"})
     assert link_from(mailer).endswith("&next=%2Fjoin%2FABC234")
+
+
+def test_link_returns_to_an_allowed_origin_only(client, mailer, monkeypatch):
+    monkeypatch.setattr(get_settings(), "extra_origins", "http://localhost:8080")
+    client.post("/api/auth/magic-link", json={"email": "k@example.com"}, headers={"origin": "http://localhost:8080"})
+    assert link_from(mailer).startswith("http://localhost:8080/auth/verify?")
+    client.post("/api/auth/magic-link", json={"email": "k@example.com"}, headers={"origin": "https://evil.example"})
+    assert link_from(mailer).startswith("https://testserver/auth/verify?")
 
 
 def test_guest_play_and_rename(client):

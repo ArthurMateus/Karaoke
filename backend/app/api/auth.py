@@ -46,9 +46,18 @@ def _set_session_cookie(response: Response, token: str) -> None:
     )
 
 
+def _link_base(request: Request) -> str:
+    """Send people back to the address they signed in from (e.g. localhost vs. the LAN IP),
+    as long as it's one of ours. Otherwise use the public address."""
+    settings = get_settings()
+    origin = request.headers.get("origin", "").rstrip("/")
+    return origin if origin in settings.allowed_origins else settings.public_base_url.rstrip("/")
+
+
 @router.post("/magic-link", status_code=202)
 def request_magic_link(
     body: MagicLinkRequest,
+    request: Request,
     db: Db,
     background: BackgroundTasks,
     mailer: Annotated[Mailer, Depends(get_mailer)],
@@ -61,7 +70,7 @@ def request_magic_link(
     # The link opens a page in the app, which then calls /verify. Email scanners
     # that pre-open links therefore can't use up the token.
     query = urlencode({"token": token, "next": safe_next_path(body.next)})
-    link = f"{get_settings().public_base_url}/auth/verify?{query}"
+    link = f"{_link_base(request)}/auth/verify?{query}"
     background.add_task(mailer.send, magic_link_email(auth.normalize_email(body.email), link, body.locale))
     return {"ok": True}
 
