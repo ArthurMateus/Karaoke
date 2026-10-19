@@ -33,6 +33,14 @@ export function contextTimeFor(wallMs: number, anchor: Anchor): number {
   return anchor.contextTime + (wallMs - anchor.wallMs) / 1000
 }
 
+/**
+ * How far the context clock runs ahead of what the speakers play, in seconds.
+ * A sound scheduled now is heard this much later.
+ */
+export function outputLag(anchor: Anchor, nowContextTime: number, nowWallMs: number): number {
+  return Math.max(0, nowContextTime - contextTimeFor(nowWallMs, anchor))
+}
+
 /** The device-clock moment a microphone frame analysed at `frameContextTime` was captured. */
 export function frameWallTime(frameContextTime: number, nowContextTime: number, nowWallMs: number): number {
   return nowWallMs - (nowContextTime - frameContextTime) * 1000

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { contextTimeFor, frameWallTime, heardAnchor, startPlan } from './scheduling'
+import { contextTimeFor, frameWallTime, heardAnchor, outputLag, startPlan } from './scheduling'
 
 describe('heardAnchor', () => {
   it('uses the output timestamp when the browser has one', () => {
@@ -22,6 +22,17 @@ describe('contextTimeFor', () => {
   it('maps a future device-clock moment to context time', () => {
     const anchor = { contextTime: 10, wallMs: 1_000_000 }
     expect(contextTimeFor(1_002_500, anchor)).toBe(12.5)
+  })
+})
+
+describe('outputLag', () => {
+  it('is the time between scheduling a sound and hearing it', () => {
+    // The speakers are playing context time 10.0 at device time 1_000_000; the context is at 10.06.
+    expect(outputLag({ contextTime: 10, wallMs: 1_000_000 }, 10.06, 1_000_000)).toBeCloseTo(0.06)
+  })
+
+  it('is never negative', () => {
+    expect(outputLag({ contextTime: 10, wallMs: 1_000_000 }, 10, 1_000_050)).toBe(0)
   })
 })
 

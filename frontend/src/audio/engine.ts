@@ -5,7 +5,7 @@
 import { wallNow } from '../game/clock'
 import type { Timeline } from '../game/timeline'
 import workletUrl from './micWorklet.ts?worker&url'
-import { contextTimeFor, frameWallTime, heardAnchor, startPlan } from './scheduling'
+import { contextTimeFor, frameWallTime, heardAnchor, outputLag, startPlan } from './scheduling'
 
 export interface MicFrame {
   t: number // device clock (ms) when this sound reached the microphone path
@@ -130,6 +130,7 @@ export class AudioEngine {
   /** Short clicks heard at the given device-clock times (calibration). */
   playClicks(wallTimes: number[]): void {
     const anchor = heardAnchor(this.ctx, performance.timeOrigin, performance.now())
+    const lag = outputLag(anchor, this.ctx.currentTime, wallNow())
     for (const t of wallTimes) {
       const when = contextTimeFor(t, anchor)
       const osc = this.ctx.createOscillator()
@@ -142,8 +143,8 @@ export class AudioEngine {
       gain.connect(this.ctx.destination)
       osc.start(when)
       osc.stop(when + 0.1)
-      // The robot singer "says ta" right on time.
-      if (this.fakeVoice) this.fakeTone(330, when, 0.12)
+      // The robot singer "says ta" the moment it hears the click, like a person would.
+      if (this.fakeVoice) this.fakeTone(330, when + lag, 0.12)
     }
   }
 
@@ -161,9 +162,11 @@ export class AudioEngine {
   singFake(timeline: Timeline, startWallMs: number): void {
     if (!this.fakeVoice) return
     const anchor = heardAnchor(this.ctx, performance.timeOrigin, performance.now())
+    // Sing along with what the speakers play, not with what is scheduled.
+    const lag = outputLag(anchor, this.ctx.currentTime, wallNow())
     for (const note of timeline.notes) {
       if (note.kind === 'freestyle') continue
-      const when = contextTimeFor(startWallMs + note.start * 1000, anchor)
+      const when = contextTimeFor(startWallMs + note.start * 1000, anchor) + lag
       if (when < this.ctx.currentTime) continue
       const hz = 440 * 2 ** ((note.midi - 12 - 69) / 12)
       this.fakeTone(hz, when, Math.max(0.05, note.end - note.start - 0.03))
