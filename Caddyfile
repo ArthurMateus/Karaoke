@@ -1,7 +1,7 @@
 # Caddy is the single entry point in front of the API and the website.
 #
 # Browsers only allow microphone access on https:// pages, or on localhost.
-#  - On this PC:     http://localhost:8080   (no certificate warning)
+#  - On this PC:     http://localhost:8080 or http://127.0.0.1:8080 (no certificate warning)
 #  - Phones on Wi-Fi: https://<LAN_IP>:8443  ("tls internal" = self-signed
 #                     certificate, the browser warns once)
 {
@@ -20,7 +20,9 @@
 	}
 }
 
-http://localhost:8080 {
+# 127.0.0.1 is a second name for this PC. Browsers keep separate sign-ins per
+# name, so it is handy for testing with two players on one PC.
+http://localhost:8080, http://127.0.0.1:8080 {
 	import app
 }
 

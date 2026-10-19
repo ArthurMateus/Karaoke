@@ -24,7 +24,7 @@ services:
       TEST_DATABASE_URL: postgresql+psycopg://karaoke:karaoke@postgres:5432/karaoke_test
       REDIS_URL: redis://redis:6379/0
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
-      EXTRA_ORIGINS: http://localhost:8080,https://localhost:8443,https://${LAN_IP:-127.0.0.1}:8443
+      EXTRA_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,https://localhost:8443,https://${LAN_IP:-127.0.0.1}:8443
       LIMITS_FILE: /config/limits.yaml
       SMTP_HOST: ${SMTP_HOST:-mailpit}
       SMTP_PORT: ${SMTP_PORT:-1025}
