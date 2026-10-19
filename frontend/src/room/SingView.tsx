@@ -84,8 +84,10 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
       // Report each line as it ends: live scoreboard + a rating flash.
       while (reported < timeline.lines.length && timeline.lines[reported].end + 0.15 < now) {
         const total = score.total(now)
+        // Rate now: the state updater runs later, after `reported` has moved on.
+        const rating = { kind: rate(score.lineFraction(reported)), key: reported }
         setMyTotal(total)
-        setView((v) => ({ ...v, rating: { kind: rate(score.lineFraction(reported)), key: reported } }))
+        setView((v) => ({ ...v, rating }))
         send({ type: 'score', total })
         reported++
       }
