@@ -78,6 +78,7 @@ class Song(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     owner_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     source: Mapped[str] = mapped_column(String(16))  # starter | upload | import
+    starter_slug: Mapped[str | None] = mapped_column(String(64), unique=True)  # app/starter/songs.py
     title: Mapped[str] = mapped_column(String(200))
     artist: Mapped[str] = mapped_column(String(200))
     language: Mapped[str] = mapped_column(String(10), default="")  # "" = detect automatically
