@@ -1,0 +1,16 @@
+# Plan limits. Change a value here and restart the api container:
+#   docker compose restart api
+# The room's limits always come from the HOST's plan (guests never pay).
+plans:
+  free:
+    max_room_size: 4          # players in a room, including the host
+    conversions_per_month: 3  # uploaded songs turned into charts
+    modes: [sing_together]
+    replays: false
+    tournaments: false
+  premium:
+    max_room_size: 16
+    conversions_per_month: 30
+    modes: [sing_together, spotlight]
+    replays: true
+    tournaments: true

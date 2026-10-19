@@ -1,0 +1,7 @@
+# Keep Unix line endings so scripts work inside Linux containers on Windows.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ogg binary
+*.mp3 binary
+*.mid binary
