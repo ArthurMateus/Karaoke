@@ -31,8 +31,7 @@ export class AudioEngine {
   private listeners = new Set<FrameListener>()
   private input: MediaStream | null = null
   private analyser: AudioWorkletNode | null = null
-  private recorder: MediaRecorder | null = null
-  private recordChunks: Blob[] = []
+  private recorder: { recorder: MediaRecorder; chunks: Blob[] } | null = null
   private fakeVoice: { osc: OscillatorNode; gain: GainNode; dest: MediaStreamAudioDestinationNode } | null = null
   readonly simulated: boolean
 
@@ -178,21 +177,28 @@ export class AudioEngine {
   startRecording(): Promise<number> {
     if (!this.input || typeof MediaRecorder === 'undefined') return Promise.reject(new Error('no recorder'))
     const mimeType = RECORDER_TYPES.find((type) => MediaRecorder.isTypeSupported(type))
-    this.recordChunks = []
-    this.recorder = new MediaRecorder(this.input, mimeType ? { mimeType, audioBitsPerSecond: 96_000 } : undefined)
-    this.recorder.ondataavailable = (event) => event.data.size > 0 && this.recordChunks.push(event.data)
+    // Each recording keeps its own chunks: a stopped recorder can still deliver
+    // its last chunk after the next one has started.
+    const chunks: Blob[] = []
+    const recorder = new MediaRecorder(this.input, mimeType ? { mimeType, audioBitsPerSecond: 96_000 } : undefined)
+    recorder.ondataavailable = (event) => event.data.size > 0 && chunks.push(event.data)
+    this.recorder = { recorder, chunks }
     return new Promise((resolve) => {
-      // Resolves with the device-clock time the recording actually started.
-      this.recorder!.onstart = () => resolve(wallNow())
-      this.recorder!.start(1000)
+      // Resolves with the device-clock time the recording started. Capture begins
+      // when start() is called; the start event fires about 60 ms later (measured
+      // in Chromium), so its own time would put the voice late in the replay.
+      const startedAt = wallNow()
+      recorder.onstart = () => resolve(startedAt)
+      recorder.start(1000)
     })
   }
 
   stopRecording(): Promise<Blob | null> {
-    const recorder = this.recorder
-    if (!recorder || recorder.state === 'inactive') return Promise.resolve(null)
+    const current = this.recorder
+    if (!current || current.recorder.state === 'inactive') return Promise.resolve(null)
+    const { recorder, chunks } = current
     return new Promise((resolve) => {
-      recorder.onstop = () => resolve(new Blob(this.recordChunks, { type: recorder.mimeType || 'audio/webm' }))
+      recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }))
       recorder.stop()
     })
   }
