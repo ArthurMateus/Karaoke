@@ -21,3 +21,30 @@ export interface RoomInfo {
   capacity: number
   join_url: string
 }
+
+export type SongStatus = 'processing' | 'ready' | 'failed'
+
+export interface Song {
+  id: string
+  title: string
+  artist: string
+  language: string
+  source: 'starter' | 'upload' | 'import'
+  status: SongStatus
+  progress_step: string
+  progress_pct: number
+  error_code: string | null
+  duration_seconds: number | null
+  is_duet: boolean
+  is_owner: boolean
+  has_vocals_track: boolean
+  created_at: string
+}
+
+export interface SongList {
+  starter: Song[]
+  mine: Song[]
+  conversions_left: number | null
+  conversions_per_month: number | null
+  upload_limits: { max_file_mb: number; max_duration_seconds: number; formats: string[] }
+}

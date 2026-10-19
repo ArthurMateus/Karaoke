@@ -16,6 +16,7 @@ export default function Header() {
         🎤 <span>{t('app.name')}</span>
       </Link>
       <nav className="header-nav">
+        <Link to="/songs">{t('nav.songs')}</Link>
         <LanguageSwitcher />
         {user ? (
           <>

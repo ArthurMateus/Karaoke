@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
-import type { Locale, Me, RoomInfo, User } from './types'
+import type { EditorChart } from '../editor/chartModel'
+import type { Locale, Me, RoomInfo, Song, SongList, User } from './types'
 
 export function useMe() {
   return useQuery({ queryKey: ['me'], queryFn: () => api<Me>('/api/me'), staleTime: 60_000 })
@@ -58,4 +59,68 @@ export function useRoomInfo(code: string) {
 
 export function useCreateRoom() {
   return useMutation({ mutationFn: () => api<RoomInfo>('/api/rooms', { method: 'POST' }) })
+}
+
+// --- Songs -------------------------------------------------------------------
+
+const isProcessing = (songs: Song[]) => songs.some((s) => s.status === 'processing')
+
+/** Polls every 2 seconds while a song is being converted. */
+export function useSongs() {
+  return useQuery({
+    queryKey: ['songs'],
+    queryFn: () => api<SongList>('/api/songs'),
+    refetchInterval: (query) => (query.state.data && isProcessing(query.state.data.mine) ? 2000 : false),
+  })
+}
+
+export function useSong(id: string) {
+  return useQuery({
+    queryKey: ['song', id],
+    queryFn: () => api<Song>(`/api/songs/${id}`),
+    refetchInterval: (query) => (query.state.data?.status === 'processing' ? 2000 : false),
+    retry: false,
+  })
+}
+
+export function useChart(id: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ['chart', id],
+    queryFn: () => api<EditorChart>(`/api/songs/${id}/chart`),
+    enabled,
+    retry: false,
+    staleTime: Infinity, // the editor owns the chart once loaded
+  })
+}
+
+function useRefreshSongs() {
+  const queryClient = useQueryClient()
+  return (song?: Song) => {
+    void queryClient.invalidateQueries({ queryKey: ['songs'] })
+    if (song) queryClient.setQueryData(['song', song.id], song)
+  }
+}
+
+export function useSaveChart(id: string) {
+  const refresh = useRefreshSongs()
+  return useMutation({
+    mutationFn: (chart: EditorChart) => api<Song>(`/api/songs/${id}/chart`, { method: 'PUT', body: chart }),
+    onSuccess: refresh,
+  })
+}
+
+export function useDeleteSong() {
+  const refresh = useRefreshSongs()
+  return useMutation({
+    mutationFn: (id: string) => api(`/api/songs/${id}`, { method: 'DELETE' }),
+    onSuccess: () => refresh(),
+  })
+}
+
+export function useRetrySong() {
+  const refresh = useRefreshSongs()
+  return useMutation({
+    mutationFn: (id: string) => api<Song>(`/api/songs/${id}/retry`, { method: 'POST' }),
+    onSuccess: refresh,
+  })
 }

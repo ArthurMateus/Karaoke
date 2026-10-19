@@ -85,7 +85,7 @@ a {
   }
 }
 .page {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px 16px 48px;
 }
@@ -305,6 +305,7 @@ a {
   flex-wrap: wrap;
 }
 .tag {
+  white-space: nowrap;
   font-size: 0.75rem;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -322,4 +323,258 @@ a {
 .tag.warn {
   color: var(--red);
   border-color: var(--red);
+}
+
+/* Shared helpers */
+.row.spread {
+  justify-content: space-between;
+  align-items: center;
+}
+.row.wrap {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.stack.tight {
+  gap: 4px;
+}
+.stack.wide,
+.card.wide {
+  max-width: none;
+}
+.button.small,
+.input.small {
+  padding: 6px 10px;
+  font-size: 0.875rem;
+}
+.button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.input.number {
+  width: 7em;
+}
+.checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.checkbox input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--pink);
+}
+.warn-text {
+  color: var(--gold);
+}
+.progress {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--gold));
+  transition: width 0.4s;
+}
+
+/* Song library */
+.songs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+@media (min-width: 760px) {
+  .songs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.song {
+  background: var(--bg-2);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.song-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Chart editor */
+.editor .banner {
+  max-width: none;
+}
+.problems {
+  margin: 0;
+  padding-left: 18px;
+}
+.form-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+@media (min-width: 760px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.player {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 62px;
+  z-index: 1;
+}
+.player .seek {
+  flex: 1;
+  min-width: 140px;
+  accent-color: var(--pink);
+}
+.player .time {
+  font-variant-numeric: tabular-nums;
+}
+.editor-grid {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 960px) {
+  .editor-grid {
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+}
+.lines-panel {
+  max-height: 70vh;
+  overflow: auto;
+}
+.lines {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.line-row {
+  display: flex;
+  align-items: stretch;
+  border-radius: 8px;
+  background: var(--bg-2);
+}
+.line-row.active {
+  outline: 2px solid var(--pink);
+}
+.line-play,
+.line-select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.line-play {
+  padding: 6px 10px;
+  color: var(--gold);
+}
+.line-select {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px 6px 0;
+  min-width: 0;
+}
+.line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag.singer-P1 {
+  color: #7dd3fc;
+  border-color: #7dd3fc;
+}
+.tag.singer-P2 {
+  color: #f0abfc;
+  border-color: #f0abfc;
+}
+.tag.singer-both {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.piano-roll {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--bg);
+  touch-action: none;
+}
+.piano-roll svg {
+  display: block;
+}
+.roll-row {
+  fill: transparent;
+}
+.roll-row.alt {
+  fill: rgb(255 255 255 / 2.5%);
+}
+.roll-row.c {
+  fill: rgb(255 255 255 / 7%);
+}
+.roll-beat {
+  stroke: rgb(255 255 255 / 8%);
+}
+.roll-label {
+  fill: var(--muted);
+  font-size: 10px;
+}
+.roll-note {
+  fill: var(--pink);
+  stroke: transparent;
+  stroke-width: 2;
+}
+.roll-note.editable {
+  cursor: grab;
+}
+.roll-note.golden {
+  fill: var(--gold);
+}
+.roll-note.freestyle {
+  fill: rgb(181 171 217 / 40%);
+  stroke-dasharray: 4 3;
+  stroke: var(--muted);
+}
+.roll-note.rap,
+.roll-note.rap_golden {
+  fill: #2dd4bf;
+}
+.roll-note.selected {
+  stroke: #fff;
+}
+.roll-text {
+  fill: var(--text);
+  font-size: 11px;
+  pointer-events: none;
+}
+.roll-playhead {
+  stroke: var(--green);
+  stroke-width: 2;
 }
