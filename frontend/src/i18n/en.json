@@ -1,0 +1,102 @@
+{
+  "app": {
+    "name": "Karaoke Party",
+    "tagline": "Sing together from any phone or laptop."
+  },
+  "nav": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "profile": "Profile",
+    "language": "Language"
+  },
+  "home": {
+    "createRoom": "Create a room",
+    "creating": "Creating…",
+    "signInToHost": "Sign in to host a room. Friends can join without an account.",
+    "joinTitle": "Join a room",
+    "codeLabel": "Room code",
+    "codePlaceholder": "ABC 234",
+    "join": "Join",
+    "invalidCode": "Room codes have 6 letters and numbers."
+  },
+  "signIn": {
+    "title": "Sign in",
+    "intro": "We'll email you a link. No password needed.",
+    "email": "Email",
+    "send": "Email me a link",
+    "sending": "Sending…",
+    "sentTitle": "Check your email",
+    "sent": "We sent a sign-in link to {{email}}. It works once and expires in 15 minutes.",
+    "devHint": "Running locally? The email is in Mailpit: http://localhost:8025",
+    "useOther": "Use a different email"
+  },
+  "verify": {
+    "working": "Signing you in…",
+    "failedTitle": "That link didn't work",
+    "tryAgain": "Get a new link"
+  },
+  "join": {
+    "title": "Join {{host}}'s room",
+    "players": "{{count}} of {{capacity}} players",
+    "yourName": "Your name",
+    "namePlaceholder": "What should we call you?",
+    "asGuest": "Join as guest",
+    "joining": "Joining…",
+    "haveAccount": "Have an account?",
+    "continueAs": "Join as {{name}}"
+  },
+  "lobby": {
+    "code": "Room code",
+    "scanToJoin": "Scan to join",
+    "copyLink": "Copy invite link",
+    "copied": "Copied!",
+    "players": "Players ({{count}}/{{capacity}})",
+    "you": "you",
+    "host": "Host",
+    "guest": "Guest",
+    "ready": "Ready",
+    "away": "Reconnecting…",
+    "imReady": "I'm ready",
+    "notReady": "Not ready",
+    "kick": "Remove",
+    "confirmKick": "Remove {{name}} from the room? They won't be able to rejoin.",
+    "leave": "Leave room",
+    "closeRoom": "Close room",
+    "confirmClose": "Close the room for everyone?",
+    "connecting": "Connecting…",
+    "reconnecting": "Connection lost. Reconnecting…",
+    "comingSoon": "Picking songs and singing arrive in the next milestones. For now, gather your players here!",
+    "backHome": "Back to home",
+    "ended": {
+      "left": "You left the room.",
+      "room_closed": "The host closed this room.",
+      "not_signed_in": "Your session expired. Join again.",
+      "room_not_found": "This room doesn't exist or has been closed.",
+      "room_full": "This room is full.",
+      "kicked": "The host removed you from this room.",
+      "replaced": "This room is open in another tab or window.",
+      "refused": "You can't join this room."
+    },
+    "openHere": "Use this tab instead"
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Display name",
+    "email": "Email",
+    "guestNote": "You're playing as a guest. Sign in to host rooms and keep your name.",
+    "save": "Save",
+    "saved": "Saved!"
+  },
+  "errors": {
+    "not_signed_in": "Please sign in first.",
+    "account_required": "You need an account for this. Guests can join rooms but not host them.",
+    "room_not_found": "We couldn't find that room. Check the code.",
+    "too_many_links": "Too many links requested. Wait a few minutes and try again.",
+    "invalid_or_expired_link": "This sign-in link has expired or was already used.",
+    "invalid_name": "Names need 1 to 24 characters.",
+    "invalid_input": "Please check what you typed.",
+    "not_allowed": "Only the host can do that.",
+    "network": "Can't reach the server. Check your connection.",
+    "unknown_error": "Something went wrong. Please try again."
+  }
+}

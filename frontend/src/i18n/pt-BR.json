@@ -1,0 +1,102 @@
+{
+  "app": {
+    "name": "Karaoke Party",
+    "tagline": "Cante junto com a galera, de qualquer celular ou computador."
+  },
+  "nav": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "profile": "Perfil",
+    "language": "Idioma"
+  },
+  "home": {
+    "createRoom": "Criar uma sala",
+    "creating": "Criando…",
+    "signInToHost": "Entre para criar uma sala. Seus amigos podem participar sem conta.",
+    "joinTitle": "Entrar em uma sala",
+    "codeLabel": "Código da sala",
+    "codePlaceholder": "ABC 234",
+    "join": "Entrar",
+    "invalidCode": "O código da sala tem 6 letras e números."
+  },
+  "signIn": {
+    "title": "Entrar",
+    "intro": "Vamos te mandar um link por e-mail. Sem senha.",
+    "email": "E-mail",
+    "send": "Me envie um link",
+    "sending": "Enviando…",
+    "sentTitle": "Confira seu e-mail",
+    "sent": "Enviamos um link de acesso para {{email}}. Ele funciona uma vez e expira em 15 minutos.",
+    "devHint": "Rodando localmente? O e-mail está no Mailpit: http://localhost:8025",
+    "useOther": "Usar outro e-mail"
+  },
+  "verify": {
+    "working": "Entrando…",
+    "failedTitle": "Esse link não funcionou",
+    "tryAgain": "Pedir um novo link"
+  },
+  "join": {
+    "title": "Entrar na sala de {{host}}",
+    "players": "{{count}} de {{capacity}} jogadores",
+    "yourName": "Seu nome",
+    "namePlaceholder": "Como devemos te chamar?",
+    "asGuest": "Entrar como convidado",
+    "joining": "Entrando…",
+    "haveAccount": "Já tem conta?",
+    "continueAs": "Entrar como {{name}}"
+  },
+  "lobby": {
+    "code": "Código da sala",
+    "scanToJoin": "Escaneie para entrar",
+    "copyLink": "Copiar link de convite",
+    "copied": "Copiado!",
+    "players": "Jogadores ({{count}}/{{capacity}})",
+    "you": "você",
+    "host": "Anfitrião",
+    "guest": "Convidado",
+    "ready": "Pronto",
+    "away": "Reconectando…",
+    "imReady": "Estou pronto",
+    "notReady": "Não estou pronto",
+    "kick": "Remover",
+    "confirmKick": "Remover {{name}} da sala? A pessoa não poderá voltar.",
+    "leave": "Sair da sala",
+    "closeRoom": "Fechar sala",
+    "confirmClose": "Fechar a sala para todo mundo?",
+    "connecting": "Conectando…",
+    "reconnecting": "Conexão perdida. Reconectando…",
+    "comingSoon": "Escolher músicas e cantar chegam nas próximas etapas. Por enquanto, reúna a galera aqui!",
+    "backHome": "Voltar ao início",
+    "ended": {
+      "left": "Você saiu da sala.",
+      "room_closed": "O anfitrião fechou esta sala.",
+      "not_signed_in": "Sua sessão expirou. Entre de novo.",
+      "room_not_found": "Esta sala não existe ou já foi fechada.",
+      "room_full": "Esta sala está cheia.",
+      "kicked": "O anfitrião removeu você desta sala.",
+      "replaced": "Esta sala está aberta em outra aba ou janela.",
+      "refused": "Você não pode entrar nesta sala."
+    },
+    "openHere": "Usar esta aba"
+  },
+  "profile": {
+    "title": "Perfil",
+    "name": "Nome de exibição",
+    "email": "E-mail",
+    "guestNote": "Você está jogando como convidado. Entre para criar salas e manter seu nome.",
+    "save": "Salvar",
+    "saved": "Salvo!"
+  },
+  "errors": {
+    "not_signed_in": "Entre primeiro.",
+    "account_required": "Você precisa de uma conta para isso. Convidados podem entrar em salas, mas não criar.",
+    "room_not_found": "Não encontramos essa sala. Confira o código.",
+    "too_many_links": "Muitos links pedidos. Espere alguns minutos e tente de novo.",
+    "invalid_or_expired_link": "Este link de acesso expirou ou já foi usado.",
+    "invalid_name": "O nome precisa ter de 1 a 24 caracteres.",
+    "invalid_input": "Confira o que você digitou.",
+    "not_allowed": "Só o anfitrião pode fazer isso.",
+    "network": "Não foi possível falar com o servidor. Verifique sua conexão.",
+    "unknown_error": "Algo deu errado. Tente de novo."
+  }
+}
