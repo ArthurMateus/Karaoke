@@ -49,6 +49,30 @@ services:
       storage-init:
         condition: service_completed_successfully
 
+  # Converts uploaded songs in the background (separate vocals, transcribe
+  # lyrics, find the melody). CPU by default; see docker-compose.gpu.yml.
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    environment:
+      <<: *api-env
+      # Downloaded ML models are kept here, so they download only once.
+      HF_HOME: /models/huggingface
+      TORCH_HOME: /models/torch
+    volumes:
+      - ./backend:/app
+      - ./config:/config:ro
+      - ml_models:/models
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      storage-init:
+        condition: service_completed_successfully
+
   web:
     build: ./frontend
     environment:
@@ -113,3 +137,4 @@ volumes:
   storage_data:
   caddy_data:
   web_node_modules:
+  ml_models:

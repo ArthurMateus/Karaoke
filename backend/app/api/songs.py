@@ -12,6 +12,7 @@ from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel
 
 from app.charts import editor, ultrastar
+from app.charts.languages import language_code
 from app.charts.model import ChartError, validate
 from app.db import utcnow
 from app.deps import CurrentAccount, Db, OptionalUser, api_error
@@ -206,7 +207,7 @@ def import_song(
             source="import",
             title=_clean(parsed.title, "Untitled"),
             artist=_clean(parsed.artist, "Unknown"),
-            language=parsed.headers.get("LANGUAGE", "")[:10],
+            language=language_code(parsed.headers.get("LANGUAGE", "")),
             duration_seconds=info.duration_seconds,
             is_duet=parsed.is_duet,
             chart_txt=ultrastar.write(parsed),

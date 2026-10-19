@@ -1,0 +1,19 @@
+# Use an NVIDIA graphics card for song conversion (much faster than CPU).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
+#
+# Needs: an NVIDIA card with a recent driver on Windows, and Docker Desktop
+# using the WSL 2 engine (GPU support is built in). See the README.
+services:
+  worker:
+    build:
+      args:
+        # CUDA 12.8 build of PyTorch (supports RTX 50-series and older cards).
+        TORCH_INDEX: https://download.pytorch.org/whl/cu128
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

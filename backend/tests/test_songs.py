@@ -270,7 +270,7 @@ def test_import_ultrastar_chart(owner, audio_files, jobs, db):
     )
     assert response.status_code == 201
     song = response.json()
-    assert (song["title"], song["artist"], song["language"], song["source"]) == ("Oh Susanna", "Stephen Foster", "English", "import")
+    assert (song["title"], song["artist"], song["language"], song["source"]) == ("Oh Susanna", "Stephen Foster", "en", "import")
     assert jobs == [("import", song["id"])]
     # Imports don't use up conversions.
     assert owner.get("/api/songs").json()["conversions_left"] == 3

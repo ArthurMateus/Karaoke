@@ -9,6 +9,8 @@ RUN apt-get update \
 
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
+# On GPUs, faster-whisper needs the cuDNN/cuBLAS libraries that come with PyTorch.
+ENV LD_LIBRARY_PATH=/usr/local/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/lib/python3.12/site-packages/nvidia/cublas/lib
 
 # CPU build by default. docker-compose.gpu.yml switches this to the CUDA 12.8
 # build (needed for RTX 50-series cards).
@@ -20,4 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt -r requirements-ml.txt
 
 COPY . .
 
-CMD ["rq", "worker", "--url", "redis://redis:6379/0", "songs"]
+# First make any missing starter songs, then wait for jobs. SimpleWorker runs
+# jobs in this same process, so ML models stay loaded between songs.
+CMD ["sh", "-c", "python -m app.starter.seed && exec rq worker --worker-class rq.worker.SimpleWorker --url redis://redis:6379/0 songs"]
