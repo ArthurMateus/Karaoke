@@ -61,6 +61,9 @@ def jobs(monkeypatch):
     queued: list[tuple[str, str]] = []
     monkeypatch.setattr(queue, "enqueue_conversion", lambda song_id: queued.append(("convert", str(song_id))))
     monkeypatch.setattr(queue, "enqueue_import", lambda song_id: queued.append(("import", str(song_id))))
+    monkeypatch.setattr(
+        queue, "enqueue_mix", lambda pid, delay_seconds=0: queued.append(("mix", str(pid), delay_seconds))
+    )
     return queued
 
 

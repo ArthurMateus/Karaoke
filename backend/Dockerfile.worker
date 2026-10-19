@@ -24,4 +24,5 @@ COPY . .
 
 # First make any missing starter songs, then wait for jobs. SimpleWorker runs
 # jobs in this same process, so ML models stay loaded between songs.
-CMD ["sh", "-c", "python -m app.starter.seed && exec rq worker --worker-class rq.worker.SimpleWorker --url redis://redis:6379/0 songs"]
+# --with-scheduler runs delayed jobs (the group replay mixed after a song).
+CMD ["sh", "-c", "python -m app.starter.seed && exec rq worker --with-scheduler --worker-class rq.worker.SimpleWorker --url redis://redis:6379/0 songs"]
