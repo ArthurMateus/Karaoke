@@ -71,6 +71,18 @@ a {
   align-items: center;
   gap: 10px;
   min-width: 0;
+  white-space: nowrap;
+}
+.header-nav .lang-select {
+  flex-shrink: 0;
+}
+@media (max-width: 420px) {
+  .logo span {
+    display: none; /* just the mic icon on phones */
+  }
+  .chip {
+    max-width: 110px;
+  }
 }
 .page {
   max-width: 960px;
