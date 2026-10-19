@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { useMe, useSignOut } from '../api/hooks'
+import { BrandMark } from './Brand'
 import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Header() {
@@ -13,7 +14,7 @@ export default function Header() {
   return (
     <header className="header">
       <Link to="/" className="logo">
-        🎤 <span>{t('app.name')}</span>
+        <BrandMark /> <span>{t('app.name')}</span>
       </Link>
       <nav className="header-nav">
         <Link to="/songs">{t('nav.songs')}</Link>

@@ -6,7 +6,7 @@ export default function QrCode({ text, label }: { text: string; label: string })
 
   useEffect(() => {
     let cancelled = false
-    QRCode.toDataURL(text, { margin: 1, width: 240, color: { dark: '#16102b', light: '#ffffff' } })
+    QRCode.toDataURL(text, { margin: 1, width: 240, color: { dark: '#15131a', light: '#ffffff' } })
       .then((url) => !cancelled && setSrc(url))
       .catch(() => !cancelled && setSrc(null))
     return () => {

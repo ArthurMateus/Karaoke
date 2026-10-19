@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Karaoke Party",
-    "tagline": "Sing together from any phone or laptop."
+    "tagline": "Everyone sings on their own phone, and the scores show up live."
   },
   "nav": {
     "signIn": "Sign in",
@@ -18,7 +18,10 @@
     "codeLabel": "Room code",
     "codePlaceholder": "ABC 234",
     "join": "Join",
-    "invalidCode": "Room codes have 6 letters and numbers."
+    "invalidCode": "Room codes have 6 letters and numbers.",
+    "headline": "Sing <em>together</em>, from any phone.",
+    "hostTitle": "Host a party",
+    "hostText": "Create a room, then share the code or QR. Friends join without an account."
   },
   "signIn": {
     "title": "Sign in",

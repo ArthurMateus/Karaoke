@@ -250,7 +250,7 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
         </div>
       </details>
 
-      <div className="card wide player">
+      <div className="card wide audio-bar">
         <audio
           ref={audio}
           src={`/api/songs/${song.id}/audio/${track}`}

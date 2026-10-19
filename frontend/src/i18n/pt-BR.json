@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Karaoke Party",
-    "tagline": "Cante junto com a galera, de qualquer celular ou computador."
+    "tagline": "Cada um canta no próprio celular, e a pontuação aparece ao vivo."
   },
   "nav": {
     "signIn": "Entrar",
@@ -18,7 +18,10 @@
     "codeLabel": "Código da sala",
     "codePlaceholder": "ABC 234",
     "join": "Entrar",
-    "invalidCode": "O código da sala tem 6 letras e números."
+    "invalidCode": "O código da sala tem 6 letras e números.",
+    "headline": "Cante <em>junto</em>, de qualquer celular.",
+    "hostTitle": "Faça uma festa",
+    "hostText": "Crie uma sala e compartilhe o código ou o QR. Os amigos entram sem conta."
   },
   "signIn": {
     "title": "Entrar",

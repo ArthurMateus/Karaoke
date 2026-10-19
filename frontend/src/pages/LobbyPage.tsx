@@ -5,6 +5,7 @@ import { useMe, useRoomInfo } from '../api/hooks'
 import type { User } from '../api/types'
 import ErrorText from '../components/ErrorText'
 import QrCode from '../components/QrCode'
+import { playerColor } from '../lib/colors'
 import { formatCode, normalizeCode } from '../lib/roomCode'
 import type { LobbyPlayer } from '../room/protocol'
 import { useRoomSocket } from '../room/useRoomSocket'
@@ -51,7 +52,7 @@ function Lobby({ code, user }: { code: string; user: User }) {
   return (
     <div className="lobby">
       <section className="card invite">
-        <p className="muted small">{t('lobby.code')}</p>
+        <p className="eyebrow">{t('lobby.code')}</p>
         <p className="room-code">{formatCode(code)}</p>
         <QrCode text={joinUrl} label={t('lobby.scanToJoin')} />
         <p className="muted small">{t('lobby.scanToJoin')}</p>
@@ -64,10 +65,11 @@ function Lobby({ code, user }: { code: string; user: User }) {
         )}
         <h2>{t('lobby.players', { count: players.length, capacity: room?.capacity ?? '–' })}</h2>
         <ul className="players">
-          {players.map((p) => (
+          {players.map((p, index) => (
             <PlayerRow
               key={p.id}
               player={p}
+              color={playerColor(index)}
               isMe={p.id === user.id}
               canKick={iAmHost && p.id !== user.id}
               onKick={() => {
@@ -107,12 +109,12 @@ function Lobby({ code, user }: { code: string; user: User }) {
   )
 }
 
-function PlayerRow(props: { player: LobbyPlayer; isMe: boolean; canKick: boolean; onKick: () => void }) {
+function PlayerRow(props: { player: LobbyPlayer; color: string; isMe: boolean; canKick: boolean; onKick: () => void }) {
   const { t } = useTranslation()
   const { player } = props
   return (
     <li className={`player ${player.connected ? '' : 'away'}`}>
-      <span className="avatar" aria-hidden>
+      <span className="avatar" style={{ background: props.color }} aria-hidden>
         {player.name.slice(0, 1).toUpperCase()}
       </span>
       <span className="player-name">
