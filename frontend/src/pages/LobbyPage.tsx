@@ -9,7 +9,7 @@ import QrCode from '../components/QrCode'
 import { playerColor } from '../lib/colors'
 import { formatCode, normalizeCode } from '../lib/roomCode'
 import { savedLatency } from '../audio/calibration'
-import type { AudioEngine } from '../audio/engine'
+import { AudioEngine } from '../audio/engine'
 import { useClockSync } from '../game/useClockSync'
 import { useSongAssets } from '../game/useSongAssets'
 import ReadyPanel from '../room/ReadyPanel'
@@ -42,8 +42,12 @@ function Lobby({ code, user }: { code: string; user: User }) {
 
   const [engine, setEngine] = useState<AudioEngine | null>(null)
   useEffect(() => () => engine?.close(), [engine])
+  // Sound only (no mic), for someone who listens to Spotlight from afar without singing.
+  const [speaker, setSpeaker] = useState<AudioEngine | null>(null)
+  useEffect(() => () => speaker?.close(), [speaker])
+  const player = engine ?? speaker
   const [latency, setLatency] = useState<number | null>(savedLatency)
-  const assets = useSongAssets(code, state.room?.song ?? null, engine)
+  const assets = useSongAssets(code, state.room?.song ?? null, player)
   // Upload status of my recording, per performance.
   const [upload, setUpload] = useState<{ id: string; state: UploadState } | null>(null)
   const onUpload = useCallback((id: string, pending: Promise<void>) => {
@@ -64,6 +68,7 @@ function Lobby({ code, user }: { code: string; user: User }) {
   // While a stage screen plays the music, phones stay quiet unless switched on (e.g. for headphones).
   const [musicPref, setMusicPref] = useState(() => readMusicPref())
   const musicHere = !room?.stage_connected || musicPref
+  const [fromAfar, setFromAfar] = useState(() => readPref(AFAR_KEY))
 
   if (state.status === 'ended') {
     return (
@@ -87,6 +92,8 @@ function Lobby({ code, user }: { code: string; user: User }) {
         room={room}
         me={user.id}
         engine={engine}
+        player={player}
+        onNeedPlayer={() => void AudioEngine.createPlayback().then(setSpeaker)}
         clock={clock}
         chart={assets.chart}
         buffer={assets.buffer}
@@ -95,6 +102,11 @@ function Lobby({ code, user }: { code: string; user: User }) {
         subscribe={subscribe}
         onUpload={onUpload}
         musicHere={musicHere}
+        fromAfar={fromAfar}
+        onFromAfar={(on) => {
+          setFromAfar(on)
+          writePref(AFAR_KEY, on)
+        }}
         onMusicHere={(on) => {
           setMusicPref(on)
           writeMusicPref(on)
@@ -289,18 +301,23 @@ function CopyLink({ url }: { url: string }) {
 }
 
 const MUSIC_KEY = 'kp_music_on_phone'
+const AFAR_KEY = 'kp_listen_from_afar'
 
-function readMusicPref(): boolean {
+const readMusicPref = () => readPref(MUSIC_KEY)
+const writeMusicPref = (on: boolean) => writePref(MUSIC_KEY, on)
+
+/** On/off choices remembered on this device. */
+function readPref(key: string): boolean {
   try {
-    return localStorage.getItem(MUSIC_KEY) === '1'
+    return localStorage.getItem(key) === '1'
   } catch {
     return false
   }
 }
 
-function writeMusicPref(on: boolean) {
+function writePref(key: string, on: boolean) {
   try {
-    localStorage.setItem(MUSIC_KEY, on ? '1' : '0')
+    localStorage.setItem(key, on ? '1' : '0')
   } catch {
     // private mode: just for now
   }

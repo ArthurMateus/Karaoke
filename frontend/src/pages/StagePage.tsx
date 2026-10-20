@@ -16,6 +16,7 @@ import NoteLane from '../room/NoteLane'
 import type { LobbyRoom, ServerMessage } from '../room/protocol'
 import { ReactionLayer } from '../room/Reactions'
 import { useRoomSocket } from '../room/useRoomSocket'
+import { useListenVoice } from '../voice/liveVoice'
 
 /**
  * The stage screen: a TV or laptop in the party room. It plays the music and shows
@@ -34,6 +35,11 @@ export default function StagePage() {
   useEffect(() => () => engine?.close(), [engine])
   const room = state.room
   const assets = useSongAssets(code, room?.song ?? null, engine, token)
+  // The singer's live voice on the stage's speakers. Off by default: in the same room it
+  // arrives a little late and the singer's mic can pick it up again.
+  const [voiceOn, setVoiceOn] = useState(() => readVoicePref())
+  const singingNow = room?.mode === 'spotlight' && (room.phase === 'countdown' || room.phase === 'playing')
+  const voice = useListenVoice(code, voiceOn && singingNow && !!engine, token)
 
   if (state.status === 'ended') {
     return (
@@ -66,6 +72,14 @@ export default function StagePage() {
           subscribe={subscribe} nameOf={nameOf} />
       ) : (
         <StageLobby room={room} code={code} subscribe={subscribe} nameOf={nameOf} />
+      )}
+      {room.mode === 'spotlight' && engine && (
+        <button type="button" className="stage-voice-switch" onClick={() => {
+          setVoiceOn(!voiceOn)
+          writeVoicePref(!voiceOn)
+        }}>
+          {voiceOn ? t('voice.stageOn', { count: voice.voices }) : t('voice.stageOff')}
+        </button>
       )}
       {state.status !== 'open' && <p className="stage-banner">{t('lobby.reconnecting')}</p>}
     </div>
@@ -280,4 +294,22 @@ function StageLyrics({ timeline, songTime }: { timeline: Timeline; songTime: () 
       <p className="lyric-next">{next?.text ?? ''}</p>
     </div>
   )
+}
+
+const VOICE_KEY = 'kp_stage_voice'
+
+function readVoicePref(): boolean {
+  try {
+    return localStorage.getItem(VOICE_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function writeVoicePref(on: boolean) {
+  try {
+    localStorage.setItem(VOICE_KEY, on ? '1' : '0')
+  } catch {
+    // private mode: just for now
+  }
 }

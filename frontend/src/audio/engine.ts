@@ -105,6 +105,11 @@ export class AudioEngine {
     mute.connect(this.ctx.destination)
   }
 
+  /** The voice being analysed (the mic, or the robot): what Spotlight streams to listeners. */
+  get voiceStream(): MediaStream | null {
+    return this.input
+  }
+
   onFrame(listener: FrameListener): () => void {
     this.listeners.add(listener)
     return () => this.listeners.delete(listener)

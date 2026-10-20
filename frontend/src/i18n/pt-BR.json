@@ -442,5 +442,15 @@
     "connected": "Uma tela do palco está tocando a música, então os celulares ficam em silêncio.",
     "musicHereOn": "🔊 Música neste celular: ligada (toque para desligar)",
     "musicHereOff": "🔇 Música neste celular: desligada, o palco toca (toque para fones)"
+  },
+  "voice": {
+    "afarOff": "🎧 Não está na sala? Ouça de longe",
+    "afarOn_one": "🎧 Ouvindo de longe: {{count}} voz, música {{delay}} s depois para acompanhar. Toque para parar",
+    "afarOn_other": "🎧 Ouvindo de longe: {{count}} vozes, música {{delay}} s depois para acompanhar. Toque para parar",
+    "failed": "A voz ao vivo não está funcionando (confira a rede).",
+    "live": "🎙 Sua voz está ao vivo",
+    "stageOff": "🔈 Voz de quem canta nestas caixas: desligada",
+    "stageOn_one": "🔊 Voz de quem canta nestas caixas: ligada ({{count}}). Desligue se der eco",
+    "stageOn_other": "🔊 Vozes de quem canta nestas caixas: ligadas ({{count}}). Desligue se der eco"
   }
 }

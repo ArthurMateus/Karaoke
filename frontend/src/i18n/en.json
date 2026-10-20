@@ -442,5 +442,15 @@
     "connected": "A stage screen is playing the music, so phones stay quiet.",
     "musicHereOn": "🔊 Music on this phone: on (tap to turn off)",
     "musicHereOff": "🔇 Music on this phone: off, the stage plays it (tap for headphones)"
+  },
+  "voice": {
+    "afarOff": "🎧 Not in the room? Listen from afar",
+    "afarOn_one": "🎧 Listening from afar: {{count}} voice, music {{delay}} s later to match. Tap to stop",
+    "afarOn_other": "🎧 Listening from afar: {{count}} voices, music {{delay}} s later to match. Tap to stop",
+    "failed": "The live voice isn't working (check the network).",
+    "live": "🎙 Your voice is live",
+    "stageOff": "🔈 Singer's voice on these speakers: off",
+    "stageOn_one": "🔊 Singer's voice on these speakers: on ({{count}}). Off if it echoes",
+    "stageOn_other": "🔊 Singers' voices on these speakers: on ({{count}}). Off if it echoes"
   }
 }

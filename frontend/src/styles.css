@@ -1385,3 +1385,27 @@ details.picker[open] > summary {
     grid-template-columns: 1fr;
   }
 }
+
+/* Live voice switches */
+.sing-switches {
+  gap: 12px;
+}
+.voice-live {
+  color: var(--coral);
+  font-weight: 600;
+}
+.stage-voice-switch {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 5;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--stage-line);
+  background: var(--stage-2);
+  color: var(--stage-text);
+  cursor: pointer;
+  opacity: 0.85;
+}

@@ -11,11 +11,14 @@ import NoteLane, { type TrailPoint } from './NoteLane'
 import type { ClientMessage, LobbyRoom, ServerMessage } from './protocol'
 import { ReactionBar, ReactionLayer } from './Reactions'
 import Scoreboard from './Scoreboard'
+import { useListenVoice, usePublishVoice } from '../voice/liveVoice'
 
 interface Props {
   room: LobbyRoom
   me: string
-  engine: AudioEngine | null
+  engine: AudioEngine | null // the microphone (null until it is turned on)
+  player: AudioEngine | null // plays the music: the mic's engine, or a sound-only one for listeners
+  onNeedPlayer: () => void // start a sound-only engine (from a tap)
   clock: ClockSync
   chart: EditorChart | undefined
   buffer: AudioBuffer | null
@@ -25,6 +28,8 @@ interface Props {
   onUpload: (performanceId: string, upload: Promise<void>) => void
   musicHere: boolean // play the backing track on this phone (off while a stage screen plays it)
   onMusicHere: (on: boolean) => void
+  fromAfar: boolean // Spotlight audience elsewhere: hear the singer live, music delayed to match
+  onFromAfar: (on: boolean) => void
 }
 
 interface View {
@@ -36,14 +41,23 @@ interface View {
 
 const TRAIL_SECONDS = 2
 
-export default function SingView({ room, me, engine, clock, chart, buffer, latencyMs, send, subscribe, onUpload, musicHere, onMusicHere }: Props) {
+export default function SingView(props: Props) {
+  const { room, me, engine, player, onNeedPlayer, clock, chart, buffer, latencyMs, send, subscribe, onUpload, musicHere, onMusicHere, fromAfar, onFromAfar } = props
   const { t } = useTranslation()
   const part = room.parts[me]
   const singing = !!part && !!engine
   const performanceId = room.performance_id
+  const spotlight = room.mode === 'spotlight'
   const timeline = useMemo(() => (chart ? buildTimeline(chart, part ?? 'P1') : null), [chart, part])
   const startLocal = useMemo(() => clock.toLocal(room.start_at ?? 0), [clock, room.start_at])
-  const songTime = useCallback(() => (wallNow() - startLocal) / 1000, [startLocal])
+
+  // Spotlight live voice: the singer sends their mic; a listener elsewhere hears it,
+  // with their own music (and lane) delayed to match how late the voice arrives.
+  const listening = spotlight && !part && fromAfar
+  const voiceStatus = usePublishVoice(room.code, spotlight && singing ? engine.voiceStream : null)
+  const voice = useListenVoice(room.code, listening)
+  const shownStart = startLocal + (listening ? voice.delayMs : 0)
+  const songTime = useCallback(() => (wallNow() - shownStart) / 1000, [shownStart])
 
   // A fresh scorer and pitch trail for each performance.
   const scorer = useMemo(
@@ -56,9 +70,9 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
 
   // The backing track (everyone hears it, singers and watchers), unless the stage screen plays it.
   useEffect(() => {
-    if (!engine || !buffer || !performanceId || !musicHere) return
-    return engine.playAt(buffer, startLocal)
-  }, [engine, buffer, startLocal, performanceId, musicHere])
+    if (!player || !buffer || !performanceId || !(musicHere || listening)) return
+    return player.playAt(buffer, shownStart)
+  }, [player, buffer, shownStart, performanceId, musicHere, listening])
 
   // Singing: analyse the mic, score, record, and report.
   useEffect(() => {
@@ -136,7 +150,6 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
   const current = timeline?.lines[view.line]
   const next = timeline?.lines[view.line + 1]
   const singers = Object.keys(room.parts)
-  const spotlight = room.mode === 'spotlight'
   const nameOf = useCallback((id: string) => room.players.find((p) => p.id === id)?.name ?? '…', [room.players])
 
   return (
@@ -154,11 +167,23 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
         </div>
         <Scoreboard room={room} singers={singers} me={me} myTotal={singing ? myTotal : null} />
       </div>
-      {room.stage_connected && engine && (
-        <button type="button" className="link-button small music-switch" onClick={() => onMusicHere(!musicHere)}>
-          {musicHere ? t('stage.musicHereOn') : t('stage.musicHereOff')}
-        </button>
-      )}
+      <div className="row wrap sing-switches">
+        {room.stage_connected && engine && !listening && (
+          <button type="button" className="link-button small music-switch" onClick={() => onMusicHere(!musicHere)}>
+            {musicHere ? t('stage.musicHereOn') : t('stage.musicHereOff')}
+          </button>
+        )}
+        {spotlight && !part && (
+          <button type="button" className="link-button small music-switch" onClick={() => {
+            if (!player) onNeedPlayer()
+            onFromAfar(!fromAfar)
+          }}>
+            {fromAfar ? t('voice.afarOn', { count: voice.voices, delay: (voice.delayMs / 1000).toFixed(2) }) : t('voice.afarOff')}
+          </button>
+        )}
+        {listening && voice.failed && <span className="error small">{t('voice.failed')}</span>}
+        {spotlight && part && voiceStatus === 'live' && <span className="small voice-live">{t('voice.live')}</span>}
+      </div>
 
       <div className="stage">
         {timeline && <NoteLane timeline={timeline} songTime={songTime} scorer={scorer} trail={trail} />}
