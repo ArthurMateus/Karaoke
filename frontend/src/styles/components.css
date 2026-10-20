@@ -760,6 +760,10 @@ textarea.input {
   gap: 8px;
   margin-top: 4px;
 }
+/* A long label (Portuguese) wraps the row: then each button takes a full line, not a stray corner. */
+.modal-actions > * {
+  flex: 1 0 auto;
+}
 @media (prefers-reduced-motion: no-preference) {
   .modal[open] {
     animation: pop-in var(--dur) var(--ease-out);
@@ -815,6 +819,12 @@ textarea.input {
   min-height: 34px;
   padding: 5px 10px;
   font-size: 0.875rem;
+}
+/* Thumbs need 44 px on phones, even for the small variant. */
+@media (pointer: coarse), (max-width: 559px) {
+  .segmented.sm button {
+    min-height: 44px;
+  }
 }
 
 /* ---------- Progress, stats, copy field, countdown ---------- */

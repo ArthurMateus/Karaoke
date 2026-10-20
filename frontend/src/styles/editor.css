@@ -192,6 +192,10 @@ details.editor-details > .form-grid {
   .audio-bar .seek {
     order: 3;
     flex-basis: 100%;
+    min-height: 44px;
+  }
+  .track-pick .input {
+    min-height: 44px;
   }
   .track-pick {
     margin-left: auto;

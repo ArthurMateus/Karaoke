@@ -139,7 +139,7 @@ function NextSong({ at }: { at: string }) {
   return (
     <div className="daily-next">
       <CountdownRing left={left} total={DAY_MS} size={92}>
-        <span className="daily-next-time">{time}</span>
+        <span className="daily-next-time" aria-hidden>{time}</span>
       </CountdownRing>
       <span className="daily-next-label">
         {t('daily.nextLabel')}
