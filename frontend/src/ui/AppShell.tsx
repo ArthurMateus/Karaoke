@@ -168,7 +168,7 @@ function ProfileMenu({ user }: { user: User }) {
 function Footer() {
   const { t } = useTranslation()
   const config = useSiteConfig().data
-  const name = config?.operator_name || t('footer.notSet')
+  const name = config?.operator_name
   const email = config?.contact_email
   return (
     <footer className="footer">
@@ -187,7 +187,7 @@ function Footer() {
           <Link to="/credits">{t('footer.credits')}</Link>
         </nav>
         <p className="footer-operator">
-          <span>{t('footer.runBy', { name })}</span>
+          <span>{name ? t('footer.runBy', { name }) : t('footer.operatorUnset')}</span>
           <span>
             {email ? (
               <>

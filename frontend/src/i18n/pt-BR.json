@@ -785,7 +785,8 @@
     "contact": "Contato: {{email}}",
     "notSet": "ainda não definido",
     "beta": "Beta",
-    "betaNote": "Uma versão de teste fechada: as coisas podem mudar, quebrar ou ser apagadas."
+    "betaNote": "Uma versão de teste fechada: as coisas podem mudar, quebrar ou ser apagadas.",
+    "operatorUnset": "Mantido por: ainda não definido"
   },
   "legal": {
     "onThisPage": "Nesta página",

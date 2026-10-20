@@ -6,7 +6,7 @@ Privacy Policy for the beta, version 1, 20 October 2026.
 
 ## Who is responsible
 
-{{operator}}, an individual in {{city}}, Brazil, is the controller of your personal data under the LGPD (Lei 13.709/2018). Contact for privacy requests: {{contact}}. As a small processing agent (ANPD Resolution 2/2022) we haven't named a data protection officer (encarregado); write to the contact above instead.
+The controller of your personal data under the LGPD (Lei 13.709/2018) is {{operator}}, an individual ({{city}}, Brazil). Contact for privacy requests: {{contact}}. As a small processing agent (ANPD Resolution 2/2022) we haven't named a data protection officer (encarregado); write to the contact above instead.
 
 ## The beta
 

@@ -785,7 +785,8 @@
     "contact": "Contact: {{email}}",
     "notSet": "not set yet",
     "beta": "Beta",
-    "betaNote": "A private test version: things may change, break or be reset."
+    "betaNote": "A private test version: things may change, break or be reset.",
+    "operatorUnset": "Run by: not set yet"
   },
   "legal": {
     "onThisPage": "On this page",

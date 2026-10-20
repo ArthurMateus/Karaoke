@@ -6,7 +6,7 @@ Política de Privacidade do beta, versão 1, 20 de outubro de 2026.
 
 ## Quem é o responsável
 
-{{operator}}, pessoa física em {{city}}, Brasil, é o controlador dos seus dados pessoais pela LGPD (Lei 13.709/2018). Contato para pedidos de privacidade: {{contact}}. Como agente de tratamento de pequeno porte (Resolução ANPD 2/2022), não indicamos um encarregado; escreva para o contato acima.
+O controlador dos seus dados pessoais pela LGPD (Lei 13.709/2018) é {{operator}}, pessoa física ({{city}}, Brasil). Contato para pedidos de privacidade: {{contact}}. Como agente de tratamento de pequeno porte (Resolução ANPD 2/2022), não indicamos um encarregado; escreva para o contato acima.
 
 ## O beta
 

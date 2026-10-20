@@ -6,7 +6,7 @@ Termos do beta, versão 1, 20 de outubro de 2026.
 
 ## 1. Quem mantém o Encore
 
-O beta do Encore é mantido por {{operator}}, pessoa física, em {{city}}, Brasil ("nós"). Contato para qualquer assunto (dúvidas, privacidade, denúncias e pedidos de exclusão): {{contact}}.
+O beta do Encore é mantido por {{operator}}, pessoa física ({{city}}, Brasil) ("nós"). Contato para qualquer assunto (dúvidas, privacidade, denúncias e pedidos de exclusão): {{contact}}.
 
 Ao usar o Encore você aceita estes termos e confirma que leu a [Política de Privacidade](./privacy). Se não concordar, não use o app.
 

@@ -6,7 +6,7 @@ Beta terms, version 1, 20 October 2026.
 
 ## 1. Who runs Encore
 
-The Encore beta is run by {{operator}}, an individual, in {{city}}, Brazil ("we"). Contact for anything (questions, privacy, reports and deletion requests): {{contact}}.
+The Encore beta is run by {{operator}}, an individual ({{city}}, Brazil) ("we"). Contact for anything (questions, privacy, reports and deletion requests): {{contact}}.
 
 By using Encore you agree to these terms and confirm you have read the [Privacy Policy](./privacy). If you don't agree, please don't use the app.
 
