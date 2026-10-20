@@ -1,7 +1,8 @@
 """Turn sung words (with timestamps) and a pitch curve into karaoke notes.
 
 Inputs come from the ML steps: WhisperX gives each word's start/end time,
-CREPE gives the singer's pitch every 10 ms with a confidence value. This
+CREPE gives the singer's pitch every 10 ms with a confidence value, plus how
+loud the separated voice is. This
 module only uses numpy, so it can be tested without the ML libraries.
 """
 
@@ -28,10 +29,33 @@ class PitchTrack:
     times: np.ndarray  # seconds, evenly spaced
     hz: np.ndarray  # detected frequency
     confidence: np.ndarray  # 0..1, how sure the detector is that someone sings
+    level: np.ndarray | None = None  # loudness of the voice, dBFS
 
     def midi(self) -> np.ndarray:
         with np.errstate(divide="ignore", invalid="ignore"):
             return 69 + 12 * np.log2(self.hz / 440.0)
+
+    def loud(self) -> np.ndarray:
+        """True where the voice is clearly there, pitched or not (screams, shouts, rap)."""
+        if self.level is None:
+            return np.zeros(len(self.times), dtype=bool)
+        audible = self.level[self.level > -80]
+        if len(audible) == 0:
+            return np.zeros(len(self.times), dtype=bool)
+        # Relative to this singer's loud parts, so quiet recordings work too.
+        threshold = max(-45.0, float(np.percentile(audible, 90)) - 18.0)
+        return self.level >= threshold
+
+
+def frame_levels(samples: np.ndarray, hop: int, count: int, window: int = 1024) -> np.ndarray:
+    """Loudness (dBFS) around every `hop`-th sample, for `count` frames."""
+    padded = np.pad(samples.astype(np.float64), window // 2)
+    levels = np.empty(count)
+    for i in range(count):
+        chunk = padded[i * hop : i * hop + window]
+        rms = np.sqrt(np.mean(chunk**2)) if len(chunk) else 0.0
+        levels[i] = 20 * np.log10(max(rms, 1e-6))
+    return levels
 
 
 @dataclass
@@ -39,6 +63,7 @@ class Segment:
     start: float
     end: float
     midi: int | None  # None = no clear pitch (spoken, whispered, noisy)
+    loud: bool = False  # no clear pitch but clearly voiced: a scream or shout, scored as rap
 
 
 def median_filter(values: np.ndarray, size: int) -> np.ndarray:
@@ -55,12 +80,19 @@ def segment_word(
     min_confidence: float = 0.5,
     min_note_seconds: float = 0.1,
     max_notes: int = 4,
+    min_pitched: float = 0.35,
+    loud: np.ndarray | None = None,
 ) -> list[Segment]:
-    """Split one word into notes where the sung pitch moves (melismas)."""
+    """Split one word into notes where the sung pitch moves (melismas).
+
+    `loud` is track.loud(), passed in so it is computed once per song.
+    """
     inside = (track.times >= word.start) & (track.times < word.end)
     voiced = inside & (track.confidence >= min_confidence) & (track.hz > 0)
-    if voiced.sum() < 3:
-        return [Segment(word.start, word.end, None)]
+    if voiced.sum() < 3 or voiced.sum() < min_pitched * inside.sum():
+        # Mostly no clear pitch. Loud = screamed or shouted; quiet = whispered or nothing.
+        is_loud = loud is not None and inside.any() and loud[inside].mean() >= 0.5
+        return [Segment(word.start, word.end, None, loud=bool(is_loud))]
 
     times = track.times[inside]
     midi = track.midi()[inside]
@@ -120,11 +152,26 @@ def group_lines(words: list[Word], pause: float = 0.6, max_words: int = 10, max_
     return lines
 
 
-def build_chart(words: list[Word], track: PitchTrack, title: str, artist: str, language: str = "") -> Chart:
+def build_chart(
+    words: list[Word],
+    track: PitchTrack,
+    title: str,
+    artist: str,
+    language: str = "",
+    lines: list[list[Word]] | None = None,
+) -> Chart:
+    """`lines`: the lyric lines as written (known lyrics). Without them, lines are guessed from pauses."""
+    if lines is not None:
+        lines_in = [[w for w in line if w.text.strip() and w.end > w.start] for line in lines]
+        lines_in = [line for line in lines_in if line]
+        words = [w for line in lines_in for w in line]
     words = [w for w in words if w.text.strip() and w.end > w.start]
     if not words:
         raise ValueError("no words")
     words.sort(key=lambda w: w.start)
+    if lines is None:
+        lines_in = group_lines(words)
+    loud = track.loud()
 
     seconds_per_beat = 60.0 / (CHART_BPM * 4)
     gap = words[0].start
@@ -132,17 +179,18 @@ def build_chart(words: list[Word], track: PitchTrack, title: str, artist: str, l
     def beat(seconds: float) -> int:
         return round((seconds - gap) / seconds_per_beat)
 
-    lines: list[Line] = []
+    chart_lines: list[Line] = []
     last_pitch = 0
     previous_end = 0
-    for line_words in group_lines(words):
+    for line_words in lines_in:
         notes: list[Note] = []
         for word_index, word in enumerate(line_words):
-            for seg_index, seg in enumerate(segment_word(word, track)):
+            for seg_index, seg in enumerate(segment_word(word, track, loud=loud)):
                 start = max(beat(seg.start), previous_end)
                 length = max(1, beat(seg.end) - start)
                 if seg.midi is None:
-                    kind, pitch = "freestyle", last_pitch
+                    # Screams count when you make the sound on time; whispers aren't scored.
+                    kind, pitch = ("rap" if seg.loud else "freestyle"), last_pitch
                 else:
                     kind, pitch = "normal", int(np.clip(seg.midi - 60, -48, 48))
                     last_pitch = pitch
@@ -152,7 +200,9 @@ def build_chart(words: list[Word], track: PitchTrack, title: str, artist: str, l
                     text = "~"  # UltraStar's sign for "same syllable, new note"
                 notes.append(Note(kind, start, length, pitch, text))
                 previous_end = start + length
-        lines.append(Line(notes))
+        chart_lines.append(Line(notes))
 
     headers = {"LANGUAGE": language} if language else {}
-    return Chart(title=title, artist=artist, bpm=CHART_BPM, gap_ms=round(gap * 1000), tracks={"P1": lines}, headers=headers)
+    return Chart(
+        title=title, artist=artist, bpm=CHART_BPM, gap_ms=round(gap * 1000), tracks={"P1": chart_lines}, headers=headers
+    )

@@ -101,3 +101,28 @@ def test_build_chart_never_overlaps_notes():
 def test_build_chart_needs_words():
     with pytest.raises(ValueError):
         build_chart([Word(" ", 0, 1)], track(), "t", "a")
+
+
+def loud_track(*parts: tuple[float, float, float | None], loud: list[tuple[float, float]], total: float = 10.0) -> PitchTrack:
+    t = track(*parts, total=total)
+    level = np.full(len(t.times), -90.0)
+    for a, b in loud:
+        level[(t.times >= a) & (t.times < b)] = -12.0
+    t.level = level
+    return t
+
+
+def test_screamed_word_becomes_a_rap_note():
+    # 1-2 s: loud but no clear pitch (a scream). 3-4 s: sung. 5-6 s: whispered (quiet, unpitched).
+    t = loud_track((3.0, 4.0, 62), loud=[(1.0, 2.0), (3.0, 4.0)])
+    chart = build_chart([Word("aaargh", 1.0, 2.0), Word("sing", 3.0, 4.0), Word("hush", 5.0, 6.0)], t, "T", "A")
+    kinds = [n.kind for line in chart.tracks["P1"] for n in line.notes]
+    assert kinds == ["rap", "normal", "freestyle"]
+
+
+def test_known_lyric_lines_are_kept():
+    t = track((0.5, 3.5, 60))
+    lines = [[Word("one", 0.5, 1.0), Word("two", 1.0, 1.5)], [Word("three", 1.6, 2.0)]]
+    chart = build_chart([], t, "T", "A", lines=lines)
+    assert [len(line.notes) for line in chart.tracks["P1"]] == [2, 1]
+    validate(chart)
