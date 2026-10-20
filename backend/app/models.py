@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import JSON, BigInteger, DateTime, ForeignKey, Index, String, Text, UniqueConstraint, text
+from sqlalchemy import JSON, BigInteger, Date, DateTime, ForeignKey, Index, String, Text, UniqueConstraint, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base, utcnow
@@ -120,12 +120,14 @@ class ConversionUsage(Base):
 
 
 class Performance(Base):
-    """One song sung together in a room: who sang which part, and the group replay."""
+    """One song sung: in a room (together, or a Spotlight turn), or alone (solo, song of the day).
+    Who sang which part, and the replay of their voices over the music."""
 
     __tablename__ = "performances"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    room_code: Mapped[str] = mapped_column(String(6), index=True)
+    kind: Mapped[str] = mapped_column(String(16), default="room", server_default="room")  # room | solo | daily
+    room_code: Mapped[str] = mapped_column(String(6), index=True)  # "" for solo
     host_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     song_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("songs.id", ondelete="SET NULL"))
     song_title: Mapped[str] = mapped_column(String(200))
@@ -161,3 +163,27 @@ class PerformanceTake(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     performance: Mapped[Performance] = relationship(back_populates="takes")
+
+
+class DailySong(Base):
+    """The song of the day. Chosen the first time someone asks, then fixed, so it is the same for everyone."""
+
+    __tablename__ = "daily_songs"
+
+    day: Mapped[date] = mapped_column(Date, primary_key=True)  # UTC
+    song_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("songs.id", ondelete="SET NULL"))
+
+
+class DailyAttempt(Base):
+    """An account's one attempt at a day's song. Made when the song starts, scored when it ends."""
+
+    __tablename__ = "daily_attempts"
+    __table_args__ = (UniqueConstraint("day", "user_id", name="uq_daily_attempt_per_user"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    day: Mapped[date] = mapped_column(Date, index=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    performance_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("performances.id", ondelete="SET NULL"))
+    score: Mapped[int | None]  # None until the song ends (or if the singer left)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
