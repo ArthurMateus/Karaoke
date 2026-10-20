@@ -128,3 +128,17 @@ def test_render_mix_lines_up_the_voice(tmp_path):
     out2 = tmp_path / "replay2.wav"
     render_mix(backing, [(late, -400)], out2)
     assert _click_times(out2)[0] == pytest.approx(1.0, abs=0.02)
+
+
+def test_the_room_audience_may_listen_but_not_upload(client, mailer, setup, db):
+    host, _, pid = setup
+    code = host.post("/api/rooms").json()["code"]
+    performance = db.get(Performance, uuid.UUID(pid))
+    performance.room_code = code
+    db.commit()
+    ana = as_guest(client, "Ana")
+    assert ana.get(f"/api/performances/{pid}").status_code == 404  # not in the room yet
+    with ana.ws(code) as ws:
+        ws.receive_json()  # welcome: Ana is in the room now
+        assert ana.get(f"/api/performances/{pid}").status_code == 200
+        assert upload(ana, pid).status_code == 404

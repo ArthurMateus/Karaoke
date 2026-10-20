@@ -24,6 +24,7 @@ def server_time_ms() -> float:
 class LiveRoom:
     state: RoomState
     sockets: dict[str, WebSocket] = field(default_factory=dict)  # player id -> socket
+    reaction_times: dict[str, list[float]] = field(default_factory=dict)  # player id -> recent reactions
 
 
 async def _send(ws: WebSocket, message: dict) -> None:

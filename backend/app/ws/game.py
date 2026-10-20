@@ -1,4 +1,5 @@
-"""Sing Together: picking a song, the shared start time, live scores, results.
+"""The game in a room: picking songs, the shared start time, live scores, results.
+Sing Together (everyone at once) and Spotlight (turns from a queue, reactions, votes).
 
 How the start works: the host presses Start, the server picks a start time a few
 seconds ahead (in server time), and every phone converts it to its own clock
@@ -6,6 +7,7 @@ seconds ahead (in server time), and every phone converts it to its own clock
 """
 
 import asyncio
+import time
 import uuid
 
 from starlette.concurrency import run_in_threadpool
@@ -17,6 +19,9 @@ from app.services import queue
 from app.services.songs import can_access
 from app.ws import protocol
 from app.ws.room_state import NotAllowed, WrongPhase
+
+REACTIONS_PER_WINDOW = 6  # per person, so a stuck finger can't flood everyone's screen
+REACTION_WINDOW_SECONDS = 3.0
 
 
 # --- database work (runs in a thread) ---------------------------------------------
@@ -112,10 +117,48 @@ async def handle(hub, room, player_id: str, msg, ws) -> bool:
             case protocol.BackToLobby():
                 state.back_to_lobby(player_id)
                 await hub.broadcast_state(room)
+
+            case protocol.SetMode(mode=mode):
+                state.set_mode(player_id, mode)
+                await hub.broadcast_state(room)
+
+            case protocol.QueueAdd(song_id=song_id, partner_id=partner_id):
+                song = await run_in_threadpool(load_room_song, song_id, state.host_id)
+                if song is None:
+                    await hub.send(ws, {"type": "error", "code": "song_not_found"})
+                    return True
+                state.queue_add(player_id, song, partner_id)
+                await hub.broadcast_state(room)
+
+            case protocol.QueueRemove(entry_id=entry_id):
+                state.queue_remove(player_id, entry_id)
+                await hub.broadcast_state(room)
+
+            case protocol.QueueMove(entry_id=entry_id, delta=delta):
+                state.queue_move(player_id, entry_id, delta)
+                await hub.broadcast_state(room)
+
+            case protocol.Reaction(emoji=emoji):
+                if allow_reaction(room, player_id, time.monotonic()):
+                    await hub.broadcast(room, {"type": "reaction", "from": player_id, "emoji": emoji})
+
+            case protocol.Vote(stars=stars):
+                if state.vote(player_id, stars):
+                    await hub.broadcast(room, {"type": "votes", "votes": state.snapshot()["votes"]})
     except NotAllowed:
         await hub.send(ws, {"type": "error", "code": "not_allowed"})
     except WrongPhase as wrong:
         await hub.send(ws, {"type": "error", "code": wrong.code})
+    return True
+
+
+def allow_reaction(room, player_id: str, now: float) -> bool:
+    """At most REACTIONS_PER_WINDOW reactions per person every REACTION_WINDOW_SECONDS."""
+    recent = [t for t in room.reaction_times.get(player_id, []) if now - t < REACTION_WINDOW_SECONDS]
+    if len(recent) >= REACTIONS_PER_WINDOW:
+        room.reaction_times[player_id] = recent
+        return False
+    room.reaction_times[player_id] = [*recent, now]
     return True
 
 

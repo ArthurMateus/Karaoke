@@ -57,9 +57,16 @@ def room_songs(code: str, request: Request, db: Db, user: CurrentUser) -> list[S
     return [song_out(s, user) for s in songs]
 
 
-def _get_performance(db, performance_id: uuid.UUID, user: User) -> Performance:
+def _get_performance(db, performance_id: uuid.UUID, user: User, request: Request | None = None) -> Performance:
+    """Singers and the host may see a performance; with `request`, so may anyone in its room right now
+    (the Spotlight audience listens to the turn's replay)."""
     performance = db.get(Performance, performance_id)
-    if performance is None or (str(user.id) not in performance.singer_ids() and performance.host_id != user.id):
+    if performance is None:
+        raise api_error(404, "performance_not_found")
+    if str(user.id) in performance.singer_ids() or performance.host_id == user.id:
+        return performance
+    live = _live_room(request, performance.room_code) if request is not None else None
+    if live is None or str(user.id) not in live.state.players:
         raise api_error(404, "performance_not_found")
     return performance
 
@@ -84,8 +91,8 @@ def _performance_out(performance: Performance) -> PerformanceOut:
 
 
 @router.get("/performances/{performance_id}")
-def get_performance(performance_id: uuid.UUID, db: Db, user: CurrentUser) -> PerformanceOut:
-    return _performance_out(_get_performance(db, performance_id, user))
+def get_performance(performance_id: uuid.UUID, request: Request, db: Db, user: CurrentUser) -> PerformanceOut:
+    return _performance_out(_get_performance(db, performance_id, user, request))
 
 
 @router.post("/performances/{performance_id}/takes")
@@ -99,7 +106,7 @@ def upload_take(
     mic_latency_ms: Annotated[float, Form(ge=-1000, le=2000)] = 0,
 ) -> PerformanceOut:
     """A singer's voice recording, sent by their phone when the song ends."""
-    performance = _get_performance(db, performance_id, user)
+    performance = _get_performance(db, performance_id, user)  # recordings: singers only, see below
     if str(user.id) not in performance.singer_ids():
         raise api_error(403, "not_allowed")
     if int(request.headers.get("content-length") or 0) > (MAX_RECORDING_MB + 1) * 1024 * 1024:
@@ -135,7 +142,7 @@ def upload_take(
 
 @router.get("/performances/{performance_id}/replay")
 def stream_replay(performance_id: uuid.UUID, request: Request, db: Db, user: CurrentUser):
-    performance = _get_performance(db, performance_id, user)
+    performance = _get_performance(db, performance_id, user, request)
     if performance.replay_status != "ready" or not performance.replay_key:
         raise api_error(409, "replay_not_ready")
     try:

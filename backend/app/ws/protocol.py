@@ -4,6 +4,8 @@ Server -> browser messages are plain dicts with a "type":
   welcome     {you, server_time}
   lobby_state {room: RoomState.snapshot()}
   scores      {scores: {player id: 0..10000}}   (live scoreboard while singing)
+  reaction    {from, emoji}                     (Spotlight: the audience cheering)
+  votes       {votes: {count, average, voters, points}}  (Spotlight: stars coming in)
   pong        {t0, server_time}           (clock sync: the phone measures its offset)
   error       {code}
   kicked / replaced / room_closed         (the socket closes after these)
@@ -63,8 +65,43 @@ class BackToLobby(BaseModel):
     type: Literal["back_to_lobby"]
 
 
+class SetMode(BaseModel):
+    type: Literal["set_mode"]
+    mode: Literal["sing_together", "spotlight"]
+
+
+class QueueAdd(BaseModel):
+    """Spotlight: sign up for a turn. A duet song can name a partner, who sings part 2."""
+
+    type: Literal["queue_add"]
+    song_id: str = Field(max_length=64)
+    partner_id: str | None = Field(default=None, max_length=64)
+
+
+class QueueRemove(BaseModel):
+    type: Literal["queue_remove"]
+    entry_id: str = Field(max_length=32)
+
+
+class QueueMove(BaseModel):
+    type: Literal["queue_move"]
+    entry_id: str = Field(max_length=32)
+    delta: int = Field(ge=-50, le=50)
+
+
+class Reaction(BaseModel):
+    type: Literal["reaction"]
+    emoji: Literal["clap", "fire", "laugh", "heart", "wow"]
+
+
+class Vote(BaseModel):
+    type: Literal["vote"]
+    stars: int = Field(ge=1, le=5)
+
+
 ClientMessage = Annotated[
-    Ping | SetReady | Kick | Leave | CloseRoom | SelectSong | Start | Score | Finished | BackToLobby,
+    Ping | SetReady | Kick | Leave | CloseRoom | SelectSong | Start | Score | Finished | BackToLobby
+    | SetMode | QueueAdd | QueueRemove | QueueMove | Reaction | Vote,
     Field(discriminator="type"),
 ]
 client_message = TypeAdapter(ClientMessage)
