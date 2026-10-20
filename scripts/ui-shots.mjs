@@ -184,7 +184,7 @@ const ctx = {}
 step('signed-out pages', async () => {
   const p = (ctx.anon = await newPage())
   await p.goto(`${HOST}/`)
-  await p.waitFor(`__has('Join a room')`)
+  await p.waitFor(`__has('Join with a code')`)
   await p.shot('p2', 'home-signed-out')
   await p.goto(`${HOST}/sign-in`)
   await p.shot('p6', 'sign-in')

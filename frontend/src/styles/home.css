@@ -263,6 +263,16 @@
   margin: 0;
   min-width: 0;
 }
+/* A long badge ("Premium or Party Pass") goes under the title instead of squeezing it. */
+.home-tile .card-head {
+  flex-wrap: wrap;
+}
+.home-tile .card-titles {
+  min-width: max-content;
+}
+.home-tile .card-actions {
+  margin-left: 0;
+}
 /* Buttons sit at the bottom, so tiles in a row line up. */
 .home-tile-action {
   margin-top: auto;
