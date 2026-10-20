@@ -1,35 +1,4 @@
 /* ---------- Spotlight ---------- */
-.queue {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.queue-entry {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-control);
-}
-.queue-entry.next {
-  border-color: var(--violet);
-  background: var(--violet-soft);
-}
-.queue-place {
-  font-family: var(--f-display);
-  font-weight: 800;
-  font-size: 0.8rem;
-  min-width: 2.6em;
-  text-align: center;
-}
-.queue-entry .pick-main {
-  flex: 1;
-  min-width: 0;
-}
 .row.tight {
   gap: 6px;
 }

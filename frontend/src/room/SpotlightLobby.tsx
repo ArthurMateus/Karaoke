@@ -1,10 +1,13 @@
+import { ChevronDown, ChevronUp, GripVertical, ListMusic, Mic, Plus, Trophy, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Song } from '../api/types'
 import { playerColor } from '../lib/colors'
 import { formatScore } from '../lib/format'
+import { Avatar, AvatarStack, Badge, Button, Card, EmptyState, IconButton, SongCover, cx } from '../ui'
 import type { ClientMessage, LobbyRoom, Standing } from './protocol'
 import SongPicker from './SongPicker'
+import { nextTurnBlockers } from './turns'
 
 interface Props {
   room: LobbyRoom
@@ -17,48 +20,55 @@ export default function SpotlightLobby({ room, me, send }: Props) {
   const { t } = useTranslation()
   const isHost = room.host_id === me
   const nameOf = (id: string | null) => room.players.find((p) => p.id === id)?.name ?? '…'
+  const colorOf = (id: string) => playerColor(Math.max(0, room.players.findIndex((p) => p.id === id)))
   const next = room.queue[0]
-  const nextNotReady = next
-    ? [next.singer_id, next.partner_id].filter((id): id is string => !!id).filter((id) => {
-        const player = room.players.find((p) => p.id === id)
-        return !player || !player.connected || !player.ready
-      })
-    : []
+  const nextNotReady = nextTurnBlockers(room)
 
   return (
     <>
-      <section className="card stack">
-        <span className="eyebrow">{t('spotlight.queue')}</span>
+      <Card eyebrow={t('spotlight.queue')} icon={ListMusic} wide
+        actions={room.queue.length > 0 && <Badge tone="neutral">{room.queue.length}</Badge>}>
         {room.queue.length === 0 ? (
-          <p className="muted">{t('spotlight.queueEmpty')}</p>
+          <EmptyState compact text={t('spotlight.queueEmpty')} />
         ) : (
           <ol className="queue">
             {room.queue.map((entry, i) => {
               const mine = entry.singer_id === me || entry.partner_id === me
+              const singers = [entry.singer_id, entry.partner_id].filter((id): id is string => !!id)
+              const who = entry.partner_id ? t('spotlight.duetBy', { a: nameOf(entry.singer_id), b: nameOf(entry.partner_id) }) : nameOf(entry.singer_id)
               return (
-                <li key={entry.id} className={`queue-entry ${i === 0 ? 'next' : ''}`}>
-                  <span className="queue-place">{i === 0 ? t('spotlight.nextUp') : i + 1}</span>
+                <li key={entry.id} className={cx('queue-entry', i === 0 && 'next', mine && 'mine')}>
+                  {isHost && room.queue.length > 1 && <GripVertical size={16} className="queue-grip" aria-hidden />}
+                  <span className="queue-place" aria-hidden>
+                    {i + 1}
+                  </span>
+                  <SongCover song={entry.song} size={48} />
                   <div className="pick-main">
+                    {i === 0 && (
+                      <Badge tone="live" className="queue-next">
+                        {t('spotlight.nextUp')}
+                      </Badge>
+                    )}
                     <strong>{entry.song.title}</strong>
-                    <span className="muted small">
-                      {entry.partner_id
-                        ? t('spotlight.duetBy', { a: nameOf(entry.singer_id), b: nameOf(entry.partner_id) })
-                        : nameOf(entry.singer_id)}
+                    <span className="queue-who small">
+                      <span aria-hidden>
+                        <AvatarStack people={singers.map((id) => ({ id, name: nameOf(id), color: colorOf(id) }))} label={who} />
+                      </span>
+                      <span className="muted">{who}</span>
                     </span>
                   </div>
-                  <span className="row tight">
+                  <span className="queue-actions">
                     {isHost && i > 0 && (
-                      <button className="link-button small" aria-label={t('spotlight.moveUp')}
-                        onClick={() => send({ type: 'queue_move', entry_id: entry.id, delta: -1 })}>↑</button>
+                      <IconButton icon={ChevronUp} size="sm" label={`${t('spotlight.moveUp')}: ${entry.song.title}`}
+                        onClick={() => send({ type: 'queue_move', entry_id: entry.id, delta: -1 })} />
                     )}
                     {isHost && i < room.queue.length - 1 && (
-                      <button className="link-button small" aria-label={t('spotlight.moveDown')}
-                        onClick={() => send({ type: 'queue_move', entry_id: entry.id, delta: 1 })}>↓</button>
+                      <IconButton icon={ChevronDown} size="sm" label={`${t('spotlight.moveDown')}: ${entry.song.title}`}
+                        onClick={() => send({ type: 'queue_move', entry_id: entry.id, delta: 1 })} />
                     )}
                     {(isHost || mine) && (
-                      <button className="link-button danger small" onClick={() => send({ type: 'queue_remove', entry_id: entry.id })}>
-                        {t('spotlight.remove')}
-                      </button>
+                      <IconButton icon={X} size="sm" className="danger" label={`${t('spotlight.remove')}: ${entry.song.title}`}
+                        onClick={() => send({ type: 'queue_remove', entry_id: entry.id })} />
                     )}
                   </span>
                 </li>
@@ -69,9 +79,10 @@ export default function SpotlightLobby({ room, me, send }: Props) {
 
         {isHost ? (
           <>
-            <button className="button primary big" disabled={!next || nextNotReady.length > 0} onClick={() => send({ type: 'start' })}>
+            <Button variant="primary" size="lg" block icon={Mic} className="hide-on-phone" disabled={!next || nextNotReady.length > 0}
+              onClick={() => send({ type: 'start' })}>
               {next ? t('spotlight.startTurn', { name: nameOf(next.singer_id) }) : t('spotlight.startTurnEmpty')}
-            </button>
+            </Button>
             {nextNotReady.length > 0 && (
               <p className="muted small">{t('spotlight.waitingFor', { names: nextNotReady.map(nameOf).join(', ') })}</p>
             )}
@@ -81,7 +92,7 @@ export default function SpotlightLobby({ room, me, send }: Props) {
         )}
 
         <AddTurn room={room} me={me} send={send} />
-      </section>
+      </Card>
 
       {room.standings.length > 0 && <Standings room={room} standings={room.standings} />}
     </>
@@ -105,16 +116,22 @@ function AddTurn({ room, me, send }: Props) {
 
   if (!open) {
     return (
-      <button className="button" onClick={() => setOpen(true)}>
+      <Button icon={Plus} onClick={() => setOpen(true)}>
         {t('spotlight.addTurn')}
-      </button>
+      </Button>
     )
   }
 
   if (song?.is_duet) {
     return (
-      <div className="stack tight">
-        <strong>{song.title}</strong>
+      <div className="add-turn stack tight">
+        <div className="chosen-song">
+          <SongCover song={song} size={48} />
+          <div className="pick-main">
+            <strong>{song.title}</strong>
+            <span className="muted small">{t('spotlight.partnerHelp')}</span>
+          </div>
+        </div>
         <label htmlFor="duet-partner">{t('spotlight.partner')}</label>
         <select id="duet-partner" className="input" value={partner} onChange={(e) => setPartner(e.target.value)}>
           <option value="">{t('spotlight.alone')}</option>
@@ -124,26 +141,25 @@ function AddTurn({ room, me, send }: Props) {
             </option>
           ))}
         </select>
-        <p className="muted small">{t('spotlight.partnerHelp')}</p>
         <div className="row wrap">
-          <button className="button primary" onClick={() => add(song, partner || null)}>
+          <Button variant="primary" icon={Plus} onClick={() => add(song, partner || null)}>
             {t('spotlight.addToQueue')}
-          </button>
-          <button className="link-button small" onClick={() => setSong(null)}>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setSong(null)}>
             {t('spotlight.otherSong')}
-          </button>
+          </Button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="stack tight">
+    <div className="add-turn stack tight">
       <div className="row spread">
         <strong>{t('spotlight.pickYourSong')}</strong>
-        <button className="link-button small" onClick={() => setOpen(false)}>
+        <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
           {t('lyrics.cancel')}
-        </button>
+        </Button>
       </div>
       <SongPicker code={room.code} selectedId={null} isHost={room.host_id === me}
         onPick={(picked) => (picked.is_duet ? setSong(picked) : add(picked, null))} />
@@ -156,17 +172,14 @@ export function Standings({ room, standings }: { room: LobbyRoom; standings: Sta
   const { t, i18n } = useTranslation()
   const order = room.players.map((p) => p.id)
   return (
-    <section className="card stack">
-      <span className="eyebrow">{t('spotlight.standings')}</span>
+    <Card eyebrow={t('spotlight.standings')} icon={Trophy} wide>
       <ol className="ranking">
         {standings.map((row, i) => {
           const name = room.players.find((p) => p.id === row.id)?.name ?? '…'
           return (
-            <li key={row.id} className={`rank ${i === 0 ? 'first' : ''}`}>
-              <span className="rank-place">{i + 1}</span>
-              <span className="avatar" style={{ background: playerColor(order.indexOf(row.id)) }} aria-hidden>
-                {name.slice(0, 1).toUpperCase()}
-              </span>
+            <li key={row.id} className={cx('rank', i === 0 && 'first')}>
+              <span className={cx('rank-place', i < 3 && `medal-${i + 1}`)}>{i + 1}</span>
+              <Avatar name={name} color={playerColor(Math.max(0, order.indexOf(row.id)))} size="sm" decorative />
               <span className="player-name">
                 {name} <span className="muted small">{t('spotlight.turns', { count: row.turns })}</span>
               </span>
@@ -176,6 +189,6 @@ export function Standings({ room, standings }: { room: LobbyRoom; standings: Sta
         })}
       </ol>
       <p className="muted small">{t('spotlight.howPoints')}</p>
-    </section>
+    </Card>
   )
 }

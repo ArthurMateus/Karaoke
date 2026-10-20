@@ -18,19 +18,27 @@
     "createRoom": "Create a room",
     "creating": "Creating…",
     "signInToHost": "Sign in to host a room. Friends can join without an account.",
-    "joinTitle": "Join a room",
-    "codeLabel": "Room code",
     "codePlaceholder": "ABC 234",
     "join": "Join",
     "invalidCode": "Room codes have 6 letters and numbers.",
     "headline": "Sing <em>together</em>, from any phone.",
-    "hostTitle": "Host a party",
-    "hostText": "Create a room, then share the code or QR. Friends join without an account.",
     "soloTitle": "Sing alone",
     "soloText": "Practise any song on your own, beat your best score and listen back to yourself.",
     "solo": "Sing solo",
     "dailyText": "One song for everyone today, one try each. How high can you get?",
-    "daily": "Today's song and leaderboard"
+    "daily": "Today's song and leaderboard",
+    "eyebrow": "Karaoke for parties",
+    "joinWithCode": "Join with a code",
+    "featuresLabel": "Ways to play",
+    "togetherText": "Everyone sings the same song at once, each on their own phone, with live scores.",
+    "spotlightText": "Take turns in the spotlight while the others cheer and vote with stars.",
+    "dailyNext": "New song in {{time}}",
+    "howTitle": "How it works",
+    "howCreate": "Sign in, create a room and pick a song.",
+    "howJoinTitle": "Friends join",
+    "howJoin": "They scan the QR code or type the room code. No account needed.",
+    "howSingTitle": "Everyone sings",
+    "howSing": "Each person sings on their own phone and sees the scores live."
   },
   "signIn": {
     "title": "Sign in",
@@ -89,7 +97,20 @@
       "replaced": "This room is open in another tab or window.",
       "refused": "You can't join this room."
     },
-    "openHere": "Use this tab instead"
+    "openHere": "Use this tab instead",
+    "share": "Share invite",
+    "shareText": "Come sing with me! Room code {{code}}",
+    "linkCopied": "Invite link copied",
+    "copyFailed": "Couldn't copy. Copy the link below by hand.",
+    "planFree": "Free · {{count}} players",
+    "planPremium": "Premium room · {{count}} players",
+    "planParty": "Party Pass until {{time}}",
+    "readyCount_one": "{{count}} ready",
+    "readyCount_other": "{{count}} ready",
+    "kickLabel": "Remove {{name}}",
+    "waitingSlot": "Waiting for friends…",
+    "spotsLeft_one": "{{count}} spot left",
+    "spotsLeft_other": "{{count}} spots left"
   },
   "profile": {
     "title": "Profile",
@@ -299,7 +320,9 @@
       "turningOn": "Turning on…",
       "on": "Microphone on",
       "robot": "Test mode: a robot sings instead of your mic.",
-      "level": "Mic level"
+      "level": "Mic level",
+      "setUp": "Set up my microphone",
+      "recorded": "When there's a replay (solo, song of the day, rooms with group replays), your singing is recorded, and the room can hear group replays."
     },
     "calibrate": {
       "title": "Mic delay check",
@@ -329,7 +352,8 @@
       "loadFailed": "The song couldn't be loaded.",
       "mine": "Your songs",
       "starter": "Starter library",
-      "hosts": "The host's songs"
+      "hosts": "The host's songs",
+      "change": "Change the song"
     },
     "start": {
       "button": "Start the song",
@@ -361,6 +385,12 @@
       "uploadFailed": "Your recording couldn't be sent.",
       "again": "Pick the next song",
       "waitingHost": "Waiting for the host to pick the next song…"
+    },
+    "steps": {
+      "label": "Getting ready",
+      "mic": "Microphone",
+      "check": "Delay check",
+      "ready": "Ready"
     }
   },
   "lyrics": {
@@ -399,7 +429,9 @@
     "sing_together": "Sing Together",
     "spotlight": "Spotlight",
     "sing_togetherHelp": "Everyone who is ready sings the same song at once.",
-    "spotlightHelp": "Spotlight: take turns. Add your own song to the queue; while someone sings, everyone else watches, cheers and votes."
+    "spotlightHelp": "Spotlight: take turns. Add your own song to the queue; while someone sings, everyone else watches, cheers and votes.",
+    "sing_togetherShort": "Everyone sings the same song at once",
+    "spotlightShort": "Take turns while the others cheer and vote"
   },
   "spotlight": {
     "queue": "Queue",
@@ -547,7 +579,8 @@
     "lockedInRoom": "Free rooms: up to 4 players, Sing Together, no group replay. Premium or a Party Pass unlocks 16 players, Spotlight and replays.",
     "startPassHere_one": "Start your Party Pass (24 h)",
     "startPassHere_other": "Start a Party Pass (24 h, {{count}} left)",
-    "getPremium": "Have a code? Redeem it in your profile"
+    "getPremium": "Have a code? Redeem it in your profile",
+    "premiumOrPass": "Premium or Party Pass"
   },
   "admin": {
     "title": "Admin",

@@ -18,19 +18,27 @@
     "createRoom": "Criar uma sala",
     "creating": "Criando…",
     "signInToHost": "Entre para criar uma sala. Seus amigos podem participar sem conta.",
-    "joinTitle": "Entrar em uma sala",
-    "codeLabel": "Código da sala",
     "codePlaceholder": "ABC 234",
     "join": "Entrar",
     "invalidCode": "O código da sala tem 6 letras e números.",
     "headline": "Cante <em>junto</em>, de qualquer celular.",
-    "hostTitle": "Faça uma festa",
-    "hostText": "Crie uma sala e compartilhe o código ou o QR. Os amigos entram sem conta.",
     "soloTitle": "Cantar sozinho",
     "soloText": "Treine qualquer música sozinho, bata seu recorde e ouça como ficou.",
     "solo": "Cantar solo",
     "dailyText": "Uma música para todo mundo hoje, uma tentativa cada. Até onde você chega?",
-    "daily": "Música do dia e ranking"
+    "daily": "Música do dia e ranking",
+    "eyebrow": "Karaokê para festas",
+    "joinWithCode": "Entrar com um código",
+    "featuresLabel": "Jeitos de jogar",
+    "togetherText": "Todo mundo canta a mesma música ao mesmo tempo, cada um no seu celular, com pontuação ao vivo.",
+    "spotlightText": "Cada um na sua vez no holofote, enquanto os outros torcem e votam com estrelas.",
+    "dailyNext": "Nova música em {{time}}",
+    "howTitle": "Como funciona",
+    "howCreate": "Entre na sua conta, crie uma sala e escolha uma música.",
+    "howJoinTitle": "Os amigos entram",
+    "howJoin": "Eles escaneiam o QR code ou digitam o código da sala. Não precisa de conta.",
+    "howSingTitle": "Todo mundo canta",
+    "howSing": "Cada um canta no próprio celular e vê a pontuação ao vivo."
   },
   "signIn": {
     "title": "Entrar",
@@ -89,7 +97,20 @@
       "replaced": "Esta sala está aberta em outra aba ou janela.",
       "refused": "Você não pode entrar nesta sala."
     },
-    "openHere": "Usar esta aba"
+    "openHere": "Usar esta aba",
+    "share": "Compartilhar convite",
+    "shareText": "Vem cantar comigo! Código da sala {{code}}",
+    "linkCopied": "Link de convite copiado",
+    "copyFailed": "Não deu para copiar. Copie o link abaixo à mão.",
+    "planFree": "Grátis · {{count}} jogadores",
+    "planPremium": "Sala premium · {{count}} jogadores",
+    "planParty": "Passe de Festa até {{time}}",
+    "readyCount_one": "{{count}} pronto",
+    "readyCount_other": "{{count}} prontos",
+    "kickLabel": "Remover {{name}}",
+    "waitingSlot": "Esperando os amigos…",
+    "spotsLeft_one": "Falta {{count}} vaga",
+    "spotsLeft_other": "Faltam {{count}} vagas"
   },
   "profile": {
     "title": "Perfil",
@@ -299,7 +320,9 @@
       "turningOn": "Ligando…",
       "on": "Microfone ligado",
       "robot": "Modo de teste: um robô canta no lugar do seu microfone.",
-      "level": "Volume do microfone"
+      "level": "Volume do microfone",
+      "setUp": "Configurar meu microfone",
+      "recorded": "Quando há replay (solo, música do dia, salas com replay em grupo), seu canto é gravado, e quem está na sala pode ouvir o replay em grupo."
     },
     "calibrate": {
       "title": "Teste de atraso do microfone",
@@ -329,7 +352,8 @@
       "loadFailed": "Não foi possível carregar a música.",
       "mine": "Suas músicas",
       "starter": "Biblioteca inicial",
-      "hosts": "Músicas do anfitrião"
+      "hosts": "Músicas do anfitrião",
+      "change": "Trocar a música"
     },
     "start": {
       "button": "Começar a música",
@@ -361,6 +385,12 @@
       "uploadFailed": "Não foi possível enviar sua gravação.",
       "again": "Escolher a próxima música",
       "waitingHost": "Esperando o anfitrião escolher a próxima música…"
+    },
+    "steps": {
+      "label": "Preparação",
+      "mic": "Microfone",
+      "check": "Teste de atraso",
+      "ready": "Pronto"
     }
   },
   "lyrics": {
@@ -399,7 +429,9 @@
     "sing_together": "Todos juntos",
     "spotlight": "Holofote",
     "sing_togetherHelp": "Todo mundo que está pronto canta a mesma música ao mesmo tempo.",
-    "spotlightHelp": "Holofote: cada um na sua vez. Coloque sua música na fila; enquanto alguém canta, o resto assiste, torce e vota."
+    "spotlightHelp": "Holofote: cada um na sua vez. Coloque sua música na fila; enquanto alguém canta, o resto assiste, torce e vota.",
+    "sing_togetherShort": "Todo mundo canta a mesma música junto",
+    "spotlightShort": "Revezem enquanto os outros torcem e votam"
   },
   "spotlight": {
     "queue": "Fila",
@@ -547,7 +579,8 @@
     "lockedInRoom": "Salas grátis: até 4 jogadores, Todos juntos, sem replay do grupo. Premium ou um Passe de Festa libera 16 jogadores, Holofote e replays.",
     "startPassHere_one": "Começar seu Passe de Festa (24 h)",
     "startPassHere_other": "Começar um Passe de Festa (24 h, restam {{count}})",
-    "getPremium": "Tem um código? Resgate no seu perfil"
+    "getPremium": "Tem um código? Resgate no seu perfil",
+    "premiumOrPass": "Premium ou Passe de Festa"
   },
   "admin": {
     "title": "Admin",

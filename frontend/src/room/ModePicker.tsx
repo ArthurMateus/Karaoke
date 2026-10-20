@@ -44,7 +44,7 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
               </span>
               {locked ? (
                 <Badge tone="premium" icon={Lock} className="mode-mark">
-                  {t('plan.names.premium')}
+                  {t('plan.premiumOrPass')}
                 </Badge>
               ) : (
                 on && (
