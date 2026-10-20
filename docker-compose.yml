@@ -68,6 +68,9 @@ services:
       # Downloaded ML models are kept here, so they download only once.
       HF_HOME: /models/huggingface
       TORCH_HOME: /models/torch
+      # Don't send usage pings to Hugging Face / pyannote (privacy review P-7).
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      PYANNOTE_METRICS_ENABLED: "false"
     volumes:
       - ./backend:/app
       - ./config:/config:ro
