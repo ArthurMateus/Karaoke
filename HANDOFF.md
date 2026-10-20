@@ -100,6 +100,33 @@ Finished on 2026-10-20 in `C:/projects/Webt Stuff/karaoke-party` (this folder wa
 
 **The agents** (`.claude/agents/`): `qa-tester` runs all checks and walks the flows in the browser with the robot singer, then writes `docs/qa/QA-REPORT-<date>-*.md` (it doesn't change app code). `legal-reviewer` checks licences, privacy, terms and names, and writes `docs/legal/LEGAL-REVIEW-<date>*.md`. In Claude Code, ask for them by name (for example "run the qa-tester agent on the lobby"). Run one at a time, and don't edit the backend while QA is testing rooms (the api reloads and resets live rooms).
 
+## Private beta: legal blockers (done 2026-10-20)
+
+From `docs/legal/LGPD-REVIEW-2026-10-20-beta.md` and `docs/legal/LEGAL-REVIEW-2026-10-20-beta-terms.md`. The
+production setup (ports, HTTPS, static build, secrets, hosting: LGPD B-1/B-2, terms B-6) is a separate next task.
+- **Invite-only sign-up:** `BETA_ALLOWED_EMAILS` (empty = open, as on this PC). Admins always get in. An uninvited
+  address gets the normal "check your email" answer and an "invite-only" email, never an account. Guests unchanged.
+- **Terms box** at sign-in (`accept_terms`, else 422 `terms_required`); accounts store `terms_version` and
+  `terms_accepted_at`. Raise `TERMS_VERSION` in `backend/app/services/auth.py` when the terms change.
+- **Who runs it:** `OPERATOR_NAME`, `OPERATOR_CITY`, `CONTACT_EMAIL`, `HOSTING_PROVIDER`, `EMAIL_PROVIDER`,
+  `BETA_END_DATE` (see `.env.example`; personal values only in `.env`). Public `GET /api/config` gives them to the
+  footer and to the Terms/Privacy pages (`{{operator}}` etc. in `frontend/src/legal/*.md`, filled by
+  `src/lib/legalFacts.ts`; empty = "not set yet"). `/terms` shows `beta-terms.*.md`; the long launch draft stays in
+  `docs/legal/drafts/terms.*.md`.
+- **Scripts** (dry run unless `--yes`): `app.scripts.cleanup` (retention), `app.scripts.delete_user <email or id>`
+  (deletion requests, within 15 days), `app.scripts.delete_song` (takedowns, `docs/legal/TAKEDOWN.md`).
+- **Docs:** `docs/legal/INCIDENT-PLAN.md`, `RECORD-OF-PROCESSING.md`, `TAKEDOWN.md`.
+- Logs capped (json-file, 5 x 10 MB per service). `noindex` meta and `robots.txt` keep the beta out of search engines.
+
+### Beta admin routine (once a week, on the server)
+1. `docker compose exec api python -m app.scripts.cleanup` (look), then the same with `--yes`.
+2. Clear old logs (they hold IP addresses; the Privacy page says 14 days): when nobody is playing,
+   `docker compose up -d --force-recreate` (new containers start with empty logs; live rooms reset).
+3. Deletion requests by email: `docker compose exec api python -m app.scripts.delete_user friend@example.com`, then
+   with `--yes`; answer within 15 days. Guests have no email: find the id with
+   `docker compose exec postgres psql -U karaoke -c "SELECT id, display_name, created_at FROM users WHERE is_guest;"`.
+4. When the beta ends: delete all beta data within 30 days (or ask each tester first).
+
 ## Next steps
 0. The user picks the final name (see the UI polish step above) before any branding or launch work.
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
@@ -107,6 +134,7 @@ Finished on 2026-10-20 in `C:/projects/Webt Stuff/karaoke-party` (this folder wa
 
 ## Useful commands
 - Backend tests: `docker compose exec api pytest`
+- Beta admin scripts: `docker compose exec api python -m app.scripts.cleanup` / `delete_user <email>` / `delete_song --find <text>` (add `--yes` to delete)
 - Frontend tests: `docker compose exec web npm test` (typecheck: `npx tsc -b`, lint: `npx oxlint`)
 - New migration after a model change: `docker compose exec api alembic revision --autogenerate -m "..."`. Name unique constraints by hand.
 - Worker logs: `docker compose logs -f worker`
