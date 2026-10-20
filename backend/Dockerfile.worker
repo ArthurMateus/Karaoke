@@ -1,5 +1,18 @@
 # The background worker: converts uploaded songs into karaoke charts and
 # renders the starter library. Much bigger than the API image (PyTorch + models).
+
+# Demucs needs "sphn", which has no ready-made package for ARM64 Linux (the online
+# server). There it is built from source here (a few minutes, once). On a normal PC
+# (x86_64) a ready-made package exists and this step does nothing.
+FROM python:3.12-slim AS sphn
+ARG SPHN_VERSION=0.2.1
+RUN mkdir /wheels \
+    && if ! pip download -q --no-deps --only-binary=:all: -d /tmp/probe sphn==${SPHN_VERSION}; then \
+        apt-get update \
+        && apt-get install -y --no-install-recommends cargo build-essential pkg-config cmake \
+        && CMAKE_POLICY_VERSION_MINIMUM=3.5 pip wheel --no-cache-dir --no-deps --no-binary sphn -w /wheels sphn==${SPHN_VERSION}; \
+    fi
+
 FROM python:3.12-slim
 
 # ffmpeg: audio decoding/encoding. fluidsynth + soundfont: starter library.
@@ -12,13 +25,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
 # On GPUs, faster-whisper needs the cuDNN/cuBLAS libraries that come with PyTorch.
 ENV LD_LIBRARY_PATH=/usr/local/lib/python3.12/site-packages/nvidia/cudnn/lib:/usr/local/lib/python3.12/site-packages/nvidia/cublas/lib
 
-# CPU build by default. docker-compose.gpu.yml switches this to the CUDA 12.8
-# build (needed for RTX 50-series cards).
+# CPU build by default (also on ARM64). docker-compose.gpu.yml switches this to the
+# CUDA 12.8 build (needed for RTX 50-series cards).
 ARG TORCH_INDEX=https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir torch==2.8.0 torchaudio==2.8.0 torchvision==0.23.0 --index-url ${TORCH_INDEX}
 
+COPY --from=sphn /wheels /wheels
 COPY requirements.txt requirements-ml.txt ./
-RUN pip install --no-cache-dir -r requirements.txt -r requirements-ml.txt
+# On ARM64, pip also pulls a torchcodec built for a newer PyTorch (whisperx skips it
+# there on purpose). It isn't needed (audio is decoded with ffmpeg), so it is removed.
+RUN pip install --no-cache-dir --find-links /wheels -r requirements.txt -r requirements-ml.txt \
+    && if [ "$(uname -m)" = "aarch64" ]; then pip uninstall -y torchcodec; fi
 
 COPY . .
 
