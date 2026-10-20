@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
+import { ArrowRight, Info, Mic, Trophy } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
@@ -15,6 +16,7 @@ import type { ClientMessage, LobbyRoom } from '../room/protocol'
 import ReadyPanel from '../room/ReadyPanel'
 import { ReplayPanel, type UploadState } from '../room/ResultsView'
 import SingView from '../room/SingView'
+import { Badge, Button, ButtonLink, Card, PageHeader, Skeleton, SongCover, cx } from '../ui'
 
 const COUNTDOWN_MS = 4000
 const noSubscribe = () => () => undefined
@@ -27,35 +29,87 @@ export default function SoloPage() {
   const user = me.data?.user
   const bests = useSoloBests(!!user)
 
-  if (me.isPending || !songs.data) return null
+  if (me.isPending || !songs.data) return <SoloSkeleton />
   if (!user) return <GuestName />
   const list = [...songs.data.mine.filter((s) => s.status === 'ready'), ...songs.data.starter]
+  const sung = list.filter((s) => bests.data?.[s.id] != null).length
 
   return (
-    <section className="card stack">
-      <h1>{t('solo.title')}</h1>
-      <p className="muted">{t('solo.intro')}</p>
-      <ul className="pick-list">
+    <div className="solo-page">
+      <PageHeader
+        icon={Mic}
+        title={t('solo.title')}
+        subtitle={t('solo.intro')}
+        actions={
+          bests.data && list.length > 0 ? (
+            <Badge tone="violet" icon={Trophy}>
+              {t('solo.sungCount', { count: sung, total: list.length })}
+            </Badge>
+          ) : undefined
+        }
+      />
+      {user.is_guest && (
+        <p className="banner with-icon small">
+          <Info size={16} aria-hidden />
+          <span>
+            <Link to="/sign-in?next=/solo">{t('nav.signIn')}</Link> {t('solo.signInWhy')}
+          </span>
+        </p>
+      )}
+      <ul className="solo-grid">
         {list.map((song) => {
           const best = bests.data?.[song.id]
           return (
-            <li key={song.id} className="pick">
-              <div className="pick-main">
-                <strong>{song.title}</strong>
-                <span className="muted small">{song.artist}</span>
+            <li key={song.id} className={cx('solo-tile', best != null && 'has-best')}>
+              <SongCover song={song} size={64} />
+              <div className="solo-tile-main">
+                <strong className="solo-tile-title">{song.title}</strong>
+                {song.artist && <span className="muted small solo-tile-artist">{song.artist}</span>}
+                <span className="tags">
+                  {song.duration_seconds != null && <span className="tag">{formatDuration(song.duration_seconds)}</span>}
+                  {song.is_duet && <Badge tone="violet">{t('songs.duet')}</Badge>}
+                  {song.source !== 'starter' && <span className="tag">{t('solo.yours')}</span>}
+                </span>
               </div>
-              <span className="tags">
-                {song.duration_seconds != null && <span className="tag">{formatDuration(song.duration_seconds)}</span>}
-                {best != null && <span className="tag ok">{t('solo.best', { score: formatScore(best, i18n.language) })}</span>}
-              </span>
-              <Link className="button small primary" to={`/solo/${song.id}`}>
-                {t('solo.sing')}
-              </Link>
+              <div className="solo-tile-foot">
+                {best != null ? (
+                  <span className="solo-best">
+                    <Trophy size={16} aria-hidden />
+                    <span>{t('solo.best', { score: formatScore(best, i18n.language) })}</span>
+                  </span>
+                ) : (
+                  <span className="muted small">{t('solo.notSung')}</span>
+                )}
+                <ButtonLink variant="primary" size="sm" icon={Mic} to={`/solo/${song.id}`} aria-label={`${t('solo.sing')}: ${song.title}`}>
+                  {t('solo.sing')}
+                </ButtonLink>
+              </div>
             </li>
           )
         })}
       </ul>
-    </section>
+    </div>
+  )
+}
+
+function SoloSkeleton() {
+  return (
+    <div className="solo-page" aria-busy="true">
+      <div className="page-header">
+        <Skeleton width={48} height={48} radius={14} />
+        <div className="page-titles">
+          <Skeleton width={120} height={32} />
+          <Skeleton width="70%" height={18} />
+        </div>
+      </div>
+      <ul className="solo-grid">
+        {Array.from({ length: 6 }, (_, i) => (
+          <li key={i}>
+            <Skeleton height={150} radius="var(--r-card)" />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -69,20 +123,20 @@ function GuestName() {
     guest.mutate({ display_name: name, locale: i18n.language as Locale })
   }
   return (
-    <section className="card stack">
-      <h1>{t('solo.title')}</h1>
+    <Card icon={Mic} eyebrow={t('solo.title')} title={t('solo.guestTitle')} className="solo-guest">
+      <p className="muted">{t('solo.intro')}</p>
       <form className="stack" onSubmit={submit}>
         <label htmlFor="solo-name">{t('solo.yourName')}</label>
-        <input id="solo-name" className="input" maxLength={40} required value={name} onChange={(e) => setName(e.target.value)} />
-        <button className="button primary" type="submit" disabled={guest.isPending}>
+        <input id="solo-name" className="input" maxLength={40} required value={name} onChange={(e) => setName(e.target.value)} autoComplete="nickname" />
+        <Button variant="primary" type="submit" iconRight={ArrowRight} loading={guest.isPending}>
           {t('solo.continue')}
-        </button>
+        </Button>
       </form>
       <p className="muted small">
         <Link to="/sign-in?next=/solo">{t('nav.signIn')}</Link> {t('solo.signInWhy')}
       </p>
       <ErrorText error={guest.error} />
-    </section>
+    </Card>
   )
 }
 
@@ -230,9 +284,14 @@ export function SoloSingPage() {
   return (
     <div className="stack">
       <section className="card stack">
-        <span className="eyebrow">{isDaily ? t('daily.title') : t('solo.title')}</span>
-        <h1>{song.title}</h1>
-        <p className="muted">{song.artist}</p>
+        <div className="solo-setup-head">
+          <SongCover song={song} size={64} />
+          <div className="solo-tile-main">
+            <span className="eyebrow">{isDaily ? t('daily.title') : t('solo.title')}</span>
+            <h1>{song.title}</h1>
+            {song.artist && <p className="muted">{song.artist}</p>}
+          </div>
+        </div>
         {isDaily && user.is_guest && <p className="banner small">{t('daily.guestPractice')}</p>}
         {isDaily && !user.is_guest && <p className="banner small">{t('daily.oneShotWarning')}</p>}
       </section>

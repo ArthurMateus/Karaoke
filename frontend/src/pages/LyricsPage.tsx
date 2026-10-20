@@ -1,11 +1,13 @@
+import { ArrowLeft, FileText, RotateCcw, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useRedoLyrics, useSong, useSongLyrics } from '../api/hooks'
 import type { LyricsSource } from '../api/types'
 import ErrorText from '../components/ErrorText'
+import FormStep from '../components/FormStep'
 import LyricsField from '../components/LyricsField'
-import { useConfirm } from '../ui'
+import { Button, ButtonLink, PageHeader, Skeleton, SongCover, useConfirm } from '../ui'
 
 /** Give an uploaded song (new) lyrics and rebuild its chart from the saved vocals. */
 export default function LyricsPage() {
@@ -14,7 +16,15 @@ export default function LyricsPage() {
   const saved = useSongLyrics(id)
 
   if (song.isError || saved.isError) return <ErrorText error={song.error ?? saved.error} />
-  if (!song.data || !saved.data) return null
+  if (!song.data || !saved.data) {
+    return (
+      <div className="upload-page" aria-busy="true">
+        <Skeleton height={96} radius="var(--r-card)" />
+        <Skeleton height={180} radius="var(--r-card)" />
+        <Skeleton height={320} radius="var(--r-card)" />
+      </div>
+    )
+  }
   if (!song.data.is_owner || song.data.source !== 'upload' || !song.data.has_vocals_track) {
     return <ErrorText error="no_vocals_track" />
   }
@@ -47,37 +57,65 @@ function LyricsForm(props: {
   }
 
   return (
-    <section className="card stack">
-      <h1>{t('lyrics.redoTitle')}</h1>
-      <p className="muted">{t('lyrics.redoIntro', { title: props.title })}</p>
-
-      <label htmlFor="search-title">{t('upload.songTitle')}</label>
-      <input id="search-title" className="input" maxLength={200} value={title} onChange={(e) => setTitle(e.target.value)} />
-      <label htmlFor="search-artist">{t('upload.artist')}</label>
-      <input id="search-artist" className="input" maxLength={200} value={artist} onChange={(e) => setArtist(e.target.value)} />
-
-      <LyricsField
-        title={title}
-        artist={artist}
-        duration={props.duration}
-        lyrics={lyrics}
-        onChange={(text, from) => {
-          setLyrics(text)
-          setSource(from)
-        }}
+    <div className="upload-page lyrics-page">
+      <PageHeader
+        icon={FileText}
+        title={t('lyrics.redoTitle')}
+        subtitle={t('lyrics.redoIntro', { title: props.title })}
+        actions={
+          <ButtonLink variant="ghost" size="sm" icon={ArrowLeft} to="/songs">
+            {t('upload.back')}
+          </ButtonLink>
+        }
       />
 
-      <p className="banner small">{t('lyrics.redoWarning')}</p>
-      <div className="row wrap">
-        <button className="button primary" onClick={submit} disabled={props.busy || redo.isPending}>
-          {lyrics.trim() ? t('lyrics.redo') : t('lyrics.redoGuess')}
-        </button>
-        <Link className="button" to="/songs">
-          {t('lyrics.cancel')}
-        </Link>
+      <div className="upload-form">
+        <FormStep n={1} title={t('lyrics.searchStep')}>
+          <div className="lyrics-song">
+            <SongCover song={{ id: props.id, title: props.title }} size={48} />
+            <p className="muted small">{t('lyrics.searchStepNote')}</p>
+          </div>
+          <div className="upload-fields">
+            <div>
+              <label htmlFor="search-title">{t('upload.songTitle')}</label>
+              <input id="search-title" className="input" maxLength={200} value={title} onChange={(e) => setTitle(e.target.value)} />
+            </div>
+            <div>
+              <label htmlFor="search-artist">{t('upload.artist')}</label>
+              <input id="search-artist" className="input" maxLength={200} value={artist} onChange={(e) => setArtist(e.target.value)} />
+            </div>
+          </div>
+        </FormStep>
+
+        <LyricsField
+          step={2}
+          title={title}
+          artist={artist}
+          duration={props.duration}
+          lyrics={lyrics}
+          onChange={(text, from) => {
+            setLyrics(text)
+            setSource(from)
+          }}
+        />
+
+        <FormStep n={3} title={t('lyrics.redoStep')}>
+          <p className="banner with-icon warn-banner small">
+            <TriangleAlert size={16} aria-hidden />
+            {t('lyrics.redoWarning')}
+          </p>
+          <div className="row wrap">
+            <Button variant="primary" icon={RotateCcw} onClick={submit} disabled={props.busy} loading={redo.isPending}>
+              {lyrics.trim() ? t('lyrics.redo') : t('lyrics.redoGuess')}
+            </Button>
+            <ButtonLink variant="ghost" to="/songs">
+              {t('lyrics.cancel')}
+            </ButtonLink>
+          </div>
+          {props.busy && <p className="muted small">{t('lyrics.busy')}</p>}
+          <ErrorText error={redo.error} />
+        </FormStep>
       </div>
-      {props.busy && <p className="muted small">{t('lyrics.busy')}</p>}
-      <ErrorText error={redo.error} />
-    </section>
+    </div>
   )
 }

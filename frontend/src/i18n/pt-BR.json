@@ -241,6 +241,32 @@
       "matching": "Alinhando a letra com o seu arquivo…",
       "aligning": "Encaixando a letra na voz…",
       "done": "Pronto"
+    },
+    "subtitle": "Todas as músicas que você pode cantar: a biblioteca inicial gratuita e as que você mesmo adicionar.",
+    "search": "Buscar músicas",
+    "searchPlaceholder": "Busque por título ou artista",
+    "show": "Mostrar",
+    "scopeAll": "Todas",
+    "scopeMine": "Minhas",
+    "scopeStarter": "Iniciais",
+    "languageFilter": "Idioma",
+    "anyLanguage": "Qualquer idioma",
+    "duetsOnly": "Só duetos",
+    "clearFilters": "Limpar filtros",
+    "noMatch": "Nenhuma música encontrada.",
+    "noMatchText": "Tente outra palavra ou limpe os filtros.",
+    "emptyText": "Envie uma música e nós a transformamos em karaokê, ou importe uma cifra UltraStar que você já tenha.",
+    "sing": "Cantar",
+    "stepsLabel": "Etapas da conversão",
+    "stepDone": "concluída",
+    "stepNow": "em andamento",
+    "stepTodo": "a fazer",
+    "stepNames": {
+      "preparing": "Preparar",
+      "separating": "Separar",
+      "melody": "Melodia",
+      "lyrics": "Letra",
+      "chart": "Cifra"
     }
   },
   "upload": {
@@ -260,14 +286,28 @@
     "rightsNote": "Só você vê suas músicas. Quando você cria uma sala, quem está nela pode ouvi-las.",
     "submit": "Enviar e converter",
     "uploading": "Enviando… {{pct}}%",
-    "noConversionsLeft": "Você já usou todas as {{total}} conversões deste mês."
+    "noConversionsLeft": "Você já usou todas as {{total}} conversões deste mês.",
+    "back": "Voltar às músicas",
+    "fileStep": "Escolha o áudio",
+    "aboutStep": "Sobre a música",
+    "confirmStep": "Confirme e envie",
+    "dropHere": "Solte aqui",
+    "dropOrClick": "Arraste um arquivo para cá ou toque para escolher",
+    "dropChange": "Toque para escolher outro arquivo",
+    "removeFile": "Remover {{name}}",
+    "wrongType": "Esse tipo de arquivo não pode ser usado aqui. Confira os formatos da lista.",
+    "overLimit": "Acima do limite",
+    "needRights": "Marque a caixa acima para enviar."
   },
   "import": {
     "title": "Importar uma cifra UltraStar",
     "intro": "Já tem uma cifra UltraStar (.txt) e o arquivo de áudio dela? Importe aqui. Isso não gasta uma conversão.",
     "chart": "Arquivo da cifra (.txt)",
     "audio": "Arquivo de áudio",
-    "submit": "Importar"
+    "submit": "Importar",
+    "chartStep": "Escolha a cifra",
+    "chartHint": "O arquivo .txt do UltraStar",
+    "audioStep": "Escolha o áudio dela"
   },
   "editor": {
     "title": "Editor de cifra",
@@ -326,7 +366,12 @@
       "overlap": "Linha {{line}}: notas sobrepostas.",
       "empty_text": "Linha {{line}}: uma nota está sem texto.",
       "no_notes": "A cifra não tem notas."
-    }
+    },
+    "seek": "Posição na música",
+    "problemsLabel": "Problemas para corrigir antes de salvar",
+    "rollLabel": "Notas da linha selecionada",
+    "moveEarlier": "Mover a linha para antes",
+    "moveLater": "Mover a linha para depois"
   },
   "game": {
     "mic": {
@@ -409,7 +454,6 @@
     }
   },
   "lyrics": {
-    "title": "Letra (opcional)",
     "intro": "Dê a letra ao conversor e ele encaixa as palavras na voz, em vez de adivinhá-las. Funciona muito melhor com voz gritada, rápida ou muito processada.",
     "find": "Buscar letra na internet",
     "searching": "Buscando…",
@@ -437,7 +481,13 @@
     "redoGuess": "Refazer, adivinhando as palavras",
     "cancel": "Cancelar",
     "busy": "Esta música está sendo processada. Espere ficar pronta.",
-    "redoFailed": "Não deu para refazer a letra, então a cifra anterior foi mantida"
+    "redoFailed": "Não deu para refazer a letra, então a cifra anterior foi mantida",
+    "heading": "Letra",
+    "optional": "Opcional",
+    "results": "Letras encontradas",
+    "searchStep": "Encontre a música",
+    "searchStepNote": "Ajuste o título e o artista para a busca de letras achar a música certa.",
+    "redoStep": "Refaça a cifra"
   },
   "modes": {
     "title": "Modo de jogo",
@@ -543,12 +593,16 @@
     "newBest": "Novo recorde!",
     "again": "Cantar de novo",
     "otherSong": "Outra música",
-    "replay": "Ouça como ficou: sua voz com a música"
+    "replay": "Ouça como ficou: sua voz com a música",
+    "sungCount_one": "{{count}} de {{total}} cantada",
+    "sungCount_other": "{{count}} de {{total}} cantadas",
+    "yours": "Sua",
+    "notSung": "Ainda não cantada",
+    "guestTitle": "Qual é o seu nome?"
   },
   "daily": {
     "title": "Música do dia",
     "noSong": "Sem música hoje (a biblioteca inicial está vazia).",
-    "nextIn": "Próxima música em {{time}} (meia-noite UTC).",
     "yourScore": "Você fez {{score}}: {{rank}}º hoje.",
     "unfinished": "Você começou a música de hoje mas não terminou. Volte amanhã!",
     "singIt": "Cantar (uma tentativa)",
@@ -561,17 +615,25 @@
     "practiceNote": "Treino: entre na sua conta para aparecer no ranking.",
     "leaderboard": "Ranking de hoje",
     "nobodyYet": "Ninguém cantou ainda hoje. Seja o primeiro!",
-    "yesterday": "Vencedor de ontem: {{name}} com {{score}} em “{{title}}”.",
     "yourRank": "{{rank}}º hoje",
     "seeBoard": "Ver o ranking",
     "noRecording": "Sua gravação não chegou, então sua tentativa não pôde ser conferida e não está no ranking.",
     "adjustedNote": "Seu celular disse {{claimed}}; o servidor ouviu sua gravação e deu menos.",
-    "checksExplained": "Os 10 primeiros são conferidos: o servidor ouve cada gravação e pontua de novo. ✓ = conferido, ✓* = corrigido na conferência.",
     "checks": {
       "verified": "Conferido pela gravação",
       "adjusted": "Corrigido depois de ouvir a gravação",
-      "pending": "conferindo…"
-    }
+      "pending": "conferindo…",
+      "pendingLong": "Aguardando a conferência pela gravação"
+    },
+    "nextLabel": "para a próxima música (meia-noite UTC)",
+    "place": "{{rank}}º lugar",
+    "checksIntro": "Os 10 primeiros são conferidos: o servidor ouve cada gravação e dá a nota de novo.",
+    "yesterdayTitle": "Vencedor de ontem",
+    "yesterdaySong": "em “{{title}}”",
+    "howTitle": "Como funciona",
+    "howOne": "Uma música para todos e uma tentativa por conta a cada dia.",
+    "howBoard": "Sua pontuação entra no ranking do dia. Convidados podem treinar, mas não entram no ranking.",
+    "howNext": "Uma música nova começa todo dia à meia-noite UTC."
   },
   "plan": {
     "title": "Seu plano",

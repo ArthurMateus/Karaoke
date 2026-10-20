@@ -241,6 +241,32 @@
       "matching": "Lining the lyrics up with your file…",
       "aligning": "Fitting the lyrics to the voice…",
       "done": "Done"
+    },
+    "subtitle": "Every song you can sing: the free starter library and the ones you add yourself.",
+    "search": "Search songs",
+    "searchPlaceholder": "Search by title or artist",
+    "show": "Show",
+    "scopeAll": "All",
+    "scopeMine": "Mine",
+    "scopeStarter": "Starter",
+    "languageFilter": "Language",
+    "anyLanguage": "Any language",
+    "duetsOnly": "Duets only",
+    "clearFilters": "Clear filters",
+    "noMatch": "No songs match.",
+    "noMatchText": "Try another word or clear the filters.",
+    "emptyText": "Upload a song and we'll turn it into a karaoke chart, or import an UltraStar chart you already have.",
+    "sing": "Sing",
+    "stepsLabel": "Conversion steps",
+    "stepDone": "done",
+    "stepNow": "in progress",
+    "stepTodo": "to do",
+    "stepNames": {
+      "preparing": "Prepare",
+      "separating": "Separate",
+      "melody": "Melody",
+      "lyrics": "Lyrics",
+      "chart": "Chart"
     }
   },
   "upload": {
@@ -260,14 +286,28 @@
     "rightsNote": "Only you can see your songs. When you host a room, the people in it can hear them.",
     "submit": "Upload and convert",
     "uploading": "Uploading… {{pct}}%",
-    "noConversionsLeft": "You've used all {{total}} conversions for this month."
+    "noConversionsLeft": "You've used all {{total}} conversions for this month.",
+    "back": "Back to songs",
+    "fileStep": "Choose the audio",
+    "aboutStep": "About the song",
+    "confirmStep": "Confirm and upload",
+    "dropHere": "Drop it here",
+    "dropOrClick": "Drag a file here, or tap to choose one",
+    "dropChange": "Tap to choose another file",
+    "removeFile": "Remove {{name}}",
+    "wrongType": "That type of file can't be used here. Check the formats listed.",
+    "overLimit": "Over the limit",
+    "needRights": "Tick the box above to upload."
   },
   "import": {
     "title": "Import an UltraStar chart",
     "intro": "Already have an UltraStar chart (.txt) and its audio file? Import them here. This doesn't use up a conversion.",
     "chart": "Chart file (.txt)",
     "audio": "Audio file",
-    "submit": "Import"
+    "submit": "Import",
+    "chartStep": "Choose the chart",
+    "chartHint": "The UltraStar .txt file",
+    "audioStep": "Choose its audio"
   },
   "editor": {
     "title": "Chart editor",
@@ -326,7 +366,12 @@
       "overlap": "Line {{line}}: notes overlap.",
       "empty_text": "Line {{line}}: a note has no text.",
       "no_notes": "The chart has no notes."
-    }
+    },
+    "seek": "Position in the song",
+    "problemsLabel": "Problems to fix before saving",
+    "rollLabel": "Notes of the selected line",
+    "moveEarlier": "Move the line earlier",
+    "moveLater": "Move the line later"
   },
   "game": {
     "mic": {
@@ -409,7 +454,6 @@
     }
   },
   "lyrics": {
-    "title": "Lyrics (optional)",
     "intro": "Give the converter the lyrics and it fits them to the voice instead of guessing the words. Much better for screamed, fast or heavily processed singing.",
     "find": "Find lyrics online",
     "searching": "Searching…",
@@ -437,7 +481,13 @@
     "redoGuess": "Redo, guessing the words",
     "cancel": "Cancel",
     "busy": "This song is being worked on. Wait until it's ready.",
-    "redoFailed": "Redoing the lyrics didn't work, so the previous chart was kept"
+    "redoFailed": "Redoing the lyrics didn't work, so the previous chart was kept",
+    "heading": "Lyrics",
+    "optional": "Optional",
+    "results": "Lyrics found",
+    "searchStep": "Find the song",
+    "searchStepNote": "Tidy the title and artist so the lyrics search finds the right song.",
+    "redoStep": "Rebuild the chart"
   },
   "modes": {
     "title": "Game mode",
@@ -543,12 +593,16 @@
     "newBest": "New personal best!",
     "again": "Sing it again",
     "otherSong": "Another song",
-    "replay": "Listen back: your voice over the music"
+    "replay": "Listen back: your voice over the music",
+    "sungCount_one": "{{count}} of {{total}} sung",
+    "sungCount_other": "{{count}} of {{total}} sung",
+    "yours": "Yours",
+    "notSung": "Not sung yet",
+    "guestTitle": "What's your name?"
   },
   "daily": {
     "title": "Song of the day",
     "noSong": "No song today (the starter library is empty).",
-    "nextIn": "Next song in {{time}} (midnight UTC).",
     "yourScore": "You scored {{score}}: #{{rank}} today.",
     "unfinished": "You started today's song but didn't finish it. Come back tomorrow!",
     "singIt": "Sing it (one try)",
@@ -561,17 +615,25 @@
     "practiceNote": "Practice run: sign in to get on the leaderboard.",
     "leaderboard": "Today's leaderboard",
     "nobodyYet": "Nobody has sung it yet today. Be the first!",
-    "yesterday": "Yesterday's winner: {{name}} with {{score}} on “{{title}}”.",
     "yourRank": "#{{rank}} today",
     "seeBoard": "See the leaderboard",
     "noRecording": "Your recording never arrived, so your try couldn't be checked and isn't on the board.",
     "adjustedNote": "Your phone said {{claimed}}; the server listened to your recording and scored it lower.",
-    "checksExplained": "The top 10 are checked: the server listens to each recording and scores it again. ✓ = checked, ✓* = corrected by the check.",
     "checks": {
       "verified": "Checked from the recording",
       "adjusted": "Corrected after checking the recording",
-      "pending": "checking…"
-    }
+      "pending": "checking…",
+      "pendingLong": "Waiting to be checked from the recording"
+    },
+    "nextLabel": "until the next song (midnight UTC)",
+    "place": "Place {{rank}}",
+    "checksIntro": "The top 10 are checked: the server listens to each recording and scores it again.",
+    "yesterdayTitle": "Yesterday's winner",
+    "yesterdaySong": "on “{{title}}”",
+    "howTitle": "How it works",
+    "howOne": "One song for everyone, and one try per account each day.",
+    "howBoard": "Your score goes on today's leaderboard. Guests can practise, but don't go on the board.",
+    "howNext": "A new song starts every day at midnight UTC."
   },
   "plan": {
     "title": "Your plan",

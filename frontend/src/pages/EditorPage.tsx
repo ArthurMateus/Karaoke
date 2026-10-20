@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router'
+import { ArrowLeft, ArrowRight, Check, CircleDot, Eye, Headphones, Info, Link2, ListMusic, Merge, Minus, Music, Pause, Play, Plus, Save, Scissors, SlidersHorizontal, TextWrap, Trash, TriangleAlert, Undo2, User } from 'lucide-react'
+import { useParams } from 'react-router'
 import { useChart, useSaveChart, useSong } from '../api/hooks'
 import type { Song } from '../api/types'
 import ErrorText from '../components/ErrorText'
@@ -31,6 +32,7 @@ import {
   type Singer,
 } from '../editor/chartModel'
 import PianoRoll from '../editor/PianoRoll'
+import { Button, ButtonLink, EmptyState, IconButton, Skeleton, SongCover, cx } from '../ui'
 
 type Track = 'instrumental' | 'vocals' | 'original'
 
@@ -42,18 +44,45 @@ export default function EditorPage() {
   const chart = useChart(id, ready)
 
   if (song.isError) return <ErrorText error={song.error} />
-  if (!song.data) return null
+  if (!song.data) return <EditorSkeleton />
   if (!ready) {
     return (
       <section className="card stack">
-        <p>{t('editor.notReady')}</p>
-        <Link to="/songs">{t('songs.title')}</Link>
+        <EmptyState
+          title={t('editor.notReady')}
+          action={
+            <ButtonLink size="sm" icon={ArrowLeft} to="/songs">
+              {t('upload.back')}
+            </ButtonLink>
+          }
+        />
       </section>
     )
   }
   if (chart.isError) return <ErrorText error={chart.error} />
-  if (!chart.data) return null
+  if (!chart.data) return <EditorSkeleton />
   return <Editor song={song.data} initial={chart.data} />
+}
+
+/** Placeholders the size of the header, audio bar and the two panels. */
+function EditorSkeleton() {
+  return (
+    <div className="editor" aria-busy="true">
+      <div className="editor-head">
+        <Skeleton width={56} height={56} radius={12} />
+        <div className="editor-titles">
+          <Skeleton width={90} height={12} />
+          <Skeleton width={220} height={28} />
+        </div>
+      </div>
+      <Skeleton height={54} radius="var(--r-card)" />
+      <Skeleton height={68} radius="var(--r-card)" />
+      <div className="editor-grid">
+        <Skeleton height={360} radius="var(--r-card)" />
+        <Skeleton height={360} radius="var(--r-card)" />
+      </div>
+    </div>
+  )
 }
 
 function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
@@ -181,30 +210,50 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
   const duet = isDuet(chart)
 
   return (
-    <div className="editor stack">
-      <div className="row spread wrap">
-        <div>
+    <div className="editor">
+      <ButtonLink size="sm" variant="ghost" icon={ArrowLeft} to="/songs" className="editor-back">
+        {t('upload.back')}
+      </ButtonLink>
+      <header className="editor-head">
+        <SongCover song={song} size={56} />
+        <div className="editor-titles">
+          <span className="eyebrow">{readOnly ? t('songs.view') : t('editor.title')}</span>
           <h1>{chart.title}</h1>
-          <p className="muted small">{chart.artist}</p>
+          {chart.artist && <p className="muted small">{chart.artist}</p>}
         </div>
         {!readOnly && (
-          <div className="row wrap">
-            <span className={`muted small ${dirty ? 'warn-text' : ''}`}>
+          <div className="editor-head-actions">
+            <span className={cx('editor-status', dirty && 'unsaved')} aria-live="polite">
+              {save.isPending ? (
+                <span className="spinner" aria-hidden />
+              ) : dirty ? (
+                <CircleDot size={14} aria-hidden />
+              ) : (
+                <Check size={14} aria-hidden />
+              )}
               {save.isPending ? t('editor.saving') : dirty ? t('editor.unsaved') : t('editor.saved')}
             </span>
-            <button className="button" onClick={undo} disabled={history.length === 0}>{t('editor.undo')}</button>
-            <button className="button primary" onClick={onSave} disabled={!dirty || save.isPending || problems.length > 0}>
+            <Button size="sm" icon={Undo2} onClick={undo} disabled={history.length === 0}>
+              {t('editor.undo')}
+            </Button>
+            <Button size="sm" variant="primary" icon={Save} onClick={onSave} disabled={!dirty || problems.length > 0} loading={save.isPending}>
               {t('editor.save')}
-            </button>
+            </Button>
           </div>
         )}
-      </div>
-      {readOnly && <p className="banner">{t('editor.readOnly')}</p>}
+      </header>
+      {readOnly && (
+        <p className="banner with-icon">
+          <Eye size={18} aria-hidden />
+          {t('editor.readOnly')}
+        </p>
+      )}
       <ErrorText error={save.error} />
       {problems.length > 0 && (
-        <ul className="problems">
+        <ul className="problems" aria-label={t('editor.problemsLabel')}>
           {problems.slice(0, 5).map((p, i) => (
             <li key={i}>
+              <TriangleAlert size={16} aria-hidden />
               <button className="link-button danger" onClick={() => { setLineIndex(p.line); setNoteIndex(p.note) }}>
                 {t(`editor.problems.${p.code}`, { line: p.line + 1 })}
               </button>
@@ -213,8 +262,11 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
         </ul>
       )}
 
-      <details className="card wide">
-        <summary>{t('editor.details')}</summary>
+      <details className="card wide editor-details">
+        <summary>
+          <SlidersHorizontal size={18} aria-hidden />
+          {t('editor.details')}
+        </summary>
         <div className="form-grid">
           <label>{t('upload.songTitle')}
             <input className="input" value={chart.title} disabled={readOnly} maxLength={200}
@@ -228,19 +280,21 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
             <input className="input" value={chart.language} disabled={readOnly} maxLength={40}
               onChange={(e) => edit(updateMeta(chart, { language: e.target.value }))} />
           </label>
-          <label>{t('editor.gap')}
-            <span className="row">
-              <button className="button small" disabled={readOnly} onClick={() => edit(updateMeta(chart, { gap_ms: Math.max(0, chart.gap_ms - 50) }))}>
-                − {t('editor.earlier')}
-              </button>
-              <input className="input number" type="number" value={Math.round(chart.gap_ms)} disabled={readOnly} min={0}
+          <div className="gap-field">
+            <label htmlFor="gap-ms">{t('editor.gap')}</label>
+            <span className="gap-row">
+              <Button size="sm" icon={Minus} disabled={readOnly} onClick={() => edit(updateMeta(chart, { gap_ms: Math.max(0, chart.gap_ms - 50) }))}>
+                {t('editor.earlier')}
+              </Button>
+              <input id="gap-ms" className="input number" type="number" value={Math.round(chart.gap_ms)} disabled={readOnly} min={0}
+                aria-describedby="gap-help"
                 onChange={(e) => edit(updateMeta(chart, { gap_ms: Math.max(0, Number(e.target.value) || 0) }))} />
-              <button className="button small" disabled={readOnly} onClick={() => edit(updateMeta(chart, { gap_ms: chart.gap_ms + 50 }))}>
-                + {t('editor.later')}
-              </button>
+              <Button size="sm" icon={Plus} disabled={readOnly} onClick={() => edit(updateMeta(chart, { gap_ms: chart.gap_ms + 50 }))}>
+                {t('editor.later')}
+              </Button>
             </span>
-            <span className="muted small">{t('editor.gapHelp')}</span>
-          </label>
+            <span className="muted small" id="gap-help">{t('editor.gapHelp')}</span>
+          </div>
           {duet && (['P1', 'P2'] as const).map((part) => (
             <label key={part}>{t('editor.singerName', { part: t(`editor.singers.${part}`) })}
               <input className="input" value={chart.singers[part] ?? ''} disabled={readOnly} maxLength={40}
@@ -260,14 +314,17 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
           onTimeUpdate={(e) => !playing && setTime(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
         />
-        <button className="button primary" onClick={togglePlay}>{playing ? `❚❚ ${t('editor.pause')}` : `▶ ${t('editor.play')}`}</button>
+        <Button variant="primary" icon={playing ? Pause : Play} onClick={togglePlay} className="audio-play">
+          {playing ? t('editor.pause') : t('editor.play')}
+        </Button>
         <span className="time">{formatTime(time)} / {formatTime(duration)}</span>
         <input className="seek" type="range" min={0} max={duration || 1} step={0.1} value={time}
-          aria-label="seek"
+          aria-label={t('editor.seek')}
           onChange={(e) => { if (audio.current) audio.current.currentTime = Number(e.target.value); setTime(Number(e.target.value)) }} />
         {tracks.length > 1 && (
-          <label className="row small">
-            {t('editor.listenTo')}
+          <label className="track-pick">
+            <Headphones size={16} aria-hidden />
+            <span className="sr-only">{t('editor.listenTo')}</span>
             <select className="input small" value={track} onChange={(e) => switchTrack(e.target.value as Track)}>
               {tracks.map((tr) => <option key={tr} value={tr}>{t(`editor.tracks.${tr}`)}</option>)}
             </select>
@@ -276,13 +333,19 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
       </div>
 
       <div className="editor-grid">
-        <section className="card wide lines-panel">
-          <h2>{t('editor.lines')}</h2>
+        <section className="card wide lines-panel" aria-labelledby="lines-title">
+          <h2 id="lines-title" className="panel-title">
+            <ListMusic size={18} aria-hidden />
+            {t('editor.lines')}
+            <span className="muted small">{chart.lines.length}</span>
+          </h2>
           <ol className="lines">
             {chart.lines.map((l, i) => (
               <li key={i} className={`line-row ${i === lineIndex ? 'active' : ''}`}>
-                <button className="line-play" aria-label={t('editor.playLine')} onClick={() => playLine(i)}>▶</button>
-                <button className="line-select" onClick={() => { setLineIndex(i); setNoteIndex(null) }}>
+                <button className="line-play" aria-label={`${t('editor.playLine')} ${i + 1}`} title={t('editor.playLine')} onClick={() => playLine(i)}>
+                  <Play size={14} aria-hidden />
+                </button>
+                <button className="line-select" aria-current={i === lineIndex || undefined} onClick={() => { setLineIndex(i); setNoteIndex(null) }}>
                   <span className="muted small">{formatTime(beatToSeconds(chart, lineStart(l)))}</span>
                   {duet && <span className={`tag singer-${l.singer}`}>{t(`editor.singers.${l.singer}`)}</span>}
                   <span className="line-text">{lineText(l)}</span>
@@ -292,25 +355,26 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
           </ol>
         </section>
 
-        <section className="card wide stack roll-panel">
+        <section className="card wide stack roll-panel" aria-label={t('editor.rollLabel')}>
           {line && (
             <>
-              <div className="row spread wrap">
-                <label className="row small">
-                  {t('editor.singer')}
+              <div className="editor-tools">
+                <label className="tool-field">
+                  <User size={16} aria-hidden />
+                  <span>{t('editor.singer')}</span>
                   <select className="input small" value={line.singer} disabled={readOnly}
                     onChange={(e) => edit(setSinger(chart, lineIndex, e.target.value as Singer))}>
                     {(['P1', 'P2', 'both'] as const).map((s) => <option key={s} value={s}>{t(`editor.singers.${s}`)}</option>)}
                   </select>
                 </label>
                 {!readOnly && (
-                  <span className="row wrap small">
-                    {t('editor.moveLine')}
-                    <button className="button small" onClick={() => edit(shiftLine(chart, lineIndex, -1))}>←</button>
-                    <button className="button small" onClick={() => edit(shiftLine(chart, lineIndex, 1))}>→</button>
-                    <button className="button small" onClick={() => edit(joinWithNextLine(chart, lineIndex))}
-                      disabled={lineIndex >= chart.lines.length - 1}>{t('editor.joinLine')}</button>
-                  </span>
+                  <div className="tool-group" role="group" aria-label={t('editor.moveLine')}>
+                    <span className="tool-label" aria-hidden>{t('editor.moveLine')}</span>
+                    <IconButton icon={ArrowLeft} variant="secondary" size="sm" label={t('editor.moveEarlier')} onClick={() => edit(shiftLine(chart, lineIndex, -1))} />
+                    <IconButton icon={ArrowRight} variant="secondary" size="sm" label={t('editor.moveLater')} onClick={() => edit(shiftLine(chart, lineIndex, 1))} />
+                    <Button size="sm" icon={Link2} onClick={() => edit(joinWithNextLine(chart, lineIndex))}
+                      disabled={lineIndex >= chart.lines.length - 1}>{t('editor.joinLine')}</Button>
+                  </div>
                 )}
               </div>
 
@@ -324,9 +388,17 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
                 onDragStart={() => setHistory((h) => [...h.slice(-99), chart])}
                 onLiveChange={(next, selected) => { setChart(next); setNoteIndex(selected) }}
               />
-              {!readOnly && <p className="muted small">{t('editor.help')}</p>}
+              {!readOnly && (
+                <p className="muted small editor-help">
+                  <Info size={14} aria-hidden />
+                  <span>{t('editor.help')}</span>
+                </p>
+              )}
 
-              <h3>{t('editor.note')}</h3>
+              <h3 className="panel-title">
+                <Music size={16} aria-hidden />
+                {t('editor.note')}
+              </h3>
               {note && noteIndex != null ? (
                 <div className="stack">
                   <div className="form-grid">
@@ -341,29 +413,31 @@ function Editor({ song, initial }: { song: Song; initial: EditorChart }) {
                         {NOTE_KINDS.map((k) => <option key={k} value={k}>{t(`editor.kinds.${k}`)}</option>)}
                       </select>
                     </label>
-                    <label>{t('editor.start')}
-                      <input className="input number" type="number" value={note.start} disabled={readOnly} min={0}
-                        onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { start: Number(e.target.value) }))} />
-                    </label>
-                    <label>{t('editor.length')}
-                      <input className="input number" type="number" value={note.length} disabled={readOnly} min={1}
-                        onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { length: Number(e.target.value) }))} />
-                    </label>
-                    <label>{t('editor.pitch')} ({pitchName(note.pitch)})
-                      <input className="input number" type="number" value={note.pitch} disabled={readOnly}
-                        onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { pitch: Number(e.target.value) }))} />
-                    </label>
+                    <div className="number-fields">
+                      <label>{t('editor.start')}
+                        <input className="input number" type="number" value={note.start} disabled={readOnly} min={0}
+                          onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { start: Number(e.target.value) }))} />
+                      </label>
+                      <label>{t('editor.length')}
+                        <input className="input number" type="number" value={note.length} disabled={readOnly} min={1}
+                          onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { length: Number(e.target.value) }))} />
+                      </label>
+                      <label>{t('editor.pitch')} ({pitchName(note.pitch)})
+                        <input className="input number" type="number" value={note.pitch} disabled={readOnly}
+                          onChange={(e) => edit(updateNote(chart, lineIndex, noteIndex, { pitch: Number(e.target.value) }))} />
+                      </label>
+                    </div>
                   </div>
                   {!readOnly && (
-                    <div className="row wrap">
-                      <button className="button small" onClick={() => edit(splitNote(chart, lineIndex, noteIndex))}>{t('editor.split')}</button>
-                      <button className="button small" onClick={() => edit(mergeWithNext(chart, lineIndex, noteIndex))}
-                        disabled={noteIndex >= line.notes.length - 1}>{t('editor.mergeNext')}</button>
-                      <button className="button small" onClick={() => edit(breakLineAt(chart, lineIndex, noteIndex), { line: lineIndex + 1, note: 0 })}
-                        disabled={noteIndex === 0}>{t('editor.breakLine')}</button>
-                      <button className="link-button danger small" onClick={() => edit(deleteNote(chart, lineIndex, noteIndex), { note: null })}>
+                    <div className="editor-tools">
+                      <Button size="sm" icon={Scissors} onClick={() => edit(splitNote(chart, lineIndex, noteIndex))}>{t('editor.split')}</Button>
+                      <Button size="sm" icon={Merge} onClick={() => edit(mergeWithNext(chart, lineIndex, noteIndex))}
+                        disabled={noteIndex >= line.notes.length - 1}>{t('editor.mergeNext')}</Button>
+                      <Button size="sm" icon={TextWrap} onClick={() => edit(breakLineAt(chart, lineIndex, noteIndex), { line: lineIndex + 1, note: 0 })}
+                        disabled={noteIndex === 0}>{t('editor.breakLine')}</Button>
+                      <Button size="sm" variant="ghost" icon={Trash} className="danger-text" onClick={() => edit(deleteNote(chart, lineIndex, noteIndex), { note: null })}>
                         {t('editor.deleteNote')}
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>

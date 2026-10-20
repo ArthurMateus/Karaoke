@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { lineEnd, lineStart, moveNote, pitchName, resizeNote, type EditorChart, type EditorNote } from './chartModel'
 
 const ROW = 18 // pixels per semitone
@@ -26,6 +27,7 @@ interface Props {
 
 /** One lyric line as bars on a pitch grid. */
 export default function PianoRoll(props: Props) {
+  const { t } = useTranslation()
   const { chart, lineIndex, selectedNote, currentBeat, readOnly } = props
   const wrapper = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(600)
@@ -85,7 +87,7 @@ export default function PianoRoll(props: Props) {
 
   return (
     <div className="piano-roll" ref={wrapper}>
-      <svg width={width} height={height} role="img" aria-label="notes">
+      <svg width={width} height={height} role="img" aria-label={t('editor.rollLabel')}>
         {Array.from({ length: high - low + 1 }, (_, i) => high - i).map((pitch) => (
           <rect key={pitch} x={0} y={y(pitch)} width={width} height={ROW}
             className={(pitch + 60) % 12 === 0 ? 'roll-row c' : pitch % 2 ? 'roll-row' : 'roll-row alt'} />
