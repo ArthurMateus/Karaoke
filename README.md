@@ -200,6 +200,10 @@ The **host's plan decides the room**, so guests never pay. There are no payments
 - With only 6 starter songs, the song of the day comes back about once a week. A bigger library fixes that.
 - **The top 10 are checked.** Scores are worked out on each phone, so someone could fake one. For every try that reaches the top 10, the server listens to its recording and scores it again with the same rules. Within 1,000 points (or higher) the phone's score stands and gets a **✓**. Clearly lower, and the server's score counts instead (**✓\***, and the singer sees what their phone said). A top-10 try whose recording never arrives (about 5 minutes) leaves the board. Honest tries usually come out within about 100 points of the phone.
 
+## Run it online (private beta)
+
+To put Mic Check on the internet for a few invited friends (free Oracle Cloud server in São Paulo, real HTTPS, Brevo emails, live voice), follow **[docs/DEPLOY.md](docs/DEPLOY.md)**. The server uses `docker-compose.prod.yml` on top of `docker-compose.yml` and its own `.env` (made from `.env.production.example`). Nothing changes on your PC.
+
 ## Faster song conversion with an NVIDIA graphics card (optional)
 
 By default the worker runs on the CPU. With an NVIDIA card (any recent GeForce RTX, including the RTX 50 series), conversion should take about a minute instead of several (not yet measured on real hardware):

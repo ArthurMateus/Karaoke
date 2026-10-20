@@ -123,10 +123,40 @@ production setup (ports, HTTPS, static build, secrets, hosting: LGPD B-1/B-2, te
 1. `docker compose exec api python -m app.scripts.cleanup` (look), then the same with `--yes`.
 2. Clear old logs (they hold IP addresses; the Privacy page says 14 days): when nobody is playing,
    `docker compose up -d --force-recreate` (new containers start with empty logs; live rooms reset).
+   On the online server steps 1 and 2 run by themselves (`deploy/weekly.sh`, see "Production" below).
 3. Deletion requests by email: `docker compose exec api python -m app.scripts.delete_user friend@example.com`, then
    with `--yes`; answer within 15 days. Guests have no email: find the id with
    `docker compose exec postgres psql -U karaoke -c "SELECT id, display_name, created_at FROM users WHERE is_guest;"`.
 4. When the beta ends: delete all beta data within 30 days (or ask each tester first).
+
+## Production (online beta server)
+
+Built 2026-10-20; the server itself doesn't exist yet. Guide for the owner: `docs/DEPLOY.md` (Oracle Cloud Always Free,
+Ampere A1 ARM64 4 OCPU/24 GB, Ubuntu 24.04, Sao Paulo; `miccheck-party.duckdns.org`; Brevo SMTP; self-hosted LiveKit).
+- `docker-compose.prod.yml` goes on top of `docker-compose.yml`. The server's `.env` (from `.env.production.example`) sets
+  `COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml`, so there plain `docker compose ...` commands use both files.
+  It uses `!override`/`!reset` (Compose 2.24+) to replace dev ports and volumes. Every secret is `${VAR:?}` (no defaults).
+  `BETA_ALLOWED_EMAILS` is required there too (empty would open sign-up to anyone).
+- Published: Caddy 80/443 (+443/udp) and LiveKit 7881/tcp + 50000-50060/udp only. Mailpit and `web` (Vite) are in a
+  `local` profile that the server never starts. SeaweedFS writes its S3 login from `.env` at start (`infra/seaweedfs/s3.json`
+  is the PC's login only).
+- Caddy: `frontend/Dockerfile.prod` builds the site (`npm run build`) into a `caddy:2.11.7-alpine` image;
+  `infra/caddy/Caddyfile.prod` (domain from `PUBLIC_HOST`, security headers, SPA fallback, `/assets` cached a year).
+  Caddy 2.11 because `roll_interval` (daily log files, deleted after `roll_keep_for 336h`) isn't in 2.10. Access and error logs
+  go to `/data/logs/` in the `caddy_data` volume, with `token` / `t` query values and the Referer removed.
+- API: no `--reload`, `--workers 1` **on purpose** (live rooms live in the API's memory; more processes would split rooms),
+  `--forwarded-allow-ips` = Caddy's fixed address 172.31.240.10 (network 172.31.240.0/24), `--no-access-log` (Caddy keeps the
+  request log with the 14-day limit). That replaces step 2 of the weekly routine on the server: `deploy/weekly.sh` runs the
+  cleanup with `--yes` and recreates LiveKit (its Docker log may hold IPs). Deletion requests (step 3) stay by hand.
+- ARM64: all images are multi-arch and every Python package has an aarch64 wheel **except `sphn`** (needed by
+  `demucs.api`): `Dockerfile.worker` builds it from source in a first stage when no wheel exists (Debian cargo + cmake,
+  `CMAKE_POLICY_VERSION_MINIMUM=3.5`; on x86 the stage only downloads a probe). On aarch64 whisperx skips `torchcodec`
+  but pyannote pulls 0.17 (built for a newer torch), so it's uninstalled there (pyannote guards the import; audio
+  goes through ffmpeg). Not yet run on a real ARM server: DEPLOY.md step 11 checks the worker imports.
+- Scripts in `deploy/` (bash, LF): `generate-secrets.sh`, `open-firewall.sh`, `backup.sh` / `restore.sh` (pg_dump + a tar of the
+  storage volume, 7 days, same disk), `duckdns-update.sh`, `weekly.sh`, `install-timers.sh` (systemd timers: backup 04:00,
+  weekly Mon 05:00 Sao Paulo time, DuckDNS every 5 min). Tested locally against a prod-like stack (backup + restore
+  round trip, routes, headers, log filtering, S3 login from `.env`).
 
 ## Next steps
 0. The user picks the final name (see the UI polish step above) before any branding or launch work.
