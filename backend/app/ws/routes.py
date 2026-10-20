@@ -10,7 +10,7 @@ from app.db import get_sessionmaker, utcnow
 from app.deps import SESSION_COOKIE
 from app.services import rooms as room_service
 from app.services.auth import user_for_session
-from app.services.entitlements import plan_for
+from app.services.entitlements import room_plan
 from app.ws import protocol
 from app.ws.hub import RoomHub, server_time_ms
 from app.ws.room_state import JoinRefused
@@ -29,8 +29,7 @@ class _Lookup:
 
 
 def _host_plan(db, room) -> dict:
-    limits = plan_for(db, room.host, utcnow())
-    return {"capacity": limits.max_room_size, "modes": list(limits.modes), "replays": limits.replays}
+    return room_plan(db, room.host, utcnow())
 
 
 def _lookup(token: str | None, raw_code: str) -> _Lookup:

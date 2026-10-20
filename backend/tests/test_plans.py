@@ -123,6 +123,7 @@ def test_free_rooms_have_four_players_and_no_spotlight(ana):
     with ana.ws(code) as ws:
         room = receive_until(ws, lambda m: m["type"] == "lobby_state")["room"]
         assert (room["allowed_modes"], room["replays"], room["capacity"]) == (["sing_together"], False, 4)
+        assert (room["plan"], room["plan_until"]) == ("free", None)
         ws.send_json({"type": "set_mode", "mode": "spotlight"})
         assert receive_until(ws, lambda m: m["type"] == "error")["code"] == "premium_required"
 
@@ -136,6 +137,9 @@ def test_a_party_pass_upgrades_an_open_room_right_away(admin, ana):
         ana.post("/api/me/party-pass")
         room = receive_until(ws, lambda m: m["type"] == "lobby_state" and m["room"]["capacity"] == 16)["room"]
         assert "spotlight" in room["allowed_modes"] and room["replays"] is True
+        # Everyone in the room, guests too, can see when the Party Pass ends.
+        assert room["plan"] == "party"
+        assert timedelta(hours=23) < datetime.fromisoformat(room["plan_until"]) - utcnow() <= timedelta(hours=24)
         ws.send_json({"type": "set_mode", "mode": "spotlight"})
         assert receive_until(ws, lambda m: m["type"] == "lobby_state")["room"]["mode"] == "spotlight"
 

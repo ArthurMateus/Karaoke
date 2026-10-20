@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { usePlan } from '../api/hooks'
 import QrCode from '../components/QrCode'
 import { formatCode } from '../lib/roomCode'
-import { Badge, Button, Card, CopyField, useCopy, useToast } from '../ui'
+import { Badge, Button, Card, CopyField, useCopy, useNow, useToast } from '../ui'
 import type { LobbyRoom } from './protocol'
 
 /** The room's code, QR and link, big, plus what the room's plan allows. */
@@ -48,13 +48,18 @@ export default function InvitePanel({ code, joinUrl, room, isHost }: { code: str
   )
 }
 
-/** "Free · 4 players", "Premium room · 16 players", or for the host "Party Pass until 23:10". */
+/** "Free · 4 players", "Premium room · 16 players", or "Party Pass until 23:10" (everyone sees it). */
 function PlanBadge({ room, isHost }: { room: LobbyRoom; isHost: boolean }) {
   const { t, i18n } = useTranslation()
-  const plan = usePlan(isHost)
-  const partyUntil = isHost ? plan.data?.party_until : null
+  const now = useNow(60_000)
+  // The room says when a Party Pass ends; a server without that field only tells the host (their own plan).
+  const plan = usePlan(isHost && room.plan === undefined)
+  const partyUntil = room.plan !== undefined ? (room.plan === 'party' ? room.plan_until : null) : isHost ? plan.data?.party_until : null
   if (partyUntil) {
-    const time = new Date(partyUntil).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })
+    const end = new Date(partyUntil)
+    // "until Wed 10:19" when it ends on another day, so nobody reads tomorrow morning as today.
+    const sameDay = end.toDateString() === new Date(now).toDateString()
+    const time = end.toLocaleString(i18n.language, { weekday: sameDay ? undefined : 'short', hour: '2-digit', minute: '2-digit' })
     return (
       <Badge tone="pass" icon={Ticket}>
         {t('lobby.planParty', { time })}

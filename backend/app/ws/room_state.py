@@ -9,6 +9,7 @@ Two modes:
 
 import itertools
 from dataclasses import dataclass, field
+from datetime import datetime
 
 
 class JoinRefused(Exception):
@@ -103,6 +104,8 @@ class RoomState:
     mode: str = "sing_together"
     allowed_modes: tuple[str, ...] = MODES  # from the host's plan (see apply_plan)
     replays: bool = True  # group replays, from the host's plan
+    plan: str = "free"  # the host's plan name: free | premium | party
+    plan_until: str | None = None  # ISO end of a running Party Pass, shown to everyone in the room
     queue: list[QueueEntry] = field(default_factory=list)  # Spotlight: next turns, in order
     turns: list[Turn] = field(default_factory=list)  # Spotlight: turns sung tonight
 
@@ -175,9 +178,12 @@ class RoomState:
         self.song = song
         self.phase = "lobby"
 
-    def apply_plan(self, capacity: int, modes: list[str], replays: bool) -> None:
+    def apply_plan(
+        self, capacity: int, modes: list[str], replays: bool, plan: str = "free", plan_until: datetime | None = None
+    ) -> None:
         """The host's plan, refreshed whenever someone connects. Players already in stay, even over a smaller size."""
         self.capacity, self.allowed_modes, self.replays = capacity, tuple(modes), replays
+        self.plan, self.plan_until = plan, plan_until.isoformat() if plan_until else None
 
     def set_mode(self, by: str, mode: str) -> None:
         if by != self.host_id:
@@ -357,6 +363,8 @@ class RoomState:
             "mode": self.mode,
             "allowed_modes": list(self.allowed_modes),
             "replays": self.replays,
+            "plan": self.plan,
+            "plan_until": self.plan_until,
             "queue": [
                 {"id": e.id, "singer_id": e.singer_id, "partner_id": e.partner_id, "song": e.song} for e in self.queue
             ],

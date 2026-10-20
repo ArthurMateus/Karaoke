@@ -58,6 +58,8 @@ export interface LobbyRoom {
   mode: Mode
   allowed_modes: Mode[] // from the host's plan: Spotlight needs premium or a running Party Pass
   replays: boolean // the host's plan includes group replays
+  plan?: 'free' | 'premium' | 'party' // the host's plan (older servers don't send it)
+  plan_until?: string | null // ISO time a running Party Pass ends; null for other plans
   queue: QueueEntry[]
   votes: VoteSummary | null // Spotlight, for the current turn
   standings: Standing[] // Spotlight, tonight

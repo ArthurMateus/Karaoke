@@ -71,6 +71,16 @@ def status(db: Session, user: User | None, now: datetime) -> PlanStatus:
     return PlanStatus("free", None, None, unused, plans["free"])
 
 
+def room_plan(db: Session, host: User | None, now: datetime) -> dict:
+    """What a room gets from its host's plan (RoomState.apply_plan). Everyone in the room sees the plan name and
+    when a Party Pass ends; a premium host's renewal date stays private."""
+    s = status(db, host, now)
+    return {
+        "capacity": s.limits.max_room_size, "modes": list(s.limits.modes), "replays": s.limits.replays,
+        "plan": s.name, "plan_until": s.party_until if s.name == "party" else None,
+    }
+
+
 def plan_for(db: Session, user: User | None, now: datetime) -> PlanLimits:
     return status(db, user, now).limits
 

@@ -44,11 +44,11 @@ def plan_out(db, user: User) -> PlanOut:
 
 def _refresh_live_rooms(request: Request, db, user: User) -> None:
     """A host's plan changed: their open rooms get the new limits right away."""
-    limits = entitlements.plan_for(db, user, utcnow())
+    plan = entitlements.room_plan(db, user, utcnow())
     hub = request.app.state.hub
     for live in list(hub.rooms.values()):
         if live.state.host_id == str(user.id):
-            live.state.apply_plan(limits.max_room_size, list(limits.modes), limits.replays)
+            live.state.apply_plan(**plan)
             anyio.from_thread.run(hub.broadcast_state, live)
 
 
