@@ -7,7 +7,7 @@ import type { PlanInfo } from '../api/types'
 import { Button, ProgressBar, Skeleton, cx, formatTimeLeft, useConfirm, useNow, useToast } from '../ui'
 import ErrorText from './ErrorText'
 
-const PASS_MS = 24 * 3600 * 1000 // a Party Pass runs 24 hours from when it's started
+const PASS_MS = 24 * 3600 * 1000 // a Night Pass runs 24 hours from when it's started
 
 function useDate() {
   const { i18n } = useTranslation()
@@ -18,7 +18,7 @@ function useDate() {
     )
 }
 
-/** My plan: what it allows, Party Passes waiting to be started, and a box for redeem codes. */
+/** My plan: what it allows, Night Passes waiting to be started, and a box for redeem codes. */
 export default function PlanCard() {
   const { t } = useTranslation()
   const plan = usePlan(true)
@@ -110,7 +110,7 @@ function PremiumHero({ p }: { p: PlanInfo }) {
   )
 }
 
-/** A running Party Pass, as a ticket with the time left counting down. */
+/** A running Night Pass, as a ticket with the time left counting down. */
 function PartyHero({ until, onEnded }: { until: string; onEnded: () => void }) {
   const { t } = useTranslation()
   const date = useDate()

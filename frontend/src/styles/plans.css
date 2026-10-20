@@ -306,7 +306,7 @@
   color: #fff;
 }
 
-/* Party Pass: a ticket with a stub, notches and the time left. */
+/* Night Pass: a ticket with a stub, notches and the time left. */
 .plan-hero.party {
   background: linear-gradient(135deg, var(--amber-soft), var(--coral-soft));
   border: 1px solid #f3cfa8;

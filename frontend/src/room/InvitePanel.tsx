@@ -48,11 +48,11 @@ export default function InvitePanel({ code, joinUrl, room, isHost }: { code: str
   )
 }
 
-/** "Free · 4 players", "Premium room · 16 players", or "Party Pass until 23:10" (everyone sees it). */
+/** "Free · 4 players", "Premium room · 16 players", or "Night Pass until 23:10" (everyone sees it). */
 function PlanBadge({ room, isHost }: { room: LobbyRoom; isHost: boolean }) {
   const { t, i18n } = useTranslation()
   const now = useNow(60_000)
-  // The room says when a Party Pass ends; a server without that field only tells the host (their own plan).
+  // The room says when a Night Pass ends; a server without that field only tells the host (their own plan).
   const plan = usePlan(isHost && room.plan === undefined)
   const partyUntil = room.plan !== undefined ? (room.plan === 'party' ? room.plan_until : null) : isHost ? plan.data?.party_until : null
   if (partyUntil) {

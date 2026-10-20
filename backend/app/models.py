@@ -195,7 +195,7 @@ class DailyAttempt(Base):
 
 
 class RedeemCode(Base):
-    """A code an admin hands out: N days of premium, or a Party Pass. Each person can use it once."""
+    """A code an admin hands out: N days of premium, or a Night Pass. Each person can use it once."""
 
     __tablename__ = "redeem_codes"
     __table_args__ = (UniqueConstraint("code", name="uq_redeem_code"),)
@@ -214,7 +214,7 @@ class RedeemCode(Base):
 
 
 class PremiumGrant(Base):
-    """Premium for a while, or a Party Pass (24 h of premium rooms, started when its owner chooses).
+    """Premium for a while, or a Night Pass (24 h of premium rooms, started when its owner chooses).
 
     Everything that gives premium makes one of these: an admin, a redeemed code, and
     later a payment. The plan rules are in app/services/entitlements.py.

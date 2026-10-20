@@ -1,4 +1,4 @@
-"""Milestone 5: plans. Premium grants, redeem codes, the Party Pass, admins, and what the plan allows."""
+"""Milestone 5: plans. Premium grants, redeem codes, the Night Pass, admins, and what the plan allows."""
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -137,7 +137,7 @@ def test_a_party_pass_upgrades_an_open_room_right_away(admin, ana):
         ana.post("/api/me/party-pass")
         room = receive_until(ws, lambda m: m["type"] == "lobby_state" and m["room"]["capacity"] == 16)["room"]
         assert "spotlight" in room["allowed_modes"] and room["replays"] is True
-        # Everyone in the room, guests too, can see when the Party Pass ends.
+        # Everyone in the room, guests too, can see when the Night Pass ends.
         assert room["plan"] == "party"
         assert timedelta(hours=23) < datetime.fromisoformat(room["plan_until"]) - utcnow() <= timedelta(hours=24)
         ws.send_json({"type": "set_mode", "mode": "spotlight"})

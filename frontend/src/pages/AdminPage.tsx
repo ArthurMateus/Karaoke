@@ -13,7 +13,7 @@ import {
 type Kind = 'premium' | 'party_pass'
 type Order = 'desc' | 'asc' // newest first / oldest first
 
-/** For admins (ADMIN_EMAILS): give premium or Party Passes, and make redeem codes to hand out. */
+/** For admins (ADMIN_EMAILS): give premium or Night Passes, and make redeem codes to hand out. */
 export default function AdminPage() {
   const { t } = useTranslation()
   const me = useMe()

@@ -84,7 +84,7 @@ export interface DailyInfo {
   yesterday: { name: string; score: number; song_title: string } | null
 }
 
-/** My plan (Milestone 5). "party" = a running Party Pass: premium rooms for 24 h. */
+/** My plan (Milestone 5). "party" = a running Night Pass: premium rooms for 24 h. */
 export interface PlanInfo {
   plan: 'free' | 'premium' | 'party'
   premium_until: string | null

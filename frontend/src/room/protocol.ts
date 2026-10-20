@@ -56,10 +56,10 @@ export interface LobbyRoom {
   parts: Record<string, 'P1' | 'P2'> // who sings, and which part
   scores: Record<string, number>
   mode: Mode
-  allowed_modes: Mode[] // from the host's plan: Spotlight needs premium or a running Party Pass
+  allowed_modes: Mode[] // from the host's plan: Spotlight needs premium or a running Night Pass
   replays: boolean // the host's plan includes group replays
   plan?: 'free' | 'premium' | 'party' // the host's plan (older servers don't send it)
-  plan_until?: string | null // ISO time a running Party Pass ends; null for other plans
+  plan_until?: string | null // ISO time a running Night Pass ends; null for other plans
   queue: QueueEntry[]
   votes: VoteSummary | null // Spotlight, for the current turn
   standings: Standing[] // Spotlight, tonight

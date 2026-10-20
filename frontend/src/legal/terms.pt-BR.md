@@ -35,11 +35,11 @@ Quando você canta, o app grava sua voz (em salas com replay em grupo, no modo s
 
 Não tente falsificar pontos. Podemos corrigir ou remover pontuações, e bloquear contas, quando a conferência mostrar que não foram cantadas.
 
-## 6. Planos, Party Pass e códigos
+## 6. Planos, Night Pass e códigos
 
 - Os planos **Grátis** e **Premium** incluem o que aparece na sua página de perfil. O que uma sala permite depende do plano de **quem criou a sala**.
 - O **Premium** dura o número de dias concedido. Se você já tem premium, os novos dias começam depois do período atual.
-- Um **Party Pass** dá recursos premium às suas salas por **24 horas a partir do momento em que você o inicia**. Não pode ser pausado nem dividido.
+- Um **Night Pass** dá recursos premium às suas salas por **24 horas a partir do momento em que você o inicia**. Não pode ser pausado nem dividido.
 - **Códigos de resgate** podem ser usados uma vez por pessoa, podem ter validade e número limitado de usos, e não podem ser trocados por dinheiro.
 - Premium, passes e códigos dados de graça podem ser revogados se foram obtidos por erro, fraude ou abuso. Como são gratuitos, não há o que reembolsar.
 - Podemos mudar o que cada plano inclui. Avisaremos antes que uma mudança reduza algo que você já recebeu.

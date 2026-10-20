@@ -30,13 +30,13 @@ Use the built-in browser. Check each flow at **390 px** and **1280 px** wide, in
 
 1. Home → sign in by email link → profile (plan card) → sign out.
 2. Create a room → second player joins as guest (127.0.0.1) → both turn on the robot mic, do the delay check, press ready → Sing Together on *Twinkle* → results → replay (premium host) or "replays come with premium" (free host).
-3. Spotlight (host needs premium or a Party Pass): queue a solo turn and a duet → reactions both ways → votes → standings.
+3. Spotlight (host needs premium or a Night Pass): queue a solo turn and a duet → reactions both ways → votes → standings.
 4. Stage screen: open it, "Start the stage", a turn plays there; phones show "a stage screen is playing the music".
 5. Live voice: singer shows "your voice is live"; a listener with "Listen from afar" hears 1 voice (test it in the *visible* tab: hidden tabs get frozen and LiveKit disconnects).
 6. Solo run with `?robot` → score, personal best, replay.
 7. Song of the day: a try with an account (one only; a second is refused), the leaderboard with ✓, the guest view (practice, sign in to compete).
 8. Songs: library, view a chart, upload page (lyrics box, "Find lyrics online"), redo lyrics on an uploaded song (use a copy, never the user's own songs).
-9. Plans: free room shows Spotlight locked and 4 players; admin makes a Party Pass code; redeem it (typed loosely); start it from the room → 16 players, Spotlight open.
+9. Plans: free room shows Spotlight locked and 4 players; admin makes a Night Pass code; redeem it (typed loosely); start it from the room → 16 players, Spotlight open.
 10. Errors: wrong room code, full room (5th player on a free host), kicked player, closed room, no microphone permission, offline/reconnecting banner.
 
 Also look for: text cut off or overflowing (Portuguese especially), buttons that do nothing, missing loading states (blank screens), console errors (`read_console_messages`), failed network requests, focus order and visible focus, layout jumps, animations that ignore reduced motion, the sing screen stuttering.

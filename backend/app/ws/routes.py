@@ -87,7 +87,7 @@ async def room_socket(websocket: WebSocket, code: str) -> None:
 
     hub: RoomHub = websocket.app.state.hub
     room = hub.get_or_create(found.room_code, found.host_id, found.plan["capacity"])
-    room.state.apply_plan(**found.plan)  # it may have changed (a Party Pass started)
+    room.state.apply_plan(**found.plan)  # it may have changed (a Night Pass started)
     try:
         room.state.join(found.user_id, found.name, found.is_guest)
     except JoinRefused as refused:
@@ -133,7 +133,7 @@ async def stage_socket(websocket: WebSocket, code: str, t: str = "") -> None:
 
     hub: RoomHub = websocket.app.state.hub
     room = hub.get_or_create(found.room_code, found.host_id, found.plan["capacity"])
-    room.state.apply_plan(**found.plan)  # it may have changed (a Party Pass started)
+    room.state.apply_plan(**found.plan)  # it may have changed (a Night Pass started)
     await websocket.send_json({"type": "welcome", "you": None, "server_time": server_time_ms()})
     await hub.attach_stage(room, websocket)
     try:

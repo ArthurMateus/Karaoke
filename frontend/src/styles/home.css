@@ -263,7 +263,7 @@
   margin: 0;
   min-width: 0;
 }
-/* A long badge ("Premium or Party Pass") goes under the title instead of squeezing it. */
+/* A long badge ("Premium or Night Pass") goes under the title instead of squeezing it. */
 .home-tile .card-head {
   flex-wrap: wrap;
 }

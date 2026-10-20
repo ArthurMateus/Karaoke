@@ -26,7 +26,7 @@ We don't use your voice to identify you, we don't sell your data, and we don't s
 
 - **People in a room:** your name, ready state, scores, reactions, and, in rooms with group replays, the replay that mixes everyone's voices. In a room you host, the people in it can hear your uploaded songs.
 - **Everyone:** names and scores on the song-of-the-day leaderboard (including yesterday's winner).
-- **Only you:** your email, your song library, and your plan details (grants, codes, Party Passes waiting). When you host a room, the people in it see whether it has premium features and, during a Party Pass, the time it ends.
+- **Only you:** your email, your song library, and your plan details (grants, codes, Night Passes waiting). When you host a room, the people in it see whether it has premium features and, during a Night Pass, the time it ends.
 - **Our service providers**, only to run the app: hosting and file storage [HOSTING PROVIDER, COUNTRY], email delivery [EMAIL PROVIDER, COUNTRY]. `[If any provider is outside Brazil: say which safeguards apply (ANPD Res. 19/2024 standard clauses).]`
 - **LRCLIB** (lrclib.net): when you search for lyrics, our server sends the song title, artist and length. No personal data is sent, and your device doesn't contact LRCLIB.
 - Authorities, when the law requires it.

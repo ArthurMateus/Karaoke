@@ -44,7 +44,7 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
               <span className="mode-text">
                 <strong>{t(`modes.${mode}`)}</strong>
                 <span className="small">{t(`modes.${mode}Short`)}</span>
-                {/* Under the text, not over it: "Premium or Party Pass" is long, more so in Portuguese. */}
+                {/* Under the text, not over it: "Premium or Night Pass" is long, more so in Portuguese. */}
                 {locked && (
                   <Badge tone="premium" icon={Lock} className="mode-lock">
                     {t('plan.premiumOrPass')}
@@ -66,7 +66,7 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
   )
 }
 
-/** A free host's room: Spotlight, 16 players and replays need premium or a Party Pass. Styled as a ticket. */
+/** A free host's room: Spotlight, 16 players and replays need premium or a Night Pass. Styled as a ticket. */
 function PartyPassTicket() {
   const { t } = useTranslation()
   const plan = usePlan(true)

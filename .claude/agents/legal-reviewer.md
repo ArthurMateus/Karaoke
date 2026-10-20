@@ -31,7 +31,7 @@ Read `README.md` (what the app does) and `HANDOFF.md` first.
 - Cookies: only the session cookie today. Is a banner needed? (Probably not for strictly necessary cookies; say why.)
 
 ### Plans and future payments
-- Premium, Party Pass and redeem codes: what must the Terms say (what's included, duration, revocation, no refunds for free codes)?
+- Premium, Night Pass and redeem codes: what must the Terms say (what's included, duration, revocation, no refunds for free codes)?
 - For payments later: Brazilian consumer law (CDC: 7-day right of withdrawal for online purchases, clear price and terms), receipts, taxes; note what the payment provider handles.
 
 ### Product texts

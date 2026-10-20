@@ -62,9 +62,9 @@ Replace the UI emoji with lucide icons (mic, music, users, crown, lock, star, ti
 - "How it works" in three steps (create → friends scan → sing), with small illustrations made from the lane motif.
 
 **Lobby**
-- Invite panel: huge room code with copy, QR in a white tile, share button (`navigator.share` on phones, copy elsewhere), plan badge ("Free · 4 players" / "Party Pass until 23:10").
+- Invite panel: huge room code with copy, QR in a white tile, share button (`navigator.share` on phones, copy elsewhere), plan badge ("Free · 4 players" / "Night Pass until 23:10").
 - Players as a grid of avatar cards (ready check, host crown, away state, "you"), with join/leave animation.
-- Mode switch as two big selectable cards with icon, description and a lock badge for free hosts, plus the Party Pass call to action styled as a ticket.
+- Mode switch as two big selectable cards with icon, description and a lock badge for free hosts, plus the Night Pass call to action styled as a ticket.
 - Song card with cover; Spotlight queue as a list with covers, drag handle look (keep ↑↓ buttons), "next up" highlighted.
 - Mic panel: a proper level meter, the delay check as a 3-step mini flow with a visual beat.
 - Phone: a sticky bottom bar with the main action (I'm ready / Start the song / Start X's turn).
@@ -94,7 +94,7 @@ Replace the UI emoji with lucide icons (mic, music, users, crown, lock, star, ti
 ## Phase 6: Account, plans, admin, footer pages
 
 - Sign in / verify / join: centred auth card with the lane art, clear states (email sent, link expired).
-- Profile: plan card styled per plan (Free neutral, Premium gradient, Party Pass ticket with the time left), feature checklist with icons, redeem field as a `CopyField`-like input.
+- Profile: plan card styled per plan (Free neutral, Premium gradient, Night Pass ticket with the time left), feature checklist with icons, redeem field as a `CopyField`-like input.
 - Admin: proper tables (sortable by date), copy buttons on codes, badges for status, confirm dialogs.
 - Footer pages **Terms**, **Privacy**, **Credits & licences**: use the legal agent's drafts. Mark them clearly as drafts on the page until the user has a lawyer review them.
 

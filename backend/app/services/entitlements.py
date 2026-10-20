@@ -3,7 +3,7 @@
 Every limit check goes through here. Plans come from config/limits.yaml:
 - free: everyone without anything below;
 - premium: from a grant that covers now (an admin, a redeemed code, later a payment);
-- party: a started Party Pass. The free plan, but rooms get premium's room features
+- party: a started Night Pass. The free plan, but rooms get premium's room features
   (size, modes, replays) for 24 hours. Conversions stay free.
 Guests are always free (they can't host or upload anyway).
 """
@@ -73,7 +73,7 @@ def status(db: Session, user: User | None, now: datetime) -> PlanStatus:
 
 def room_plan(db: Session, host: User | None, now: datetime) -> dict:
     """What a room gets from its host's plan (RoomState.apply_plan). Everyone in the room sees the plan name and
-    when a Party Pass ends; a premium host's renewal date stays private."""
+    when a Night Pass ends; a premium host's renewal date stays private."""
     s = status(db, host, now)
     return {
         "capacity": s.limits.max_room_size, "modes": list(s.limits.modes), "replays": s.limits.replays,
@@ -100,7 +100,7 @@ def grant_premium(db: Session, user: User, days: int, now: datetime, source: str
 
 
 def give_party_pass(db: Session, user: User, source: str, hours: int = PARTY_PASS_HOURS, **fields) -> PremiumGrant:
-    """A Party Pass waiting to be started."""
+    """A Night Pass waiting to be started."""
     grant = PremiumGrant(user_id=user.id, kind="party_pass", hours=hours, source=source, **fields)
     db.add(grant)
     return grant

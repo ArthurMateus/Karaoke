@@ -2,7 +2,7 @@
 
 A multiplayer karaoke party game that runs in the browser. Players join a room with a short code or by scanning a QR code, and each person sings into their own phone or laptop.
 
-> **Status:** Milestones 1–5 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically, with lyrics you can find online), UltraStar import/export, a chart editor, **Sing Together** (everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay) **Spotlight** (take turns while everyone else watches, cheers and votes, with a stage screen for the TV and the singer's live voice), **solo** singing with personal bests, a **song of the day** with a leaderboard, and **plans**: free and premium, Party Passes and redeem codes (no payments yet).
+> **Status:** Milestones 1–5 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically, with lyrics you can find online), UltraStar import/export, a chart editor, **Sing Together** (everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay) **Spotlight** (take turns while everyone else watches, cheers and votes, with a stage screen for the TV and the singer's live voice), **solo** singing with personal bests, a **song of the day** with a leaderboard, and **plans**: free and premium, Night Passes and redeem codes (no payments yet).
 
 ---
 
@@ -167,13 +167,13 @@ The singer's phone also streams their voice live, through a small streaming serv
 
 "Afar" means anywhere that can reach this PC: today that's your Wi-Fi. Friends in other houses need the app hosted on the internet, which comes in a later milestone. The voice needs `LAN_IP` set in `.env` (see *Start the app*), and the firewall must let Docker through, which it already does if phones can open the app.
 
-**Free and premium:** Spotlight needs a premium host or a running Party Pass (see *Try Milestone 5*).
+**Free and premium:** Spotlight needs a premium host or a running Night Pass (see *Try Milestone 5*).
 
-## Try Milestone 5 by hand (plans, Party Pass, codes)
+## Try Milestone 5 by hand (plans, Night Pass, codes)
 
 The **host's plan decides the room**, so guests never pay. There are no payments yet: premium is given by an admin or by a code, and payments can be added later on top of the same system. The limits are in `config/limits.yaml` (edit it, then `docker compose restart api`).
 
-| | Free | Premium | Party Pass (24 h) |
+| | Free | Premium | Night Pass (24 h) |
 |---|---|---|---|
 | Players per room | 4 | 16 | 16 |
 | Modes | Sing Together | + Spotlight | + Spotlight |
@@ -182,11 +182,11 @@ The **host's plan decides the room**, so guests never pay. There are no payments
 
 1. **Become an admin.** In `.env`, `ADMIN_EMAILS` lists who may open the Admin page (comma separated). After changing it run `docker compose up -d api`. Sign in with that email: the header now shows **Admin**.
 2. **See your plan.** Open your profile (your name in the header). The *Your plan* card shows what your plan allows.
-3. **Make codes.** On **Admin → Make redeem codes**, choose *Premium* (with a number of days) or *Party Pass*, how many codes, how many uses each and an optional expiry, then press **Make**. Copy the codes from the box. They look like `KP-7Q4M-2XRD`.
+3. **Make codes.** On **Admin → Make redeem codes**, choose *Premium* (with a number of days) or *Night Pass*, how many codes, how many uses each and an optional expiry, then press **Make**. Copy the codes from the box. They look like `KP-7Q4M-2XRD`.
 4. **Redeem a code.** On the profile, type the code under *Have a code?* and press **Redeem**. Spaces, dashes and small letters don't matter. Each person can use a code once.
-5. **Start a Party Pass.** A redeemed Party Pass waits until you start it: press **Start a Party Pass now** on the profile, or **Start your Party Pass** in a room's *Game mode* card. From then on, for 24 hours, your rooms hold 16 players, allow Spotlight and keep group replays. An open room upgrades on the spot.
-6. **Give premium directly.** **Admin → Give premium or a Party Pass**: type the person's account email (they must have signed in once; guests can't get premium). Premium given to someone who already has it is added after their current premium. **Recent grants** lists everything given, with **Revoke**.
-7. **What a free host sees.** In a free room, Spotlight shows 🔒 with a short note, the room holds 4 players, and after a song the results say group replays come with premium or a Party Pass.
+5. **Start a Night Pass.** A redeemed Night Pass waits until you start it: press **Start a Night Pass now** on the profile, or **Start your Night Pass** in a room's *Game mode* card. From then on, for 24 hours, your rooms hold 16 players, allow Spotlight and keep group replays. An open room upgrades on the spot.
+6. **Give premium directly.** **Admin → Give premium or a Night Pass**: type the person's account email (they must have signed in once; guests can't get premium). Premium given to someone who already has it is added after their current premium. **Recent grants** lists everything given, with **Revoke**.
+7. **What a free host sees.** In a free room, Spotlight shows 🔒 with a short note, the room holds 4 players, and after a song the results say group replays come with premium or a Night Pass.
 
 ## Sing alone and the song of the day
 
@@ -258,7 +258,7 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 | `frontend/src/styles/` | `tokens.css` (colours, spacing, shadows, motion), `base.css` (page, header, footer), `components.css` (the `ui/` pieces), then one file per area (`home`, `lobby`, `sing`, `spotlight`, `stage`, `songs`, `solo`, `editor`, `plans`) |
 | `frontend/src/stage/`, `frontend/src/legal/` | The TV stage screen's lobby view; the Terms / Privacy / Credits texts shown in the app (drafts) |
 | `config/limits.yaml` | Free/premium limits (room size, modes, replays, conversions, upload size and length, …) |
-| `backend/app/services/entitlements.py` | Which plan applies to whom right now (premium grants, Party Passes) |
+| `backend/app/services/entitlements.py` | Which plan applies to whom right now (premium grants, Night Passes) |
 
 **Accounts:** sign-in is by emailed link only, with no passwords. Guests type a name and play without an account, but only accounts can host rooms and upload songs.
 

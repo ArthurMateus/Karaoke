@@ -105,7 +105,7 @@ class RoomState:
     allowed_modes: tuple[str, ...] = MODES  # from the host's plan (see apply_plan)
     replays: bool = True  # group replays, from the host's plan
     plan: str = "free"  # the host's plan name: free | premium | party
-    plan_until: str | None = None  # ISO end of a running Party Pass, shown to everyone in the room
+    plan_until: str | None = None  # ISO end of a running Night Pass, shown to everyone in the room
     queue: list[QueueEntry] = field(default_factory=list)  # Spotlight: next turns, in order
     turns: list[Turn] = field(default_factory=list)  # Spotlight: turns sung tonight
 
@@ -235,7 +235,7 @@ class RoomState:
         if self.mode != "spotlight" or self.phase not in ("lobby", "results"):
             raise WrongPhase()
         if "spotlight" not in self.allowed_modes:
-            raise WrongPhase("premium_required")  # the Party Pass ran out
+            raise WrongPhase("premium_required")  # the Night Pass ran out
         if not self.queue:
             raise WrongPhase("queue_empty")
         entry = self.queue[0]

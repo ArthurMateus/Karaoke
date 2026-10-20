@@ -35,11 +35,11 @@ When you sing, the app records your voice (in rooms with group replays, in solo 
 
 Don't try to fake scores. We may correct or remove scores, and block accounts, when a score check shows they weren't sung.
 
-## 6. Plans, Party Passes and codes
+## 6. Plans, Night Passes and codes
 
 - **Free** and **Premium** plans include what is shown on your profile page. What a room allows depends on the **host's** plan.
 - **Premium** lasts for the number of days given. If you already have premium, new days are added after the current period.
-- A **Party Pass** gives your rooms premium features for **24 hours from when you start it**. It can't be paused or split.
+- A **Night Pass** gives your rooms premium features for **24 hours from when you start it**. It can't be paused or split.
 - **Redeem codes** can be used once per person, may have an expiry date and a limited number of uses, and can't be exchanged for money.
 - Premium, passes and codes we give for free can be revoked if they were obtained by mistake, fraud or abuse. Because they are free, there's nothing to refund.
 - We may change what each plan includes. We'll tell you before a change reduces something you have already received.

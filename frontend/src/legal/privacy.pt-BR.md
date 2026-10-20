@@ -26,7 +26,7 @@ Não usamos sua voz para identificar você, não vendemos seus dados e não most
 
 - **Pessoas na sala:** seu nome, se está pronto, pontos, reações e, em salas com replay em grupo, o replay que mistura a voz de todos. Numa sala que você criou, quem está nela pode ouvir suas músicas enviadas.
 - **Todo mundo:** nomes e pontos no ranking da música do dia (incluindo o vencedor de ontem).
-- **Só você:** seu e-mail, sua biblioteca de músicas e os detalhes do seu plano (premium recebido, códigos, Passes de Festa guardados). Numa sala que você criou, quem está nela vê se ela tem recursos premium e, durante um Passe de Festa, a hora em que ele acaba.
+- **Só você:** seu e-mail, sua biblioteca de músicas e os detalhes do seu plano (premium recebido, códigos, Passes da Noite guardados). Numa sala que você criou, quem está nela vê se ela tem recursos premium e, durante um Passe da Noite, a hora em que ele acaba.
 - **Nossos fornecedores**, só para fazer o app funcionar: hospedagem e armazenamento [PROVEDOR DE HOSPEDAGEM, PAÍS], envio de e-mails [PROVEDOR DE E-MAIL, PAÍS]. `[Se algum fornecedor estiver fora do Brasil: dizer quais garantias se aplicam (cláusulas-padrão, Res. ANPD 19/2024).]`
 - **LRCLIB** (lrclib.net): quando você busca uma letra, nosso servidor envia título, artista e duração da música. Nenhum dado pessoal é enviado, e seu aparelho não se conecta ao LRCLIB.
 - Autoridades, quando a lei exigir.

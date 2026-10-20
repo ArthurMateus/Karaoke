@@ -1,4 +1,4 @@
-"""Plans: my plan, redeeming a code, starting a Party Pass; and the admin side (grants, codes)."""
+"""Plans: my plan, redeeming a code, starting a Night Pass; and the admin side (grants, codes)."""
 
 import secrets
 import uuid
@@ -97,7 +97,7 @@ def redeem(body: RedeemIn, request: Request, db: Db, user: CurrentAccount) -> Pl
 
 @router.post("/me/party-pass")
 def start_party_pass(request: Request, db: Db, user: CurrentAccount) -> PlanOut:
-    """Start my oldest unused Party Pass: 24 h of premium rooms from now."""
+    """Start my oldest unused Night Pass: 24 h of premium rooms from now."""
     if entitlements.start_party_pass(db, user, utcnow()) is None:
         raise api_error(409, "no_party_pass")
     db.commit()
@@ -155,7 +155,7 @@ def list_grants(db: Db, admin: User = Admin) -> list[GrantOut]:
 
 @router.post("/admin/grants", status_code=201)
 def create_grant(body: GrantIn, request: Request, db: Db, admin: User = Admin) -> GrantOut:
-    """Give an existing account premium for N days, or a Party Pass."""
+    """Give an existing account premium for N days, or a Night Pass."""
     user = db.scalar(select(User).where(User.email == body.email.strip().lower(), User.is_guest.is_(False)))
     if user is None:
         raise api_error(404, "no_such_account")
