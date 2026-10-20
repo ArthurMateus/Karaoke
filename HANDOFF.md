@@ -66,6 +66,19 @@ No original plan text; the user chose: premium by admin grants and redeem codes,
 - Tried in the browser: free profile and locked Spotlight, admin made a Party Pass code, redeemed it loosely typed, started it from the room, room went 4 -> 16 and Spotlight opened.
 - Tournaments (`tournaments: true` for premium) don't exist yet.
 
+## UI polish step (docs/ui-polish-plan.md): in progress
+
+Done and committed (2026-10-20):
+- Legal start-of-step review: `docs/legal/LEGAL-REVIEW-2026-10-20.md`, drafts in `docs/legal/drafts/`. lucide-react 1.52.0 and canvas-confetti 1.9.4 approved (pinned exactly).
+- Screenshot robot `scripts/ui-shots.mjs` (headless Edge over DevTools, no packages) and all "before" shots in `design/shots/ui-polish/`. It needs the API started with the test host as admin: `ADMIN_EMAILS="<normal list>,shots-host@example.com" docker compose up -d api`. Afterwards run a plain `docker compose up -d api`.
+- Phase 1: tokens and split styles (`frontend/src/styles/`), components in `frontend/src/ui/`, new header and footer, draft Terms/Privacy/Credits pages (`frontend/src/legal/` are copies of the drafts), and confirm dialogs instead of `window.confirm`.
+- QA of Phase 1: `docs/qa/QA-REPORT-2026-10-20-phase1.md`. 3 major (F-1 header overlap at 770-1000 px, F-2 PT revoke dialog says "Cancelar" twice, F-3 new pages don't scroll to the top) and 13 minor findings, **not fixed yet**.
+
+Not committed, waiting:
+- Phase 2 drafts in `docs/ui-polish-drafts/`. `lobby/merge_lobby.py` copies the lobby drafts into `frontend/`. `i18n_set.py <file>` adds each `i18n.json` to both language files. The home draft replaces `pages/HomePage.tsx` and `styles/home.css`. Change the Spotlight tile badge to say premium **or** Party Pass. New, still unused lobby components are already in `frontend/src/room/` (InvitePanel, PlayerGrid, ModePicker, SongPanel, turns, usePresence), plus `components/HeroLane.tsx`.
+- Next: fix the Phase 1 QA findings, merge Phase 2, typecheck/lint/test, take the "after" shots (`node scripts/ui-shots.mjs after p2`), run QA, then **show the user the screenshots and wait for their go-ahead** before Phases 3-6. The user wants parallel subagents where possible: Phases 3-6 touch separate screens. Keep `en.json`/`pt-BR.json` edits in one place, merged by the main session.
+- API gap to ask the user about: guests can't see "Party Pass until 23:10" because the room snapshot has no plan kind or end time. For now they see "Premium room".
+
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
 2. Then, **after the user's go-ahead**, Milestone 6. Its plan text isn't in the repo: ask the user what it covers (likely candidates mentioned so far: tournaments for premium, payments, hosting online so remote friends can join).
