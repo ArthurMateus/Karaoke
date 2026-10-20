@@ -432,7 +432,8 @@
         "good": "Bom",
         "ok": "OK",
         "miss": "Errou"
-      }
+      },
+      "scoreboard": "Placar ao vivo"
     },
     "results": {
       "title": "Resultado",
@@ -444,13 +445,23 @@
       "uploading": "Enviando sua gravação…",
       "uploadFailed": "Não foi possível enviar sua gravação.",
       "again": "Escolher a próxima música",
-      "waitingHost": "Esperando o anfitrião escolher a próxima música…"
+      "waitingHost": "Esperando o anfitrião escolher a próxima música…",
+      "place": "{{place}}º lugar",
+      "youWon": "Você venceu esta rodada!",
+      "winner": "{{name}} venceu esta rodada!",
+      "tie": "Empate: {{names}}!"
     },
     "steps": {
       "label": "Preparação",
       "mic": "Microfone",
       "check": "Teste de atraso",
       "ready": "Pronto"
+    },
+    "replay": {
+      "play": "Tocar o replay",
+      "pause": "Pausar",
+      "seek": "Posição no replay",
+      "position": "{{time}} de {{total}}"
     }
   },
   "lyrics": {
@@ -542,7 +553,19 @@
     "stars_other": "{{count}} estrelas",
     "voted": "Valeu! Você ainda pode mudar seu voto.",
     "noAudience": "Todo mundo cantou esta, então não há público para votar: vale só a afinação.",
-    "startMyTurn": "Começar minha vez"
+    "startMyTurn": "Começar minha vez",
+    "voteMeter": "Votos recebidos",
+    "votedOf": "{{count}} de {{total}}",
+    "pitchPart": "Afinação (70%): {{score}}",
+    "pitchOnly": "Só afinação, sem votos: {{score}}",
+    "starsPart": "Estrelas (30%): {{score}}",
+    "averageStars": "Média de {{average}} de 5 estrelas",
+    "rankNew": "Novo",
+    "rankSame": "Mesma posição",
+    "rankUp_one": "Subiu {{count}} posição",
+    "rankUp_other": "Subiu {{count}} posições",
+    "rankDown_one": "Caiu {{count}} posição",
+    "rankDown_other": "Caiu {{count}} posições"
   },
   "stage": {
     "title": "Tela do palco (TV ou notebook)",

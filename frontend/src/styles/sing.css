@@ -1,8 +1,11 @@
-/* ---------- Sing Together ---------- */
+/* ---------- Sing Together ----------
+   The sing screen must stay smooth on a mid phone: no blur, no big shadows, no animated
+   backgrounds; only transform and opacity move. (.sing-title, .scoreboard, .score-chip, .stage,
+   .lyrics, .ranking and .rank are also used by the stage screen and the song of the day.) */
 .sing {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   background: var(--stage);
   color: var(--stage-text);
   border-radius: var(--r-card);
@@ -15,13 +18,41 @@
 .sing-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
+.sing-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 260px;
+}
+.sing-cover {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 14%);
+}
+.sing-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
 .sing-title {
   font-size: clamp(1.1rem, 3vw, 1.5rem);
+  overflow-wrap: anywhere;
 }
+.sing-role {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sing-role svg {
+  flex-shrink: 0;
+  color: var(--coral);
+}
+
+/* Live scores */
 .scoreboard {
   list-style: none;
   margin: 0;
@@ -51,6 +82,77 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.live-chip {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 8px 6px;
+  border: 1px solid transparent;
+}
+.live-chip .avatar {
+  box-shadow: none;
+}
+.live-chip.mine {
+  border-color: var(--stage-note);
+}
+.live-chip.leading {
+  border-color: var(--amber);
+}
+.chip-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+.chip-text b {
+  display: inline-block;
+  transform-origin: left center;
+}
+
+/* How far into the song: scaled, not resized. */
+.song-progress {
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--stage-line);
+  overflow: hidden;
+}
+.song-progress-bar {
+  height: 100%;
+  background: var(--grad-live);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* Switches: music on this phone, listen from afar. */
+.sing-switches:empty {
+  display: none;
+}
+.sing-switch {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--stage-line);
+  border-radius: var(--r-pill);
+  background: var(--stage-2);
+  color: #d6d1e6;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.sing-switch[aria-pressed='true'] {
+  border-color: var(--stage-note);
+  color: var(--stage-text);
+}
+.sing .voice-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The lane */
 .stage {
   position: relative;
   flex: 1;
@@ -66,53 +168,91 @@
   height: 100%;
   display: block;
 }
+
+/* 3-2-1: a ring that drains each second, the number pops in. */
 .countdown {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   font-family: var(--f-display);
   font-weight: 800;
-  font-size: clamp(2.5rem, 12vw, 6rem);
   color: var(--stage-text);
-  background: rgb(21 19 26 / 55%);
+  background: rgb(21 19 26 / 62%);
 }
+.countdown .ring-track {
+  stroke: rgb(255 255 255 / 14%);
+}
+.countdown .ring-fill {
+  stroke: var(--coral);
+}
+.countdown .ring-center {
+  font-size: 4.2rem;
+  line-height: 1;
+}
+.countdown-num {
+  display: inline-block;
+}
+.countdown-ready {
+  font-family: var(--f-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9c3da;
+}
+
+/* Line ratings: a pill that pops in at the top, then fades. Opacity-only with reduced motion. */
 .rating {
   position: absolute;
   top: 14px;
-  right: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.rating span {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid currentColor;
+  background: rgb(21 19 26 / 78%);
   font-family: var(--f-display);
   font-weight: 800;
-  font-size: 1.25rem;
-  animation: rating-pop 1.4s ease-out forwards;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  animation: rating-fade 1.4s linear forwards;
 }
-.rating.perfect,
-.rating.great {
+.rating.perfect span {
+  color: #ffc04d;
+  background: rgb(58 40 12 / 85%);
+}
+.rating.great span {
   color: var(--amber);
 }
-.rating.good {
-  color: #8f7bff;
+.rating.good span {
+  color: #a898ff;
 }
-.rating.ok,
-.rating.miss {
+.rating.ok span,
+.rating.miss span {
   color: #a49fb5;
+  font-size: 1rem;
 }
-@keyframes rating-pop {
-  0% {
-    opacity: 0;
-    transform: translateY(6px) scale(0.9);
-  }
-  15% {
-    opacity: 1;
-    transform: none;
-  }
-  80% {
+@keyframes rating-fade {
+  0%,
+  70% {
     opacity: 1;
   }
   100% {
     opacity: 0;
   }
 }
+
+/* Lyrics */
 .lyrics {
   text-align: center;
   display: flex;
@@ -134,11 +274,272 @@
   color: #a49fb5;
   font-size: clamp(0.95rem, 3vw, 1.15rem);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .song-progress-bar {
+    transition: transform 0.5s linear;
+  }
+  .chip-text b.bump {
+    animation: chip-bump 0.45s var(--ease-out);
+  }
+  .countdown-num {
+    animation: count-pop 0.45s var(--ease-out);
+  }
+  .rating span {
+    animation: rating-pop 1.4s var(--ease-out) forwards;
+  }
+}
+@keyframes chip-bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes count-pop {
+  0% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes rating-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(0) scale(1.12);
+  }
+  24% {
+    transform: scale(1);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 420px) {
+  .sing {
+    padding: 12px;
+    margin-inline: -4px;
+  }
+  .score-chip {
+    min-width: 64px;
+  }
+  .live-chip {
+    padding-right: 10px;
+  }
+  .countdown .countdown-ring {
+    width: 124px !important;
+    height: 124px !important;
+  }
+  .countdown .ring-center {
+    font-size: 3.4rem;
+  }
+}
+@media (max-width: 640px), (pointer: coarse) {
+  .sing-switch {
+    min-height: 44px;
+  }
+}
+
+/* ---------- Results ---------- */
 .results {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+.results-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+}
+.results-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 200px;
+}
+.results-titles h2 {
+  overflow-wrap: anywhere;
+}
+.results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.results-wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.results-wait svg {
+  flex-shrink: 0;
+}
+.results-winner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 3.4vw, 1.25rem);
+  color: var(--violet);
+  text-align: center;
+}
+.results-winner svg {
+  flex-shrink: 0;
+}
+
+/* Podium and list on the left, the replay on the right (one column on phones). */
+.results-body {
+  display: grid;
+  gap: 20px;
+}
+.results-board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .results-body {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 32px;
+  }
+}
+
+/* The podium: 2nd, 1st, 3rd */
+.podium {
+  list-style: none;
+  margin: 0 auto;
+  padding: 18px 0 0;
+  width: 100%;
+  max-width: 560px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+}
+.podium-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 400px;
+}
+.podium-1 {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 220px;
+}
+.podium-step {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+}
+.podium-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  min-width: 0;
+}
+.podium-avatar {
+  position: relative;
+  display: inline-grid;
+  margin-bottom: 4px;
+}
+.podium-crown {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--amber);
+}
+.podium-name {
+  font-weight: 700;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.podium-score {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 3.6vw, 1.3rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.step-1 .podium-score {
+  font-size: clamp(1.25rem, 5vw, 1.7rem);
+  color: var(--violet);
+}
+.podium-block {
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  padding-top: 10px;
+  border-radius: 12px 12px 4px 4px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+.step-1 .podium-block {
+  height: 112px;
+}
+.step-2 .podium-block {
+  height: 82px;
+}
+.step-3 .podium-block {
+  height: 60px;
+}
+.podium-block.medal-1 {
+  background: linear-gradient(180deg, #fbdc8a, #f6c64a);
+  border-color: #e6b13a;
+}
+.podium-block.medal-2 {
+  background: linear-gradient(180deg, #ecebf0, #d9d6df);
+  border-color: #c8c4d0;
+}
+.podium-block.medal-3 {
+  background: linear-gradient(180deg, #f0c4a2, #e3a77a);
+  border-color: #d2946a;
+}
+.podium-place {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.step-1 .podium-place {
+  font-size: 2.2rem;
+}
+.rest-ranking .rank.me,
+.spot-standings .rank.me {
+  outline: 2px solid var(--violet);
+  outline-offset: -1px;
+}
+
+/* Rankings (also the song of the day and the stage) */
 .ranking {
   list-style: none;
   margin: 0;
@@ -165,29 +566,207 @@
   font-weight: 800;
   width: 1.5em;
   text-align: center;
+  flex-shrink: 0;
+}
+.rank .player-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .rank-score {
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
+
+/* Solo: the score counting up, a celebration for a new personal best. */
+.solo-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+.solo-result.new-best {
+  background: var(--violet-soft);
+  border-color: #d8d0ff;
+}
+.solo-result-score {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 10vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.solo-result.new-best .solo-result-score {
+  background: var(--grad-celebrate);
+  background-clip: text;
+  color: transparent;
+}
+.solo-result-label {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: -2px;
+}
+
+/* ---------- Replay player ---------- */
 .replay {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+.replay-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .replay-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--paper);
+}
+.replay-player audio {
+  display: none;
+}
+.replay-toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--violet);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--dur-fast), transform var(--dur-fast);
+}
+.replay-toggle:hover {
+  background: var(--violet-dark);
+}
+.replay-toggle:active {
+  transform: scale(0.94);
+}
+.replay-player.waiting .replay-toggle {
+  background: var(--paper-2);
+  cursor: default;
+}
+.replay-track {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.replay-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.replay-seek {
+  --part: 0%;
+  appearance: none;
   width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
 }
-@media (prefers-reduced-motion: reduce) {
-  .rating {
-    animation: none;
+.replay-seek:disabled {
+  cursor: default;
+}
+.replay-seek::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(to right, var(--violet) var(--part), var(--line-strong) var(--part));
+}
+.replay-seek::-moz-range-track {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: linear-gradient(to right, var(--violet) var(--part), var(--line-strong) var(--part));
+}
+.replay-seek::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: var(--violet);
+  box-shadow: 0 1px 3px rgb(21 19 26 / 30%);
+}
+.replay-seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: var(--violet);
+  box-shadow: 0 1px 3px rgb(21 19 26 / 30%);
+}
+.replay-seek:disabled::-webkit-slider-thumb {
+  background: var(--line-strong);
+}
+.replay-seek:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .podium-step {
+    animation: podium-rise 0.6s var(--ease-out) backwards;
+    animation-delay: var(--delay, 0ms);
   }
 }
-@media (max-width: 420px) {
-  .sing {
-    padding: 12px;
-    margin-inline: -4px;
+@keyframes podium-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
   }
-  .score-chip {
-    min-width: 64px;
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .results-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+  .results-actions .button {
+    flex: 1 1 100%;
+  }
+  .step-1 .podium-block {
+    height: 92px;
+  }
+  .step-2 .podium-block {
+    height: 66px;
+  }
+  .step-3 .podium-block {
+    height: 48px;
+  }
+  .podium .avatar.xl {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+  }
+  .podium .avatar.lg {
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
   }
 }

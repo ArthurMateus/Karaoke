@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Mic, Radio } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AudioEngine } from '../audio/engine'
 import { hzToMidi } from '../audio/yin'
@@ -11,6 +12,7 @@ import NoteLane, { type TrailPoint } from './NoteLane'
 import type { ClientMessage, LobbyRoom, ServerMessage } from './protocol'
 import { ReactionBar, ReactionLayer } from './Reactions'
 import Scoreboard from './Scoreboard'
+import { CountdownRing, SongCover } from '../ui'
 import { useListenVoice, usePublishVoice } from '../voice/liveVoice'
 
 interface Props {
@@ -40,6 +42,7 @@ interface View {
 }
 
 const TRAIL_SECONDS = 2
+const COUNT_FROM = 3 // the big 3-2-1
 
 export default function SingView(props: Props) {
   const { room, me, engine, player, onNeedPlayer, clock, chart, buffer, latencyMs, send, subscribe, onUpload, musicHere, onMusicHere, fromAfar, onFromAfar } = props
@@ -154,29 +157,37 @@ export default function SingView(props: Props) {
   const singers = Object.keys(room.parts)
   const nameOf = useCallback((id: string) => room.players.find((p) => p.id === id)?.name ?? '…', [room.players])
 
+  const role = part
+    ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
+    : spotlight
+      ? t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })
+      : t('game.sing.watching')
+  const songLength = buffer?.duration ?? room.song?.duration_seconds ?? timeline?.end ?? 0
+
   return (
     <div className="sing">
-      <div className="sing-top">
-        <div>
-          <h1 className="sing-title">{room.song?.title}</h1>
-          <p className="muted small">
-            {part
-              ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
-              : spotlight
-                ? t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })
-                : t('game.sing.watching')}
-          </p>
+      <header className="sing-top">
+        <div className="sing-heading">
+          {room.song && <SongCover song={room.song} size={44} className="sing-cover" />}
+          <div className="sing-titles">
+            <h1 className="sing-title">{room.song?.title}</h1>
+            <p className="muted small sing-role">
+              {part && <Mic size={14} aria-hidden />}
+              {role}
+            </p>
+          </div>
         </div>
         <Scoreboard room={room} singers={singers} me={me} myTotal={singing ? myTotal : null} />
-      </div>
+      </header>
+      <SongProgress songTime={songTime} length={songLength} />
       <div className="row wrap sing-switches">
         {room.stage_connected && engine && !listening && (
-          <button type="button" className="link-button small music-switch" onClick={() => onMusicHere(!musicHere)}>
+          <button type="button" className="sing-switch music-switch" aria-pressed={musicHere} onClick={() => onMusicHere(!musicHere)}>
             {musicHere ? t('stage.musicHereOn') : t('stage.musicHereOff')}
           </button>
         )}
         {spotlight && !part && (
-          <button type="button" className="link-button small music-switch" onClick={() => {
+          <button type="button" className="sing-switch music-switch" aria-pressed={fromAfar} onClick={() => {
             if (!player) onNeedPlayer()
             onFromAfar(!fromAfar)
           }}>
@@ -184,7 +195,12 @@ export default function SingView(props: Props) {
           </button>
         )}
         {listening && voice.failed && <span className="error small">{t('voice.failed')}</span>}
-        {spotlight && part && voiceStatus === 'live' && <span className="small voice-live">{t('voice.live')}</span>}
+        {spotlight && part && voiceStatus === 'live' && (
+          <span className="small voice-live">
+            <Radio size={14} aria-hidden />
+            {t('voice.live')}
+          </span>
+        )}
       </div>
 
       <div className="stage">
@@ -192,12 +208,20 @@ export default function SingView(props: Props) {
         {spotlight && <ReactionLayer subscribe={subscribe} nameOf={nameOf} />}
         {view.countdown !== null && (
           <div className="countdown" aria-live="assertive">
-            {view.countdown <= 3 ? view.countdown : t('game.sing.getReady')}
+            {/* The ring is full while we wait, then drains over each of the last three seconds. */}
+            <CountdownRing left={Math.min(COUNT_FROM, view.countdown - 1)} total={COUNT_FROM} size={150}>
+              {view.countdown <= COUNT_FROM && (
+                <span key={view.countdown} className="countdown-num">
+                  {view.countdown}
+                </span>
+              )}
+            </CountdownRing>
+            <span className="countdown-ready">{t('game.sing.getReady')}</span>
           </div>
         )}
         {view.rating && view.countdown === null && (
-          <div key={view.rating.key} className={`rating ${view.rating.kind}`}>
-            {t(`game.sing.ratings.${view.rating.kind}`)}
+          <div key={view.rating.key} className={`rating ${view.rating.kind}`} aria-hidden>
+            <span>{t(`game.sing.ratings.${view.rating.kind}`)}</span>
           </div>
         )}
       </div>
@@ -215,6 +239,26 @@ export default function SingView(props: Props) {
         <p className="lyric-next">{next?.text ?? ''}</p>
       </div>
       {spotlight && !part && <ReactionBar send={send} />}
+    </div>
+  )
+}
+
+/** A thin bar for how far into the song we are. Moved with a transform a few times a second, outside React. */
+function SongProgress({ songTime, length }: { songTime: () => number; length: number }) {
+  const bar = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!(length > 0)) return
+    const update = () => {
+      const part = Math.max(0, Math.min(1, songTime() / length))
+      if (bar.current) bar.current.style.transform = `scaleX(${part})`
+    }
+    update()
+    const id = setInterval(update, 500)
+    return () => clearInterval(id)
+  }, [songTime, length])
+  return (
+    <div className="song-progress" aria-hidden>
+      <div ref={bar} className="song-progress-bar" />
     </div>
   )
 }

@@ -20,8 +20,15 @@
   cursor: pointer;
   touch-action: manipulation;
 }
+.reaction-button:hover {
+  border-color: var(--ink-2);
+}
 .reaction-button:active {
   transform: scale(0.9);
+}
+.sing .reaction-button {
+  background: var(--stage-2);
+  border-color: var(--stage-line);
 }
 .stage,
 .spotlight-results {
@@ -66,21 +73,250 @@
   }
 }
 
+/* ---------- Spotlight results ---------- */
+.spot-grid {
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 860px) {
+  .spot-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.spot-turns,
+.spot-votes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.spot-votes {
+  padding: 16px;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.turn-points {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--r-card);
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.turn-points.mine {
+  border-color: #d8d0ff;
+  background: var(--violet-soft);
+}
+.turn-points .avatar.me {
+  box-shadow: 0 0 0 2px var(--violet-soft), 0 0 0 4px var(--avatar-color);
+}
+.turn-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.turn-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.turn-name strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.turn-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 6vw, 2.3rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--violet);
+}
+.turn-total small {
+  font-family: var(--f-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--muted);
+  margin-top: 4px;
+}
+/* Turn points out of 10,000: the pitch part, then the stars part. */
+.split-bar {
+  display: flex;
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.split-bar span {
+  flex: 0 0 calc(var(--w, 0) * 100%);
+  transition: flex-basis var(--dur-slow) var(--ease-out);
+}
+.split-pitch {
+  background: var(--violet);
+}
+.split-stars {
+  background: var(--amber);
+}
+.split-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.split-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.split-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.split-legend .dot.pitch {
+  background: var(--violet);
+}
+.split-legend .dot.stars {
+  background: var(--amber);
+}
+
+/* The audience's average, big */
+.spot-average {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+.spot-average-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.spot-average-number {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 7vw, 2.6rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.star-scale {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+.star-row {
+  display: inline-flex;
+  gap: 2px;
+}
+.star-row.empty {
+  color: var(--line-strong);
+}
+.star-row.full {
+  position: absolute;
+  inset: 0;
+  color: var(--amber);
+}
+
 /* Votes */
+.spot-rate {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .stars {
   display: flex;
   gap: 4px;
 }
 .star {
+  display: grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
   font-size: 2.2rem;
   line-height: 1;
-  padding: 2px 4px;
+  padding: 2px;
   border: 0;
+  border-radius: var(--r-control);
   background: none;
   color: var(--line-strong);
   cursor: pointer;
   touch-action: manipulation;
 }
+.star:hover {
+  color: #e9b765;
+}
 .star.on {
   color: var(--amber);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .star svg {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .star.on svg {
+    transform: scale(1.08);
+  }
+  .star:active svg {
+    transform: scale(0.88);
+  }
+}
+
+/* Tonight's standings, with who moved */
+.spot-standings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.spot-standings .rank.just-sang {
+  border-color: #d8d0ff;
+  background: var(--violet-soft);
+}
+.move {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 2.4em;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.move.up {
+  color: var(--teal-ink);
+  background: var(--teal-soft);
+}
+.move.down {
+  color: var(--coral-ink);
+  background: var(--coral-soft);
+}
+.move.same {
+  color: var(--muted);
+  background: var(--paper-2);
+}
+@media (max-width: 420px) {
+  .spot-standings .rank {
+    gap: 8px;
+    padding: 10px;
+  }
+  .star {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

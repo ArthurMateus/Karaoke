@@ -14,7 +14,7 @@ import { useSongAssets } from '../game/useSongAssets'
 import { formatDuration, formatScore } from '../lib/format'
 import type { ClientMessage, LobbyRoom } from '../room/protocol'
 import ReadyPanel from '../room/ReadyPanel'
-import { ReplayPanel, type UploadState } from '../room/ResultsView'
+import { ReplayPanel, SoloScore, type UploadState } from '../room/ResultsView'
 import SingView from '../room/SingView'
 import { Badge, Button, ButtonLink, Card, PageHeader, Skeleton, SongCover, cx } from '../ui'
 
@@ -147,7 +147,7 @@ type Stage =
 
 /** One solo run: mic and delay check, the song, then the score and the replay. ?daily=1 = song of the day. */
 export function SoloSingPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { songId = '' } = useParams()
   const [params] = useSearchParams()
   const isDaily = params.get('daily') === '1'
@@ -245,12 +245,8 @@ export function SoloSingPage() {
         </div>
         {result ? (
           <div className="solo-score">
-            <b>{t('game.results.points', { score: formatScore(result.score, i18n.language) })}</b>
-            {result.new_best ? (
-              <span className="tag ok">{t('solo.newBest')}</span>
-            ) : (
-              <span className="muted">{t('solo.best', { score: formatScore(result.best, i18n.language) })}</span>
-            )}
+            {/* Counts up; a new personal best gets a badge and confetti (none with reduced motion). */}
+            <SoloScore performanceId={stage.performanceId} score={result.score} best={result.best} newBest={result.new_best} />
             {result.daily_rank != null && <span className="tag host">{t('daily.yourRank', { rank: result.daily_rank })}</span>}
           </div>
         ) : (

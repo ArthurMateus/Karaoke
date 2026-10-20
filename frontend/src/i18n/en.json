@@ -432,7 +432,8 @@
         "good": "Good",
         "ok": "OK",
         "miss": "Missed"
-      }
+      },
+      "scoreboard": "Live scores"
     },
     "results": {
       "title": "Results",
@@ -444,13 +445,23 @@
       "uploading": "Sending your recording…",
       "uploadFailed": "Your recording couldn't be sent.",
       "again": "Pick the next song",
-      "waitingHost": "Waiting for the host to pick the next song…"
+      "waitingHost": "Waiting for the host to pick the next song…",
+      "place": "Place {{place}}",
+      "youWon": "You won this round!",
+      "winner": "{{name}} wins this round!",
+      "tie": "It's a tie: {{names}}!"
     },
     "steps": {
       "label": "Getting ready",
       "mic": "Microphone",
       "check": "Delay check",
       "ready": "Ready"
+    },
+    "replay": {
+      "play": "Play the replay",
+      "pause": "Pause",
+      "seek": "Position in the replay",
+      "position": "{{time}} of {{total}}"
     }
   },
   "lyrics": {
@@ -542,7 +553,19 @@
     "stars_other": "{{count}} stars",
     "voted": "Thanks! You can still change your vote.",
     "noAudience": "Everyone sang this one, so there's no audience to vote: pitch score only.",
-    "startMyTurn": "Start my turn"
+    "startMyTurn": "Start my turn",
+    "voteMeter": "Votes in",
+    "votedOf": "{{count}} of {{total}}",
+    "pitchPart": "Pitch (70%): {{score}}",
+    "pitchOnly": "Pitch only, no votes: {{score}}",
+    "starsPart": "Stars (30%): {{score}}",
+    "averageStars": "Average {{average}} of 5 stars",
+    "rankNew": "New",
+    "rankSame": "Same place",
+    "rankUp_one": "Up {{count}} place",
+    "rankUp_other": "Up {{count}} places",
+    "rankDown_one": "Down {{count}} place",
+    "rankDown_other": "Down {{count}} places"
   },
   "stage": {
     "title": "Stage screen (TV or laptop)",
