@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type { EditorChart } from '../editor/chartModel'
-import type { Locale, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
+import type { DailyInfo, Locale, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
 
 export function useMe() {
   return useQuery({ queryKey: ['me'], queryFn: () => api<Me>('/api/me'), staleTime: 60_000 })
@@ -151,4 +151,13 @@ export function useRedoLyrics(id: string) {
       api<Song>(`/api/songs/${id}/lyrics`, { body }),
     onSuccess: refresh,
   })
+}
+
+export function useDaily() {
+  return useQuery({ queryKey: ['daily'], queryFn: () => api<DailyInfo>('/api/daily') })
+}
+
+/** Song id -> my best solo score. */
+export function useSoloBests(enabled: boolean) {
+  return useQuery({ queryKey: ['solo-bests'], queryFn: () => api<Record<string, number>>('/api/solo/bests'), enabled })
 }

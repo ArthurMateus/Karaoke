@@ -1,16 +1,18 @@
 import { useState, type FormEvent } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
-import { useCreateRoom, useMe } from '../api/hooks'
+import { useCreateRoom, useDaily, useMe } from '../api/hooks'
 import { LaneArt } from '../components/Brand'
 import ErrorText from '../components/ErrorText'
+import { formatScore } from '../lib/format'
 import { normalizeCode } from '../lib/roomCode'
 
 export default function HomePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { data } = useMe()
   const createRoom = useCreateRoom()
+  const daily = useDaily()
   const [code, setCode] = useState('')
   const [codeInvalid, setCodeInvalid] = useState(false)
   const user = data?.user
@@ -74,6 +76,27 @@ export default function HomePage() {
             </button>
           </form>
           {codeInvalid && <p className="error">{t('home.invalidCode')}</p>}
+        </section>
+
+        <section className="card">
+          <h2>{t('home.soloTitle')}</h2>
+          <p className="muted">{t('home.soloText')}</p>
+          <Link className="button" to="/solo">
+            {t('home.solo')}
+          </Link>
+        </section>
+
+        <section className="card">
+          <span className="eyebrow">{t('daily.title')}</span>
+          <h2>{daily.data?.song?.title ?? '…'}</h2>
+          <p className="muted">
+            {daily.data?.my_attempt?.score != null
+              ? t('daily.yourScore', { score: formatScore(daily.data.my_attempt.score, i18n.language), rank: daily.data.my_attempt.rank })
+              : t('home.dailyText')}
+          </p>
+          <Link className="button" to="/daily">
+            {t('home.daily')}
+          </Link>
         </section>
       </div>
     </div>

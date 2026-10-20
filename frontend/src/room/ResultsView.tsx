@@ -73,12 +73,12 @@ export default function ResultsView({ room, isHost, upload, onNext }: { room: Lo
 }
 
 /** The group replay: a spinner while the worker mixes, then a player. */
-export function ReplayPanel({ performanceId, upload }: { performanceId: string | null; upload: UploadState }) {
+export function ReplayPanel({ performanceId, upload, title }: { performanceId: string | null; upload: UploadState; title?: string }) {
   const { t } = useTranslation()
   const status = usePerformance(performanceId).data?.replay_status
   return (
     <div className="replay">
-      <h3>{t('game.results.replay')}</h3>
+      <h3>{title ?? t('game.results.replay')}</h3>
       {upload === 'uploading' && <p className="muted small">{t('game.results.uploading')}</p>}
       {upload === 'failed' && <p className="error small">{t('game.results.uploadFailed')}</p>}
       {status === 'ready' ? (

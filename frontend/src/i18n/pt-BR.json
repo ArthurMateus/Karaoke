@@ -21,7 +21,12 @@
     "invalidCode": "O código da sala tem 6 letras e números.",
     "headline": "Cante <em>junto</em>, de qualquer celular.",
     "hostTitle": "Faça uma festa",
-    "hostText": "Crie uma sala e compartilhe o código ou o QR. Os amigos entram sem conta."
+    "hostText": "Crie uma sala e compartilhe o código ou o QR. Os amigos entram sem conta.",
+    "soloTitle": "Cantar sozinho",
+    "soloText": "Treine qualquer música sozinho, bata seu recorde e ouça como ficou.",
+    "solo": "Cantar solo",
+    "dailyText": "Uma música para todo mundo hoje, uma tentativa cada. Até onde você chega?",
+    "daily": "Música do dia e ranking"
   },
   "signIn": {
     "title": "Entrar",
@@ -149,6 +154,9 @@
     "partner_not_here": "Seu par não está na sala.",
     "queue_empty": "A fila está vazia.",
     "singer_not_ready": "Quem canta agora ainda não está pronto.",
+    "not_todays_song": "Essa não é mais a música de hoje. Abra a música do dia de novo.",
+    "already_played_today": "Você já usou sua tentativa de hoje. Volte amanhã!",
+    "already_finished": "Esses pontos já foram salvos.",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
@@ -452,5 +460,40 @@
     "stageOff": "🔈 Voz de quem canta nestas caixas: desligada",
     "stageOn_one": "🔊 Voz de quem canta nestas caixas: ligada ({{count}}). Desligue se der eco",
     "stageOn_other": "🔊 Vozes de quem canta nestas caixas: ligadas ({{count}}). Desligue se der eco"
+  },
+  "solo": {
+    "title": "Solo",
+    "intro": "Escolha uma música e cante sozinho. Seu melhor resultado em cada música fica guardado.",
+    "best": "Recorde: {{score}}",
+    "sing": "Cantar",
+    "yourName": "Seu nome",
+    "continue": "Continuar",
+    "signInWhy": "para guardar seus pontos e competir na música do dia.",
+    "start": "Começar a cantar",
+    "saving": "Salvando seus pontos…",
+    "newBest": "Novo recorde!",
+    "again": "Cantar de novo",
+    "otherSong": "Outra música",
+    "replay": "Ouça como ficou: sua voz com a música"
+  },
+  "daily": {
+    "title": "Música do dia",
+    "noSong": "Sem música hoje (a biblioteca inicial está vazia).",
+    "nextIn": "Próxima música em {{time}} (meia-noite UTC).",
+    "yourScore": "Você fez {{score}}: {{rank}}º hoje.",
+    "unfinished": "Você começou a música de hoje mas não terminou. Volte amanhã!",
+    "singIt": "Cantar (uma tentativa)",
+    "oneShot": "Uma tentativa por dia: ela conta a partir do momento em que a música começa.",
+    "go": "Começar minha tentativa",
+    "oneShotWarning": "Esta é sua única tentativa de hoje. Acerte o microfone e o teste de atraso antes, depois comece.",
+    "signInToCompete": "Entre para competir",
+    "practice": "Treinar sem competir",
+    "guestPractice": "Você está como convidado: isto é um treino e não entra no ranking.",
+    "practiceNote": "Treino: entre na sua conta para aparecer no ranking.",
+    "leaderboard": "Ranking de hoje",
+    "nobodyYet": "Ninguém cantou ainda hoje. Seja o primeiro!",
+    "yesterday": "Vencedor de ontem: {{name}} com {{score}} em “{{title}}”.",
+    "yourRank": "{{rank}}º hoje",
+    "seeBoard": "Ver o ranking"
   }
 }

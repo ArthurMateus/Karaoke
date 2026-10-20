@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Route, Routes, useLocation } from 'react-router'
 import Header from './components/Header'
+import DailyPage from './pages/DailyPage'
 import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
 import JoinPage from './pages/JoinPage'
@@ -9,6 +10,7 @@ import LobbyPage from './pages/LobbyPage'
 import LyricsPage from './pages/LyricsPage'
 import ProfilePage from './pages/ProfilePage'
 import SignInPage from './pages/SignInPage'
+import SoloPage, { SoloSingPage } from './pages/SoloPage'
 import SongsPage from './pages/SongsPage'
 import StagePage from './pages/StagePage'
 import UploadPage from './pages/UploadPage'
@@ -43,6 +45,9 @@ export default function App() {
           <Route path="/room/:code" element={<LobbyPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/songs" element={<SongsPage />} />
+          <Route path="/solo" element={<SoloPage />} />
+          <Route path="/solo/:songId" element={<SoloSingPage />} />
+          <Route path="/daily" element={<DailyPage />} />
           <Route path="/songs/upload" element={<UploadPage mode="upload" />} />
           <Route path="/songs/import" element={<UploadPage mode="import" />} />
           <Route path="/songs/:id/edit" element={<EditorPage />} />

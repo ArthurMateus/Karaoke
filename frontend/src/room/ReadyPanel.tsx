@@ -21,10 +21,11 @@ interface Props {
   onLatency: (ms: number) => void
   ready: boolean
   onReady: (ready: boolean) => void
+  readyLabel?: string // e.g. "Start singing" when singing alone
 }
 
 /** Turn on the mic, measure its delay once, then say "I'm ready". */
-export default function ReadyPanel({ engine, onEngine, latency, onLatency, ready, onReady }: Props) {
+export default function ReadyPanel({ engine, onEngine, latency, onLatency, ready, onReady, readyLabel }: Props) {
   const { t } = useTranslation()
   const [step, setStep] = useState<'idle' | 'starting' | 'calibrating' | 'failed'>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -112,7 +113,7 @@ export default function ReadyPanel({ engine, onEngine, latency, onLatency, ready
             </button>
           </div>
           <button className={`button ${ready ? '' : 'primary'}`} onClick={() => onReady(!ready)}>
-            {ready ? t('game.ready.notReady') : t('game.ready.imReady')}
+            {ready ? t('game.ready.notReady') : readyLabel ?? t('game.ready.imReady')}
           </button>
         </>
       )}

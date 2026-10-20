@@ -62,3 +62,22 @@ export interface SongList {
   conversions_per_month: number | null
   upload_limits: { max_file_mb: number; max_duration_seconds: number; formats: string[] }
 }
+
+/** Singing alone: a run's result. */
+export interface SoloResult {
+  score: number
+  best: number
+  new_best: boolean
+  daily_rank: number | null
+}
+
+/** The song of the day page. */
+export interface DailyInfo {
+  day: string
+  song: { id: string; title: string; artist: string; duration_seconds: number | null } | null
+  next_song_at: string
+  can_compete: boolean
+  my_attempt: { score: number | null; rank: number | null } | null
+  leaderboard: { rank: number; name: string; score: number; is_me: boolean }[]
+  yesterday: { name: string; score: number; song_title: string } | null
+}
