@@ -3,6 +3,7 @@ from fastapi import APIRouter, Request
 from pydantic import BaseModel
 
 from app.config import get_settings
+from app.db import utcnow
 from app.deps import CurrentAccount, Db, api_error
 from app.services import rooms as room_service
 from app.services.entitlements import room_capacity
@@ -28,12 +29,12 @@ def _hub(request: Request) -> RoomHub:
     return request.app.state.hub
 
 
-def _room_out(room, hub: RoomHub) -> RoomOut:
+def _room_out(db, room, hub: RoomHub) -> RoomOut:
     return RoomOut(
         code=room.code,
         host_name=room.host.display_name,
         player_count=hub.player_count(room.code),
-        capacity=room_capacity(room.host),
+        capacity=room_capacity(db, room.host, utcnow()),
         join_url=f"{get_settings().public_base_url}/join/{room.code}",
     )
 
@@ -44,7 +45,7 @@ def create_room(request: Request, user: CurrentAccount, db: Db) -> RoomOut:
     room, replaced = room_service.create_room(db, user)
     for code in replaced:
         anyio.from_thread.run(_hub(request).close_room, code)
-    return _room_out(room, _hub(request))
+    return _room_out(db, room, _hub(request))
 
 
 @router.get("/{code}")
@@ -53,7 +54,7 @@ def get_room(code: str, request: Request, db: Db) -> RoomOut:
     room = room_service.find_open_room(db, normalized) if normalized else None
     if room is None:
         raise api_error(404, "room_not_found")
-    return _room_out(room, _hub(request))
+    return _room_out(db, room, _hub(request))
 
 
 @router.get("/{code}/stage")

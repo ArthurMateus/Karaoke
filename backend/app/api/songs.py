@@ -164,7 +164,7 @@ def list_songs(db: Db, user: OptionalUser) -> SongList:
         starter=[song_out(s, user) for s in sorted(songs, key=lambda s: s.title.lower()) if s.owner_id is None],
         mine=[song_out(s, user) for s in songs if s.owner_id is not None],
         conversions_left=song_service.conversions_left(db, user, utcnow()) if account else None,
-        conversions_per_month=plan_for(user).conversions_per_month if account else None,
+        conversions_per_month=plan_for(db, user, utcnow()).conversions_per_month if account else None,
         upload_limits=UploadLimitsOut(**get_limits().uploads.model_dump(include={"max_file_mb", "max_duration_seconds", "formats"})),
     )
 

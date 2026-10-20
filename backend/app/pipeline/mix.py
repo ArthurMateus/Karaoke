@@ -72,7 +72,7 @@ def mix_performance(performance_id: str) -> None:
     pid = uuid.UUID(performance_id)
     with get_sessionmaker()() as db:
         performance = db.get(Performance, pid)
-        if performance is None:
+        if performance is None or performance.replay_status == "not_included":
             return
         takes = [t for t in performance.takes if t.recording_key and t.record_start_ms is not None]
         song = db.get(Song, performance.song_id) if performance.song_id else None

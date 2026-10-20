@@ -192,3 +192,46 @@ class DailyAttempt(Base):
     check_status: Mapped[str] = mapped_column(String(16), default="pending", server_default="pending")
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class RedeemCode(Base):
+    """A code an admin hands out: N days of premium, or a Party Pass. Each person can use it once."""
+
+    __tablename__ = "redeem_codes"
+    __table_args__ = (UniqueConstraint("code", name="uq_redeem_code"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    code: Mapped[str] = mapped_column(String(32))  # e.g. KP-7Q4M-2XRD
+    kind: Mapped[str] = mapped_column(String(16))  # premium | party_pass
+    days: Mapped[int] = mapped_column(default=0)  # premium: how long
+    max_uses: Mapped[int] = mapped_column(default=1)
+    uses: Mapped[int] = mapped_column(default=0)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    disabled: Mapped[bool] = mapped_column(default=False)
+    note: Mapped[str] = mapped_column(String(200), default="")
+    created_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class PremiumGrant(Base):
+    """Premium for a while, or a Party Pass (24 h of premium rooms, started when its owner chooses).
+
+    Everything that gives premium makes one of these: an admin, a redeemed code, and
+    later a payment. The plan rules are in app/services/entitlements.py.
+    """
+
+    __tablename__ = "premium_grants"
+    __table_args__ = (UniqueConstraint("code_id", "user_id", name="uq_grant_code_per_user"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    kind: Mapped[str] = mapped_column(String(16))  # premium | party_pass
+    starts_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # None: a pass not used yet
+    ends_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    hours: Mapped[int] = mapped_column(default=0)  # a pass lasts this long once started
+    source: Mapped[str] = mapped_column(String(16))  # admin | code | payment
+    code_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("redeem_codes.id", ondelete="SET NULL"))
+    note: Mapped[str] = mapped_column(String(200), default="")
+    created_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

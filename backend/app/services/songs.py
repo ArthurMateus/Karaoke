@@ -45,4 +45,4 @@ def conversions_used(db: Session, user: User, now: datetime) -> int:
 
 
 def conversions_left(db: Session, user: User, now: datetime) -> int:
-    return max(0, plan_for(user).conversions_per_month - conversions_used(db, user, now))
+    return max(0, plan_for(db, user, now).conversions_per_month - conversions_used(db, user, now))

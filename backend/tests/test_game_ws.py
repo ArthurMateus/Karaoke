@@ -50,6 +50,9 @@ def code(host):
 
 
 def test_full_round(client, host, code, db, jobs):
+    from tests.conftest import make_premium
+
+    make_premium(host)  # group replays are a premium feature
     song_id = make_song(db)
     lia = as_guest(client, "Lia")
     with host.ws(code) as hws, lia.ws(code) as lws:

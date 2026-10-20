@@ -101,6 +101,8 @@ class RoomState:
     scores: dict[str, int] = field(default_factory=dict)
     finished: set[str] = field(default_factory=set)
     mode: str = "sing_together"
+    allowed_modes: tuple[str, ...] = MODES  # from the host's plan (see apply_plan)
+    replays: bool = True  # group replays, from the host's plan
     queue: list[QueueEntry] = field(default_factory=list)  # Spotlight: next turns, in order
     turns: list[Turn] = field(default_factory=list)  # Spotlight: turns sung tonight
 
@@ -173,11 +175,17 @@ class RoomState:
         self.song = song
         self.phase = "lobby"
 
+    def apply_plan(self, capacity: int, modes: list[str], replays: bool) -> None:
+        """The host's plan, refreshed whenever someone connects. Players already in stay, even over a smaller size."""
+        self.capacity, self.allowed_modes, self.replays = capacity, tuple(modes), replays
+
     def set_mode(self, by: str, mode: str) -> None:
         if by != self.host_id:
             raise NotAllowed()
         if self.phase not in ("lobby", "results") or mode not in MODES:
             raise WrongPhase()
+        if mode not in self.allowed_modes:
+            raise WrongPhase("premium_required")
         self.mode, self.phase = mode, "lobby"
 
     # --- Spotlight: the queue ---
@@ -220,6 +228,8 @@ class RoomState:
             raise NotAllowed()
         if self.mode != "spotlight" or self.phase not in ("lobby", "results"):
             raise WrongPhase()
+        if "spotlight" not in self.allowed_modes:
+            raise WrongPhase("premium_required")  # the Party Pass ran out
         if not self.queue:
             raise WrongPhase("queue_empty")
         entry = self.queue[0]
@@ -345,6 +355,8 @@ class RoomState:
             "parts": self.parts,
             "scores": self.scores,
             "mode": self.mode,
+            "allowed_modes": list(self.allowed_modes),
+            "replays": self.replays,
             "queue": [
                 {"id": e.id, "singer_id": e.singer_id, "partner_id": e.partner_id, "song": e.song} for e in self.queue
             ],

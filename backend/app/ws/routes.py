@@ -10,7 +10,7 @@ from app.db import get_sessionmaker, utcnow
 from app.deps import SESSION_COOKIE
 from app.services import rooms as room_service
 from app.services.auth import user_for_session
-from app.services.entitlements import room_capacity
+from app.services.entitlements import plan_for
 from app.ws import protocol
 from app.ws.hub import RoomHub, server_time_ms
 from app.ws.room_state import JoinRefused
@@ -25,7 +25,12 @@ class _Lookup:
     is_guest: bool = False
     room_code: str | None = None
     host_id: str = ""
-    capacity: int = 0
+    plan: dict | None = None  # the host's room limits: capacity, modes, replays (see RoomState.apply_plan)
+
+
+def _host_plan(db, room) -> dict:
+    limits = plan_for(db, room.host, utcnow())
+    return {"capacity": limits.max_room_size, "modes": list(limits.modes), "replays": limits.replays}
 
 
 def _lookup(token: str | None, raw_code: str) -> _Lookup:
@@ -38,7 +43,7 @@ def _lookup(token: str | None, raw_code: str) -> _Lookup:
             found.user_id, found.name, found.is_guest = str(user.id), user.display_name, user.is_guest
         room = room_service.find_open_room(db, code) if code else None
         if room is not None:
-            found.room_code, found.host_id, found.capacity = room.code, str(room.host_id), room_capacity(room.host)
+            found.room_code, found.host_id, found.plan = room.code, str(room.host_id), _host_plan(db, room)
     return found
 
 
@@ -46,7 +51,7 @@ def _lookup(token: str | None, raw_code: str) -> _Lookup:
 class _StageLookup:
     room_code: str | None = None
     host_id: str = ""
-    capacity: int = 0
+    plan: dict | None = None
 
 
 def _lookup_stage(raw_code: str, token: str | None) -> _StageLookup:
@@ -54,7 +59,7 @@ def _lookup_stage(raw_code: str, token: str | None) -> _StageLookup:
     with get_sessionmaker()() as db:
         room = room_service.room_for_stage(db, room_service.normalize_code(raw_code), token)
         if room is not None:
-            found.room_code, found.host_id, found.capacity = room.code, str(room.host_id), room_capacity(room.host)
+            found.room_code, found.host_id, found.plan = room.code, str(room.host_id), _host_plan(db, room)
     return found
 
 
@@ -82,7 +87,8 @@ async def room_socket(websocket: WebSocket, code: str) -> None:
         return
 
     hub: RoomHub = websocket.app.state.hub
-    room = hub.get_or_create(found.room_code, found.host_id, found.capacity)
+    room = hub.get_or_create(found.room_code, found.host_id, found.plan["capacity"])
+    room.state.apply_plan(**found.plan)  # it may have changed (a Party Pass started)
     try:
         room.state.join(found.user_id, found.name, found.is_guest)
     except JoinRefused as refused:
@@ -127,7 +133,8 @@ async def stage_socket(websocket: WebSocket, code: str, t: str = "") -> None:
         return
 
     hub: RoomHub = websocket.app.state.hub
-    room = hub.get_or_create(found.room_code, found.host_id, found.capacity)
+    room = hub.get_or_create(found.room_code, found.host_id, found.plan["capacity"])
+    room.state.apply_plan(**found.plan)  # it may have changed (a Party Pass started)
     await websocket.send_json({"type": "welcome", "you": None, "server_time": server_time_ms()})
     await hub.attach_stage(room, websocket)
     try:

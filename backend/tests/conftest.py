@@ -167,3 +167,16 @@ def as_guest(client: TestClient, name: str) -> Player:
 
 def anonymous(client: TestClient) -> Player:
     return Player(client, None, None)
+
+
+def make_premium(player: Player, days: int = 30) -> None:
+    """Give an account premium (e.g. so its rooms may use Spotlight)."""
+    import uuid
+
+    from app.db import utcnow
+    from app.models import User
+    from app.services import entitlements
+
+    with get_sessionmaker()() as db:
+        entitlements.grant_premium(db, db.get(User, uuid.UUID(player.id)), days, utcnow(), "admin")
+        db.commit()

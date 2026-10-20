@@ -202,9 +202,11 @@ def test_reactions_are_rate_limited(client, host, code):
 
 @pytest.fixture
 def host(client, mailer):
-    from tests.conftest import sign_in
+    from tests.conftest import make_premium, sign_in
 
-    return sign_in(client, mailer, "host@example.com")
+    player = sign_in(client, mailer, "host@example.com")
+    make_premium(player)  # Spotlight is a premium mode
+    return player
 
 
 @pytest.fixture

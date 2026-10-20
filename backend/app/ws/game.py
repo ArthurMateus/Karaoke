@@ -47,7 +47,7 @@ def load_room_song(song_id: str, host_id: str) -> dict | None:
 
 
 def create_performance(
-    performance_id: str, code: str, host_id: str, song: dict, singers: list[dict], start_at: float
+    performance_id: str, code: str, host_id: str, song: dict, singers: list[dict], start_at: float, replays: bool = True
 ) -> None:
     with get_sessionmaker()() as db:
         db.add(
@@ -59,9 +59,13 @@ def create_performance(
                 song_title=song["title"],
                 start_at_ms=int(start_at),
                 singers=singers,
+                # The host's plan has no group replays: phones don't record, nothing is mixed.
+                replay_status="waiting" if replays else "not_included",
             )
         )
         db.commit()
+    if not replays:
+        return
     # Make the group replay even if some phones never upload their recording.
     wait = song["duration_seconds"] + get_settings().replay_wait_seconds
     queue.enqueue_mix(uuid.UUID(performance_id), delay_seconds=wait)
@@ -167,7 +171,9 @@ async def start(hub, room, player_id: str) -> None:
     start_at = server_time_ms() + settings.game_countdown_ms
     singer_ids = state.start(player_id, performance_id, start_at)
     singers = [{"id": pid, "name": state.players[pid].name, "part": state.parts[pid]} for pid in singer_ids]
-    await run_in_threadpool(create_performance, performance_id, state.code, state.host_id, state.song, singers, start_at)
+    await run_in_threadpool(
+        create_performance, performance_id, state.code, state.host_id, state.song, singers, start_at, state.replays
+    )
     await hub.broadcast_state(room)
     hub.spawn(run_song(hub, room, performance_id, start_at, state.song["duration_seconds"]))
 

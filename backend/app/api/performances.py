@@ -110,6 +110,8 @@ def upload_take(
     performance = _get_performance(db, performance_id, user)  # recordings: singers only, see below
     if str(user.id) not in performance.singer_ids():
         raise api_error(403, "not_allowed")
+    if performance.replay_status == "not_included":
+        raise api_error(403, "replays_not_included")  # the host's plan has no group replays
     if int(request.headers.get("content-length") or 0) > (MAX_RECORDING_MB + 1) * 1024 * 1024:
         raise api_error(413, "file_too_large")
 

@@ -8,7 +8,7 @@ import json
 import pytest
 
 from app.config import get_settings
-from tests.conftest import ORIGIN, as_guest, sign_in
+from tests.conftest import ORIGIN, as_guest, make_premium, sign_in
 from tests.test_game_ws import fast_game, make_song, receive_until, state_with  # noqa: F401 (fast_game)
 
 
@@ -21,7 +21,9 @@ def claims(token: str) -> dict:
 
 @pytest.fixture
 def host(client, mailer):
-    return sign_in(client, mailer, "host@example.com")
+    player = sign_in(client, mailer, "host@example.com")
+    make_premium(player)  # Spotlight is a premium mode
+    return player
 
 
 @pytest.fixture
