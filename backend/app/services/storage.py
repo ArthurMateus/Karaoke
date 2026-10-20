@@ -52,6 +52,11 @@ def read_bytes(key: str) -> bytes:
     return _client().get_object(Bucket=_bucket(), Key=key)["Body"].read()
 
 
+def delete_key(key: str) -> None:
+    """Delete one file (no error if it's already gone)."""
+    _client().delete_object(Bucket=_bucket(), Key=key)
+
+
 def delete_prefix(prefix: str) -> None:
     client = _client()
     for page in client.get_paginator("list_objects_v2").paginate(Bucket=_bucket(), Prefix=prefix):
