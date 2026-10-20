@@ -8,7 +8,8 @@
     "signOut": "Sair",
     "profile": "Perfil",
     "language": "Idioma",
-    "songs": "Músicas"
+    "songs": "Músicas",
+    "admin": "Admin"
   },
   "home": {
     "createRoom": "Criar uma sala",
@@ -157,6 +158,16 @@
     "not_todays_song": "Essa não é mais a música de hoje. Abra a música do dia de novo.",
     "already_played_today": "Você já usou sua tentativa de hoje. Volte amanhã!",
     "already_finished": "Esses pontos já foram salvos.",
+    "premium_required": "Isso precisa de premium ou de um Passe de Festa do anfitrião.",
+    "replays_not_included": "O plano desta sala não inclui replays do grupo.",
+    "code_not_found": "Esse código não existe. Confira se digitou certo.",
+    "code_expired": "Esse código expirou.",
+    "code_used_up": "Esse código já foi todo usado.",
+    "code_already_redeemed": "Você já usou esse código.",
+    "no_party_pass": "Você não tem Passe de Festa para começar (ou um já está valendo).",
+    "admins_only": "Só admins podem fazer isso.",
+    "no_such_account": "Não há conta com esse e-mail (convidados não podem ter premium).",
+    "grant_not_found": "Essa concessão não existe.",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
@@ -503,5 +514,74 @@
       "adjusted": "Corrigido depois de ouvir a gravação",
       "pending": "conferindo…"
     }
+  },
+  "plan": {
+    "title": "Seu plano",
+    "names": {
+      "free": "Grátis",
+      "premium": "Premium",
+      "party": "Passe de Festa"
+    },
+    "until": "até {{date}}",
+    "partyUntil": "Passe de Festa até {{date}}",
+    "roomSize": "Salas com até {{count}} jogadores",
+    "spotlightYes": "Modo Holofote",
+    "spotlightNo": "Só Todos juntos (o Holofote precisa de premium ou de um Passe de Festa)",
+    "replaysYes": "Replays do grupo nas suas salas",
+    "replaysNo": "Sem replay do grupo nas suas salas (no solo continua tendo)",
+    "conversions": "{{count}} conversões de música por mês",
+    "passesWaiting_one": "Você tem {{count}} Passe de Festa",
+    "passesWaiting_other": "Você tem {{count}} Passes de Festa",
+    "passHelp": "Comece um quando a festa começar: por 24 horas suas salas viram premium (16 jogadores, Holofote, replays do grupo).",
+    "startPass": "Começar um Passe de Festa agora",
+    "passRunning": "Um Passe de Festa está valendo",
+    "redeem": "Tem um código?",
+    "redeemButton": "Resgatar",
+    "redeemed": "Pronto! Seu plano foi atualizado.",
+    "replaysNotIncluded": "Replays do grupo vêm com premium ou um Passe de Festa do anfitrião.",
+    "lockedInRoom": "Salas grátis: até 4 jogadores, Todos juntos, sem replay do grupo. Premium ou um Passe de Festa libera 16 jogadores, Holofote e replays.",
+    "startPassHere_one": "Começar seu Passe de Festa (24 h)",
+    "startPassHere_other": "Começar um Passe de Festa (24 h, restam {{count}})",
+    "getPremium": "Tem um código? Resgate no seu perfil"
+  },
+  "admin": {
+    "title": "Admin",
+    "give": "Dar premium ou um Passe de Festa",
+    "email": "E-mail da conta",
+    "what": "O quê",
+    "kinds": {
+      "premium": "Premium",
+      "party_pass": "Passe de Festa (24 h, a pessoa começa)"
+    },
+    "days": "Dias",
+    "note": "Nota (só admins veem)",
+    "giveButton": "Dar",
+    "given": "Feito.",
+    "grants": "Concessões recentes",
+    "notStarted": "ainda não começou",
+    "sources": {
+      "admin": "por um admin",
+      "code": "código",
+      "payment": "pagamento"
+    },
+    "revoke": "Cancelar",
+    "revoked": "cancelado",
+    "confirmRevoke": "Cancelar isto para {{email}}?",
+    "makeCodes": "Criar códigos de resgate",
+    "codesHelp": "Distribua códigos (presente, sorteio). Cada pessoa usa um código uma vez; um código pode ser usado por várias pessoas.",
+    "howMany": "Quantos códigos",
+    "usesEach": "Usos por código",
+    "expiresIn": "Expira em (dias)",
+    "makeButton_one": "Criar {{count}} código",
+    "makeButton_other": "Criar {{count}} códigos",
+    "newCodes": "Códigos novos (copie agora):",
+    "codes": "Códigos",
+    "premiumDays_one": "Premium, {{count}} dia",
+    "premiumDays_other": "Premium, {{count}} dias",
+    "used": "usado {{uses}}/{{max}}",
+    "expires": "expira {{date}}",
+    "disable": "Desativar",
+    "disabled": "desativado",
+    "noneYet": "Nada ainda."
   }
 }

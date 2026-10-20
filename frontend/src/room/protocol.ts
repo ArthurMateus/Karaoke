@@ -56,6 +56,8 @@ export interface LobbyRoom {
   parts: Record<string, 'P1' | 'P2'> // who sings, and which part
   scores: Record<string, number>
   mode: Mode
+  allowed_modes: Mode[] // from the host's plan: Spotlight needs premium or a running Party Pass
+  replays: boolean // the host's plan includes group replays
   queue: QueueEntry[]
   votes: VoteSummary | null // Spotlight, for the current turn
   standings: Standing[] // Spotlight, tonight

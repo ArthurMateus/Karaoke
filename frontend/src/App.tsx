@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Route, Routes, useLocation } from 'react-router'
 import Header from './components/Header'
+import AdminPage from './pages/AdminPage'
 import DailyPage from './pages/DailyPage'
 import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/solo" element={<SoloPage />} />
           <Route path="/solo/:songId" element={<SoloSingPage />} />
           <Route path="/daily" element={<DailyPage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/songs/upload" element={<UploadPage mode="upload" />} />
           <Route path="/songs/import" element={<UploadPage mode="import" />} />
           <Route path="/songs/:id/edit" element={<EditorPage />} />

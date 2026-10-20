@@ -4,6 +4,7 @@ import { Link, Navigate } from 'react-router'
 import { useMe, useUpdateMe } from '../api/hooks'
 import type { User } from '../api/types'
 import ErrorText from '../components/ErrorText'
+import PlanCard from '../components/PlanCard'
 
 export default function ProfilePage() {
   const me = useMe()
@@ -23,6 +24,7 @@ function Profile({ user }: { user: User }) {
   }
 
   return (
+    <div className="stack">
     <section className="card stack">
       <h1>{t('profile.title')}</h1>
       <form className="stack" onSubmit={submit}>
@@ -50,5 +52,7 @@ function Profile({ user }: { user: User }) {
         </p>
       )}
     </section>
+    {!user.is_guest && <PlanCard />}
+    </div>
   )
 }

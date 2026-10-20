@@ -8,7 +8,8 @@
     "signOut": "Sign out",
     "profile": "Profile",
     "language": "Language",
-    "songs": "Songs"
+    "songs": "Songs",
+    "admin": "Admin"
   },
   "home": {
     "createRoom": "Create a room",
@@ -157,6 +158,16 @@
     "not_todays_song": "That isn't today's song any more. Open the song of the day again.",
     "already_played_today": "You've already had your try today. Come back tomorrow!",
     "already_finished": "This score was already saved.",
+    "premium_required": "That needs premium or a Party Pass for the host.",
+    "replays_not_included": "Group replays aren't included in this room's plan.",
+    "code_not_found": "That code doesn't exist. Check for typos.",
+    "code_expired": "That code has expired.",
+    "code_used_up": "That code has been used up.",
+    "code_already_redeemed": "You've already used that code.",
+    "no_party_pass": "You have no Party Pass to start (or one is running already).",
+    "admins_only": "Only admins can do that.",
+    "no_such_account": "There's no account with that email (guests can't get premium).",
+    "grant_not_found": "That grant doesn't exist.",
     "unknown_error": "Something went wrong. Please try again."
   },
   "songs": {
@@ -503,5 +514,74 @@
       "adjusted": "Corrected after checking the recording",
       "pending": "checking…"
     }
+  },
+  "plan": {
+    "title": "Your plan",
+    "names": {
+      "free": "Free",
+      "premium": "Premium",
+      "party": "Party Pass"
+    },
+    "until": "until {{date}}",
+    "partyUntil": "Party Pass until {{date}}",
+    "roomSize": "Rooms up to {{count}} players",
+    "spotlightYes": "Spotlight mode",
+    "spotlightNo": "Sing Together only (Spotlight needs premium or a Party Pass)",
+    "replaysYes": "Group replays in your rooms",
+    "replaysNo": "No group replays in your rooms (solo runs still have one)",
+    "conversions": "{{count}} song conversions a month",
+    "passesWaiting_one": "You have {{count}} Party Pass",
+    "passesWaiting_other": "You have {{count}} Party Passes",
+    "passHelp": "Start one when the party starts: for 24 hours your rooms get premium (16 players, Spotlight, group replays).",
+    "startPass": "Start a Party Pass now",
+    "passRunning": "A Party Pass is running",
+    "redeem": "Have a code?",
+    "redeemButton": "Redeem",
+    "redeemed": "Done! Your plan is updated.",
+    "replaysNotIncluded": "Group replays come with premium or a Party Pass for the host.",
+    "lockedInRoom": "Free rooms: up to 4 players, Sing Together, no group replay. Premium or a Party Pass unlocks 16 players, Spotlight and replays.",
+    "startPassHere_one": "Start your Party Pass (24 h)",
+    "startPassHere_other": "Start a Party Pass (24 h, {{count}} left)",
+    "getPremium": "Have a code? Redeem it in your profile"
+  },
+  "admin": {
+    "title": "Admin",
+    "give": "Give premium or a Party Pass",
+    "email": "Account email",
+    "what": "What",
+    "kinds": {
+      "premium": "Premium",
+      "party_pass": "Party Pass (24 h, started by them)"
+    },
+    "days": "Days",
+    "note": "Note (only admins see it)",
+    "giveButton": "Give",
+    "given": "Given.",
+    "grants": "Recent grants",
+    "notStarted": "not started yet",
+    "sources": {
+      "admin": "by an admin",
+      "code": "code",
+      "payment": "payment"
+    },
+    "revoke": "Revoke",
+    "revoked": "revoked",
+    "confirmRevoke": "Revoke this for {{email}}?",
+    "makeCodes": "Make redeem codes",
+    "codesHelp": "Hand codes out (a gift, a giveaway). Each person can use a code once; a code can be used by several people.",
+    "howMany": "How many codes",
+    "usesEach": "Uses per code",
+    "expiresIn": "Expires in (days)",
+    "makeButton_one": "Make {{count}} code",
+    "makeButton_other": "Make {{count}} codes",
+    "newCodes": "New codes (copy them now):",
+    "codes": "Codes",
+    "premiumDays_one": "Premium, {{count}} day",
+    "premiumDays_other": "Premium, {{count}} days",
+    "used": "used {{uses}}/{{max}}",
+    "expires": "expires {{date}}",
+    "disable": "Disable",
+    "disabled": "disabled",
+    "noneYet": "None yet."
   }
 }

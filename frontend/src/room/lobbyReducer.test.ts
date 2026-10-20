@@ -14,6 +14,8 @@ const room: LobbyRoom = {
   parts: {},
   scores: {},
   mode: 'sing_together',
+  allowed_modes: ['sing_together'],
+  replays: false,
   queue: [],
   votes: null,
   standings: [],

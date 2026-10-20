@@ -18,6 +18,7 @@ export default function Header() {
       </Link>
       <nav className="header-nav">
         <Link to="/songs">{t('nav.songs')}</Link>
+        {user?.is_admin && <Link to="/admin">{t('nav.admin')}</Link>}
         <LanguageSwitcher />
         {user ? (
           <>

@@ -8,7 +8,7 @@ import type { LobbyRoom } from './protocol'
 interface PerformanceInfo {
   id: string
   song_title: string
-  replay_status: 'waiting' | 'mixing' | 'ready' | 'failed' | 'no_recordings'
+  replay_status: 'waiting' | 'mixing' | 'ready' | 'failed' | 'no_recordings' | 'not_included'
   singers: { id: string; name: string; part: string; score: number; has_recording: boolean }[]
 }
 
@@ -22,7 +22,7 @@ function usePerformance(performanceId: string | null) {
     enabled: !!performanceId,
     refetchInterval: (query) => {
       const status = query.state.data?.replay_status
-      return status === 'ready' || status === 'failed' || status === 'no_recordings' ? false : 3000
+      return status === 'ready' || status === 'failed' || status === 'no_recordings' || status === 'not_included' ? false : 3000
     },
     retry: false,
   })
@@ -85,6 +85,8 @@ export function ReplayPanel({ performanceId, upload, title }: { performanceId: s
         <audio className="replay-player" controls preload="metadata" src={`/api/performances/${performanceId}/replay`} />
       ) : status === 'failed' ? (
         <p className="error small">{t('game.results.replayFailed')}</p>
+      ) : status === 'not_included' ? (
+        <p className="muted small">{t('plan.replaysNotIncluded')}</p>
       ) : status === 'no_recordings' ? (
         <p className="muted small">{t('game.results.replayNone')}</p>
       ) : (

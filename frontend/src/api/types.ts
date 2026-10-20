@@ -8,6 +8,7 @@ export interface User {
   email: string | null
   is_guest: boolean
   locale: Locale
+  is_admin: boolean // may open the Admin page
 }
 
 export interface Me {
@@ -81,4 +82,42 @@ export interface DailyInfo {
   my_attempt: { score: number | null; rank: number | null; check: string; claimed: number | null } | null
   leaderboard: { rank: number; name: string; score: number; is_me: boolean; check: string }[]
   yesterday: { name: string; score: number; song_title: string } | null
+}
+
+/** My plan (Milestone 5). "party" = a running Party Pass: premium rooms for 24 h. */
+export interface PlanInfo {
+  plan: 'free' | 'premium' | 'party'
+  premium_until: string | null
+  party_until: string | null
+  unused_passes: number
+  max_room_size: number
+  conversions_per_month: number
+  modes: string[]
+  replays: boolean
+}
+
+export interface AdminGrant {
+  id: string
+  email: string | null
+  name: string
+  kind: 'premium' | 'party_pass'
+  starts_at: string | null
+  ends_at: string | null
+  source: string
+  note: string
+  revoked: boolean
+  created_at: string
+}
+
+export interface AdminCode {
+  id: string
+  code: string
+  kind: 'premium' | 'party_pass'
+  days: number
+  max_uses: number
+  uses: number
+  expires_at: string | null
+  disabled: boolean
+  note: string
+  created_at: string
 }

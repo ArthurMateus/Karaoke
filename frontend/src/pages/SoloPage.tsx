@@ -167,6 +167,8 @@ export function SoloSingPage() {
       parts: { [user.id]: 'P1' },
       scores: { [user.id]: 0 },
       mode: 'sing_together',
+      allowed_modes: ['sing_together'],
+      replays: true, // solo runs always keep a replay
       queue: [],
       votes: null,
       standings: [],

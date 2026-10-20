@@ -47,6 +47,7 @@ export default function SingView(props: Props) {
   const part = room.parts[me]
   const singing = !!part && !!engine
   const performanceId = room.performance_id
+  const keepRecording = room.replays
   const spotlight = room.mode === 'spotlight'
   const timeline = useMemo(() => (chart ? buildTimeline(chart, part ?? 'P1') : null), [chart, part])
   const startLocal = useMemo(() => clock.toLocal(room.start_at ?? 0), [clock, room.start_at])
@@ -83,7 +84,8 @@ export default function SingView(props: Props) {
     let reported = 0
     let lastFrameTime: number | null = null
     let recordStart: number | null = null
-    engine.startRecording().then((at) => (recordStart = at)).catch(() => undefined)
+    // The host's plan has no group replays: don't record at all.
+    if (keepRecording) engine.startRecording().then((at) => (recordStart = at)).catch(() => undefined)
     if (engine.simulated) engine.singFake(timeline, startLocal)
 
     const stopFrames = engine.onFrame((frame) => {
@@ -114,7 +116,7 @@ export default function SingView(props: Props) {
         const total = score.total()
         setMyTotal(total)
         send({ type: 'finished', total })
-        onUpload(
+        if (keepRecording) onUpload(
           performanceId,
           engine.stopRecording().then(async (recording) => {
             if (!recording || recording.size === 0 || recordStart === null) return
@@ -127,9 +129,9 @@ export default function SingView(props: Props) {
     return () => {
       stopFrames()
       clearInterval(ticker)
-      if (!finished) void engine.stopRecording() // left early: nothing to upload
+      if (!finished && keepRecording) void engine.stopRecording() // left early: nothing to upload
     }
-  }, [scorer, trail, engine, timeline, performanceId, startLocal, latencyMs, songTime, send, clock, onUpload])
+  }, [scorer, trail, engine, timeline, performanceId, startLocal, latencyMs, songTime, send, clock, onUpload, keepRecording])
 
   // Lyrics and countdown, updated only when they change.
   useEffect(() => {

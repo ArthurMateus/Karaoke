@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useParams } from 'react-router'
 import { api } from '../api/client'
-import { useMe, useRoomInfo } from '../api/hooks'
+import { useMe, usePlan, useRoomInfo, useStartPartyPass } from '../api/hooks'
 import type { User } from '../api/types'
 import ErrorText from '../components/ErrorText'
 import QrCode from '../components/QrCode'
@@ -176,14 +176,19 @@ function Lobby({ code, user }: { code: string; user: User }) {
             <section className="card stack">
               <span className="eyebrow">{t('modes.title')}</span>
               <div className="segmented" role="radiogroup" aria-label={t('modes.title')}>
-                {(['sing_together', 'spotlight'] as const).map((mode) => (
-                  <button key={mode} type="button" role="radio" aria-checked={room.mode === mode}
-                    className={room.mode === mode ? 'on' : ''} onClick={() => send({ type: 'set_mode', mode })}>
-                    {t(`modes.${mode}`)}
-                  </button>
-                ))}
+                {(['sing_together', 'spotlight'] as const).map((mode) => {
+                  const locked = !room.allowed_modes.includes(mode)
+                  return (
+                    <button key={mode} type="button" role="radio" aria-checked={room.mode === mode} disabled={locked}
+                      className={room.mode === mode ? 'on' : ''} onClick={() => send({ type: 'set_mode', mode })}>
+                      {t(`modes.${mode}`)}
+                      {locked && ' 🔒'}
+                    </button>
+                  )
+                })}
               </div>
               <p className="muted small">{t(`modes.${room.mode}Help`)}</p>
+              {!room.allowed_modes.includes('spotlight') && <HostUpgrade />}
             </section>
           )}
           {!iAmHost && spotlight && <p className="banner small">{t('modes.spotlightHelp')}</p>}
@@ -354,5 +359,28 @@ function StageCard({ code }: { code: string }) {
       )}
       <ErrorText error={error} />
     </details>
+  )
+}
+
+/** A free host's room: Spotlight, 16 players and replays need premium or a Party Pass. */
+function HostUpgrade() {
+  const { t } = useTranslation()
+  const plan = usePlan(true)
+  const startPass = useStartPartyPass()
+  const passes = plan.data?.unused_passes ?? 0
+  return (
+    <div className="stack tight pass-box">
+      <p className="small">{t('plan.lockedInRoom')}</p>
+      {passes > 0 ? (
+        <button className="button primary" disabled={startPass.isPending} onClick={() => startPass.mutate()}>
+          {t('plan.startPassHere', { count: passes })}
+        </button>
+      ) : (
+        <Link className="link-button small" to="/profile">
+          {t('plan.getPremium')}
+        </Link>
+      )}
+      <ErrorText error={startPass.error} />
+    </div>
   )
 }

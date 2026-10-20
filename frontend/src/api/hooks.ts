@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type { EditorChart } from '../editor/chartModel'
-import type { DailyInfo, Locale, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
+import type { AdminCode, AdminGrant, DailyInfo, Locale, PlanInfo, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
 
 export function useMe() {
   return useQuery({ queryKey: ['me'], queryFn: () => api<Me>('/api/me'), staleTime: 60_000 })
@@ -160,4 +160,46 @@ export function useDaily() {
 /** Song id -> my best solo score. */
 export function useSoloBests(enabled: boolean) {
   return useQuery({ queryKey: ['solo-bests'], queryFn: () => api<Record<string, number>>('/api/solo/bests'), enabled })
+}
+
+export function usePlan(enabled: boolean) {
+  return useQuery({ queryKey: ['plan'], queryFn: () => api<PlanInfo>('/api/me/plan'), enabled })
+}
+
+/** After the plan changes: the plan itself, and what depends on it (conversions left). */
+function useRefreshPlan() {
+  const queryClient = useQueryClient()
+  return (plan: PlanInfo) => {
+    queryClient.setQueryData(['plan'], plan)
+    void queryClient.invalidateQueries({ queryKey: ['songs'] })
+  }
+}
+
+export function useRedeemCode() {
+  const refresh = useRefreshPlan()
+  return useMutation({ mutationFn: (code: string) => api<PlanInfo>('/api/me/redeem', { body: { code } }), onSuccess: refresh })
+}
+
+export function useStartPartyPass() {
+  const refresh = useRefreshPlan()
+  return useMutation({ mutationFn: () => api<PlanInfo>('/api/me/party-pass', { method: 'POST' }), onSuccess: refresh })
+}
+
+export function useAdminGrants() {
+  return useQuery({ queryKey: ['admin-grants'], queryFn: () => api<AdminGrant[]>('/api/admin/grants') })
+}
+
+export function useAdminCodes() {
+  return useQuery({ queryKey: ['admin-codes'], queryFn: () => api<AdminCode[]>('/api/admin/codes') })
+}
+
+export function useAdminAction<T>(path: (arg: T) => string, body?: (arg: T) => unknown) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (arg: T) => api<unknown>(path(arg), { method: 'POST', body: body ? body(arg) : undefined }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin-grants'] })
+      void queryClient.invalidateQueries({ queryKey: ['admin-codes'] })
+    },
+  })
 }
