@@ -1,14 +1,14 @@
 # Termos do beta
 
-> **Versão de teste, rascunho para um advogado revisar.** Estes termos valem enquanto você usa o beta fechado do Encore. A versão em português é a principal.
+> **Versão de teste, rascunho para um advogado revisar.** Estes termos valem enquanto você usa o beta fechado do Mic Check. A versão em português é a principal.
 
 Termos do beta, versão 1, 20 de outubro de 2026.
 
-## 1. Quem mantém o Encore
+## 1. Quem mantém o Mic Check
 
-O beta do Encore é mantido por {{operator}}, pessoa física ({{city}}, Brasil) ("nós"). Contato para qualquer assunto (dúvidas, privacidade, denúncias e pedidos de exclusão): {{contact}}.
+O beta do Mic Check é mantido por {{operator}}, pessoa física ({{city}}, Brasil) ("nós"). Contato para qualquer assunto (dúvidas, privacidade, denúncias e pedidos de exclusão): {{contact}}.
 
-Ao usar o Encore você aceita estes termos e confirma que leu a [Política de Privacidade](./privacy). Se não concordar, não use o app.
+Ao usar o Mic Check você aceita estes termos e confirma que leu a [Política de Privacidade](./privacy). Se não concordar, não use o app.
 
 ## 2. É um teste
 
@@ -22,7 +22,7 @@ Nada é vendido no beta. Premium, Passes da Noite e códigos dados no beta são 
 
 ## 4. Sem garantia
 
-O Encore é oferecido como está, sem promessa de que funcione sem erros ou de que pontos e letras estejam certos. Fazemos o possível para manter tudo funcionando e seus dados seguros. Nada nestes termos limita os direitos que você tem pelo Código de Defesa do Consumidor e que não podem ser renunciados.
+O Mic Check é oferecido como está, sem promessa de que funcione sem erros ou de que pontos e letras estejam certos. Fazemos o possível para manter tudo funcionando e seus dados seguros. Nada nestes termos limita os direitos que você tem pelo Código de Defesa do Consumidor e que não podem ser renunciados.
 
 ## 5. Quem pode participar
 
@@ -52,7 +52,7 @@ Não: envie conteúdo que você não tem direito de usar; assedie outros jogador
 
 ## 9. Denúncias e direitos autorais
 
-Se algo no Encore viola seus direitos autorais ou é ilegal, escreva para {{contact}} dizendo: quem você é, qual é o conteúdo (título da música, dono ou sala), por que ele é ilegal e como falar com você.
+Se algo no Mic Check viola seus direitos autorais ou é ilegal, escreva para {{contact}} dizendo: quem você é, qual é o conteúdo (título da música, dono ou sala), por que ele é ilegal e como falar com você.
 
 O que fazemos: lemos a denúncia em até 2 dias úteis; se ela for específica, removemos o conteúdo e os arquivos dele; avisamos quem enviou, que pode responder; e guardamos um registro da denúncia e do que foi feito. Contas que violem direitos repetidamente são encerradas.
 

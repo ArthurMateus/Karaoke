@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Encore",
+    "name": "Mic Check",
     "tagline": "Cada um canta no próprio celular, e a pontuação aparece ao vivo."
   },
   "nav": {
@@ -56,7 +56,7 @@
     "emailPlaceholder": "voce@exemplo.com",
     "newHere": "Primeira vez? O mesmo link cria a sua conta.",
     "agree": "Tenho 18 anos ou mais e aceito os <terms>Termos do beta</terms> e a <privacy>Política de Privacidade</privacy>.",
-    "newHereInvite": "O Encore está num beta fechado: só e-mails convidados podem criar conta. Peça um convite a quem te chamou."
+    "newHereInvite": "O Mic Check está num beta fechado: só e-mails convidados podem criar conta. Peça um convite a quem te chamou."
   },
   "verify": {
     "working": "Entrando…",
@@ -792,7 +792,7 @@
     "onThisPage": "Nesta página",
     "credits": {
       "title": "Créditos e licenças",
-      "intro": "O Encore é feito com software, fontes e modelos livres e de código aberto. Obrigado a todo mundo que os criou.",
+      "intro": "O Mic Check é feito com software, fontes e modelos livres e de código aberto. Obrigado a todo mundo que os criou.",
       "englishNote": "Os avisos e os textos das licenças abaixo ficam em inglês, como os autores escreveram.",
       "headings": {
         "songs": "Músicas",

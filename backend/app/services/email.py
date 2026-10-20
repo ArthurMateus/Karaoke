@@ -37,14 +37,14 @@ def get_mailer() -> Mailer:
 
 _MAGIC_LINK_TEXT = {
     "en": (
-        "Your Encore sign-in link",
-        "Hi!\n\nClick this link to sign in to Encore:\n\n{link}\n\n"
+        "Your Mic Check sign-in link",
+        "Hi!\n\nClick this link to sign in to Mic Check:\n\n{link}\n\n"
         "The link works once and expires in {minutes} minutes.\n"
         "If you didn't ask for it, you can ignore this email.\n",
     ),
     "pt-BR": (
-        "Seu link de acesso ao Encore",
-        "Olá!\n\nClique neste link para entrar no Encore:\n\n{link}\n\n"
+        "Seu link de acesso ao Mic Check",
+        "Olá!\n\nClique neste link para entrar no Mic Check:\n\n{link}\n\n"
         "O link funciona uma vez e expira em {minutes} minutos.\n"
         "Se você não pediu este link, pode ignorar este e-mail.\n",
     ),
@@ -59,16 +59,16 @@ def magic_link_email(to: str, link: str, locale: str) -> OutgoingEmail:
 
 _INVITE_ONLY_TEXT = {
     "en": (
-        "About your Encore sign-in",
-        "Hi!\n\nSomeone (hopefully you) asked to sign in to Encore with this email address.\n\n"
-        "Encore is in a small private beta, and this address isn't on the invite list yet, "
+        "About your Mic Check sign-in",
+        "Hi!\n\nSomeone (hopefully you) asked to sign in to Mic Check with this email address.\n\n"
+        "Mic Check is in a small private beta, and this address isn't on the invite list yet, "
         "so we didn't create an account. If a friend invited you, ask them to add this address.\n\n"
         "If you didn't ask for this, you can ignore this email.\n",
     ),
     "pt-BR": (
-        "Sobre o seu acesso ao Encore",
-        "Olá!\n\nAlguém (esperamos que você) pediu para entrar no Encore com este e-mail.\n\n"
-        "O Encore está num pequeno beta fechado, e este endereço ainda não está na lista de convidados, "
+        "Sobre o seu acesso ao Mic Check",
+        "Olá!\n\nAlguém (esperamos que você) pediu para entrar no Mic Check com este e-mail.\n\n"
+        "O Mic Check está num pequeno beta fechado, e este endereço ainda não está na lista de convidados, "
         "então não criamos uma conta. Se um amigo te convidou, peça para ele incluir este endereço.\n\n"
         "Se você não pediu isso, pode ignorar este e-mail.\n",
     ),

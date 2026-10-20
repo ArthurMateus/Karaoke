@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Encore",
+    "name": "Mic Check",
     "tagline": "Everyone sings on their own phone, and the scores show up live."
   },
   "nav": {
@@ -56,7 +56,7 @@
     "emailPlaceholder": "you@example.com",
     "newHere": "New here? The same link creates your account.",
     "agree": "I'm 18 or older and I agree to the beta <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>.",
-    "newHereInvite": "Encore is in a private beta: only invited emails can create an account. Ask the host for an invite."
+    "newHereInvite": "Mic Check is in a private beta: only invited emails can create an account. Ask the host for an invite."
   },
   "verify": {
     "working": "Signing you in…",
@@ -792,7 +792,7 @@
     "onThisPage": "On this page",
     "credits": {
       "title": "Credits and licences",
-      "intro": "Encore is made with free and open-source software, fonts and models. Thank you to everyone who made them.",
+      "intro": "Mic Check is made with free and open-source software, fonts and models. Thank you to everyone who made them.",
       "englishNote": "The notices and licence texts below stay in English, as their authors wrote them.",
       "headings": {
         "songs": "Songs",

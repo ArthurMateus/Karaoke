@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
     await app.state.hub.shutdown()
 
 
-app = FastAPI(title="Encore API", lifespan=lifespan)
+app = FastAPI(title="Mic Check API", lifespan=lifespan)
 app.include_router(auth.router)
 app.include_router(me.router)
 app.include_router(rooms.router)

@@ -97,7 +97,7 @@ def build_chart(song: StarterSong) -> Chart:
         bpm=song.tempo,
         gap_ms=round(gap_ms),
         tracks=tracks,
-        headers={"LANGUAGE": language_name(song.language), "GENRE": "Traditional", "EDITION": "Encore Starter"},
+        headers={"LANGUAGE": language_name(song.language), "GENRE": "Traditional", "EDITION": "Mic Check Starter"},
         singers=dict(song.singers) if "P2" in tracks else {},
     )
 

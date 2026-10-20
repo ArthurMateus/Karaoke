@@ -1,14 +1,14 @@
 # Beta terms
 
-> **Test version, a draft for a lawyer to review.** These terms apply while you use the private Encore beta. The Portuguese version is the main one.
+> **Test version, a draft for a lawyer to review.** These terms apply while you use the private Mic Check beta. The Portuguese version is the main one.
 
 Beta terms, version 1, 20 October 2026.
 
-## 1. Who runs Encore
+## 1. Who runs Mic Check
 
-The Encore beta is run by {{operator}}, an individual ({{city}}, Brazil) ("we"). Contact for anything (questions, privacy, reports and deletion requests): {{contact}}.
+The Mic Check beta is run by {{operator}}, an individual ({{city}}, Brazil) ("we"). Contact for anything (questions, privacy, reports and deletion requests): {{contact}}.
 
-By using Encore you agree to these terms and confirm you have read the [Privacy Policy](./privacy). If you don't agree, please don't use the app.
+By using Mic Check you agree to these terms and confirm you have read the [Privacy Policy](./privacy). If you don't agree, please don't use the app.
 
 ## 2. It's a test
 
@@ -22,7 +22,7 @@ Nothing is sold in the beta. Premium, Night Passes and codes given in the beta a
 
 ## 4. No warranty
 
-Encore is provided as it is, without a promise that it works without errors or that scores and lyrics are right. We do our best to keep it running and your data safe. Nothing in these terms limits rights you have under the Código de Defesa do Consumidor (consumer protection law) that can't be waived.
+Mic Check is provided as it is, without a promise that it works without errors or that scores and lyrics are right. We do our best to keep it running and your data safe. Nothing in these terms limits rights you have under the Código de Defesa do Consumidor (consumer protection law) that can't be waived.
 
 ## 5. Who can join
 
@@ -52,7 +52,7 @@ Don't: upload content you have no right to use; harass other players or use hate
 
 ## 9. Reports and copyright
 
-If something in Encore infringes your copyright or is unlawful, write to {{contact}} with: who you are, what the content is (song title, owner or room), why it's unlawful, and how to reach you.
+If something in Mic Check infringes your copyright or is unlawful, write to {{contact}} with: who you are, what the content is (song title, owner or room), why it's unlawful, and how to reach you.
 
 What we do: we read the report within 2 working days; if it is specific, we remove the content and its files; we tell the uploader, who may reply; and we keep a record of the report and what we did. Accounts that infringe repeatedly are closed.
 

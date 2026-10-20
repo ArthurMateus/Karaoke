@@ -1,4 +1,4 @@
-# Encore 🎤
+# Mic Check 🎤
 
 A multiplayer karaoke party game that runs in the browser. Players join a room with a short code or by scanning a QR code, and each person sings into their own phone or laptop.
 

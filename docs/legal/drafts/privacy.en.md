@@ -1,6 +1,6 @@
 # Privacy Policy
 
-> **Beta version, a draft for a lawyer to review.** This policy describes the private Encore beta. The Portuguese version is the main one.
+> **Beta version, a draft for a lawyer to review.** This policy describes the private Mic Check beta. The Portuguese version is the main one.
 
 Privacy Policy for the beta, version 1, 20 October 2026.
 
@@ -10,7 +10,7 @@ The controller of your personal data under the LGPD (Lei 13.709/2018) is {{opera
 
 ## The beta
 
-- Encore is in a **private, invite-only beta**: only invited emails can create an account, and guests join only through a friend's room.
+- Mic Check is in a **private, invite-only beta**: only invited emails can create an account, and guests join only through a friend's room.
 - It's for people aged **18 or older**.
 - The beta ends on {{beta_end}}. When it ends, **we delete all beta data** (accounts, songs, recordings, scores) within 30 days, and we tell you by email first.
 - During the beta only the operator has access to the server and the database.

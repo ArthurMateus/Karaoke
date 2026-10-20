@@ -6,9 +6,9 @@
 
 ## 1. Quem somos
 
-O Encore é mantido por [NOME DA EMPRESA OU DO RESPONSÁVEL], [CNPJ/CPF], [ENDEREÇO], Brasil ("nós"). Contato: [E-MAIL DE CONTATO].
+O Mic Check é mantido por [NOME DA EMPRESA OU DO RESPONSÁVEL], [CNPJ/CPF], [ENDEREÇO], Brasil ("nós"). Contato: [E-MAIL DE CONTATO].
 
-Ao usar o Encore você concorda com estes termos. Se não concordar, por favor não use.
+Ao usar o Mic Check você concorda com estes termos. Se não concordar, por favor não use.
 
 ## 2. Idade
 
@@ -51,11 +51,11 @@ Não: envie conteúdo sem ter direito; assedie outros jogadores ou use nomes ou 
 
 ## 8. Denúncias e direitos autorais
 
-Se você acha que algo no Encore viola seus direitos autorais ou é ilegal, escreva para [E-MAIL PARA DIREITOS AUTORAIS] com: quem você é, qual é o conteúdo (título da música, sala ou link), por que é ilegal e seus dados de contato. Vamos analisar rapidamente, remover ou desativar o conteúdo quando for o caso e avisar quem enviou, que poderá responder. Contas que violarem direitos repetidamente serão encerradas. `[A CONSTRUIR: link de denúncia e ação de admin "desativar música". Se atender aos EUA: registrar um agente DMCA e incluir a contranotificação.]`
+Se você acha que algo no Mic Check viola seus direitos autorais ou é ilegal, escreva para [E-MAIL PARA DIREITOS AUTORAIS] com: quem você é, qual é o conteúdo (título da música, sala ou link), por que é ilegal e seus dados de contato. Vamos analisar rapidamente, remover ou desativar o conteúdo quando for o caso e avisar quem enviou, que poderá responder. Contas que violarem direitos repetidamente serão encerradas. `[A CONSTRUIR: link de denúncia e ação de admin "desativar música". Se atender aos EUA: registrar um agente DMCA e incluir a contranotificação.]`
 
 ## 9. O serviço
 
-O Encore é oferecido como está. Trabalhamos para mantê-lo no ar, mas não podemos garantir que estará sempre disponível, sem erros, nem que pontos e letras serão exatos. Podemos mudar ou encerrar recursos. Nada nestes termos limita direitos que você tem pelo Código de Defesa do Consumidor e que não podem ser renunciados.
+O Mic Check é oferecido como está. Trabalhamos para mantê-lo no ar, mas não podemos garantir que estará sempre disponível, sem erros, nem que pontos e letras serão exatos. Podemos mudar ou encerrar recursos. Nada nestes termos limita direitos que você tem pelo Código de Defesa do Consumidor e que não podem ser renunciados.
 
 ## 10. Encerramento
 

@@ -1,6 +1,6 @@
 # Política de Privacidade
 
-> **Versão beta, rascunho para um advogado revisar.** Esta política descreve o beta fechado do Encore. A versão em português é a principal.
+> **Versão beta, rascunho para um advogado revisar.** Esta política descreve o beta fechado do Mic Check. A versão em português é a principal.
 
 Política de Privacidade do beta, versão 1, 20 de outubro de 2026.
 
@@ -10,7 +10,7 @@ O controlador dos seus dados pessoais pela LGPD (Lei 13.709/2018) é {{operator}
 
 ## O beta
 
-- O Encore está num **beta fechado, só para convidados**: só e-mails convidados podem criar conta, e convidados sem conta entram só pela sala de um amigo.
+- O Mic Check está num **beta fechado, só para convidados**: só e-mails convidados podem criar conta, e convidados sem conta entram só pela sala de um amigo.
 - É para pessoas com **18 anos ou mais**.
 - O beta termina em {{beta_end}}. Quando ele acabar, **apagamos todos os dados do beta** (contas, músicas, gravações, pontos) em até 30 dias, e avisamos você por e-mail antes.
 - Durante o beta, só o responsável tem acesso ao servidor e ao banco de dados.

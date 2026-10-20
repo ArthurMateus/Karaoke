@@ -81,7 +81,7 @@ export default function LegalPage({ page }: { page: keyof typeof PAGES }) {
     return {
       intro: split.intro
         .replace(/^# .*$/m, `# ${t('legal.credits.title')}`)
-        .replace(/^Encore is made with .*$/m, t('legal.credits.intro')),
+        .replace(/^Mic Check is made with .*$/m, t('legal.credits.intro')),
       parts: split.parts.map((p) => (CREDITS_HEADINGS[p.title] ? { ...p, title: t(`legal.credits.headings.${CREDITS_HEADINGS[p.title]}`) } : p)),
     }
   }, [source, translateCredits, t])

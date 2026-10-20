@@ -2,7 +2,7 @@
 
 > **DRAFT, to be reviewed by a lawyer.** Not legal advice. Shown in the app as "Credits & licences" (one page for both languages; the licence texts stay in English as written by their authors). Keep it in step with `docs/legal/LEGAL-REVIEW-*.md`. When the app is built for production, also serve the full licence files (see "How to keep this complete" at the end).
 
-Encore is made with free and open-source software, fonts and models. Thank you to everyone who made them.
+Mic Check is made with free and open-source software, fonts and models. Thank you to everyone who made them.
 
 ## Songs
 
@@ -12,10 +12,10 @@ The starter songs use **public-domain** melodies and words:
 - *Oh! Susanna*: Stephen Foster (1848).
 - *Jingle Bells (chorus)*: James Lord Pierpont (1857).
 - *Row, Row, Row Your Boat*: traditional (1852).
-- *Dorme, João?*: traditional melody (*Frère Jacques*), Portuguese words by Encore.
-- *Canta, Canta*: melody from Ludwig van Beethoven's *Ode to Joy* (1824), Portuguese words by Encore.
+- *Dorme, João?*: traditional melody (*Frère Jacques*), Portuguese words by Mic Check.
+- *Canta, Canta*: melody from Ludwig van Beethoven's *Ode to Joy* (1824), Portuguese words by Mic Check.
 
-Arrangements by Encore, played with the **FluidR3 GM** soundfont by Frank Wen and contributors (MIT licence).
+Arrangements by Mic Check, played with the **FluidR3 GM** soundfont by Frank Wen and contributors (MIT licence).
 
 Songs you upload belong to their owners. Lyrics found with **[LRCLIB](https://lrclib.net)** (a free community lyrics database) belong to their authors and publishers.
 
@@ -30,7 +30,7 @@ Packaged by Fontsource. Licence: https://openfontlicense.org (full text: [link t
 
 - **Lucide** icons: Copyright (c) 2026 Lucide Icons and Contributors. ISC licence. Some icons are derived from **Feather**: Copyright (c) 2013-present Cole Bemis, MIT licence. Both texts are below.
 - **canvas-confetti**: Copyright (c) 2020, Kiril Vatev. ISC licence.
-- Cover art, lane drawings and the logo are made by Encore.
+- Cover art, lane drawings and the logo are made by Mic Check.
 
 ## In your browser
 

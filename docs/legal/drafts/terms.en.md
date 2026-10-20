@@ -6,9 +6,9 @@ Last updated: [DATE]
 
 ## 1. Who we are
 
-Encore is run by [COMPANY NAME OR OWNER NAME], [CNPJ/CPF], [ADDRESS], Brazil ("we"). Contact: [CONTACT EMAIL].
+Mic Check is run by [COMPANY NAME OR OWNER NAME], [CNPJ/CPF], [ADDRESS], Brazil ("we"). Contact: [CONTACT EMAIL].
 
-By using Encore you agree to these terms. If you don't agree, please don't use it.
+By using Mic Check you agree to these terms. If you don't agree, please don't use it.
 
 ## 2. Age
 
@@ -51,11 +51,11 @@ Don't: upload content you have no right to; harass other players or send hateful
 
 ## 8. Reporting content and copyright
 
-If you think something in Encore infringes your copyright or is unlawful, write to [COPYRIGHT EMAIL] with: who you are, what the content is (song title, room or link), why it's unlawful, and your contact details. We'll review it promptly, remove or disable content where appropriate, and tell the uploader, who may reply. Accounts that infringe repeatedly will be closed. `[TO BUILD: report link and admin "disable song" action. If serving the US: register a DMCA agent and add the counter-notice steps.]`
+If you think something in Mic Check infringes your copyright or is unlawful, write to [COPYRIGHT EMAIL] with: who you are, what the content is (song title, room or link), why it's unlawful, and your contact details. We'll review it promptly, remove or disable content where appropriate, and tell the uploader, who may reply. Accounts that infringe repeatedly will be closed. `[TO BUILD: report link and admin "disable song" action. If serving the US: register a DMCA agent and add the counter-notice steps.]`
 
 ## 9. The service
 
-Encore is provided as it is. We work to keep it running but can't promise it will always be available, error-free, or that scores and lyrics will be accurate. We may change or stop features. Nothing in these terms limits rights you have under consumer protection law (Código de Defesa do Consumidor) that can't be waived.
+Mic Check is provided as it is. We work to keep it running but can't promise it will always be available, error-free, or that scores and lyrics will be accurate. We may change or stop features. Nothing in these terms limits rights you have under consumer protection law (Código de Defesa do Consumidor) that can't be waived.
 
 ## 10. Ending
 
