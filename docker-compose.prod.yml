@@ -1,0 +1,157 @@
+# The online server (production). Used on top of docker-compose.yml:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# The server's .env sets COMPOSE_FILE to both files, so there a plain
+# "docker compose up -d --build" (and every "docker compose exec ...") does the same.
+# Step-by-step guide: docs/DEPLOY.md. Your PC keeps using docker-compose.yml alone.
+#
+# What changes compared with your PC:
+# - Only Caddy (80/443) and LiveKit's audio ports are reachable from the internet.
+#   The file storage, the database, Redis and the API are inside Docker only.
+#   Mailpit isn't started; sign-in emails go out through a real SMTP service.
+# - The website is built once and served as files by Caddy (no Vite dev server).
+# - The API runs without auto-reload and trusts forwarded addresses only from Caddy.
+# - Every password and key comes from .env. If one is missing, nothing starts and
+#   Docker names the missing setting.
+#
+# "!override" / "!reset" replace a setting of docker-compose.yml instead of adding to it.
+
+x-api-env: &api-env
+  DATABASE_URL: postgresql+psycopg://karaoke:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (deploy/generate-secrets.sh)}@postgres:5432/karaoke
+  TEST_DATABASE_URL: postgresql+psycopg://karaoke:${POSTGRES_PASSWORD}@postgres:5432/karaoke_test
+  PUBLIC_BASE_URL: https://${PUBLIC_HOST:?set PUBLIC_HOST in .env, e.g. miccheck-party.duckdns.org}
+  EXTRA_ORIGINS: ""
+  SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST in .env}
+  SMTP_PORT: ${SMTP_PORT:?set SMTP_PORT in .env}
+  SMTP_USER: ${SMTP_USER:?set SMTP_USER in .env}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:?set SMTP_PASSWORD in .env}
+  SMTP_USE_TLS: ${SMTP_USE_TLS:-true}
+  MAIL_FROM: ${MAIL_FROM:?set MAIL_FROM in .env}
+  ADMIN_EMAILS: ${ADMIN_EMAILS:?set ADMIN_EMAILS in .env (your own email)}
+  # Invite-only. Required here: empty would let anyone who finds the site sign up.
+  BETA_ALLOWED_EMAILS: ${BETA_ALLOWED_EMAILS:?set BETA_ALLOWED_EMAILS in .env (the invited friends)}
+  LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY in .env (deploy/generate-secrets.sh)}
+  LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET in .env (deploy/generate-secrets.sh)}
+  S3_ACCESS_KEY: ${S3_ACCESS_KEY:?set S3_ACCESS_KEY in .env (deploy/generate-secrets.sh)}
+  S3_SECRET_KEY: ${S3_SECRET_KEY:?set S3_SECRET_KEY in .env (deploy/generate-secrets.sh)}
+  WATCHFILES_FORCE_POLLING: "false"
+
+services:
+  caddy:
+    # The built website plus Caddy (frontend/Dockerfile.prod).
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    image: miccheck-caddy
+    pull_policy: build
+    ports: !override
+      - "80:80" # Let's Encrypt check + redirect to https
+      - "443:443" # the site (HTTPS)
+      - "443:443/udp" # the site over HTTP/3
+    environment: !override
+      PUBLIC_HOST: ${PUBLIC_HOST:?set PUBLIC_HOST in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env (for Let's Encrypt notices)}
+    volumes: !override
+      - ./infra/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # certificates and the access logs (/data/logs)
+      - caddy_config:/config
+    depends_on: !override
+      - api
+      - livekit
+    networks:
+      default:
+        # Fixed address: the API trusts forwarded client addresses from here only.
+        ipv4_address: 172.31.240.10
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  api:
+    environment:
+      <<: *api-env
+    # No --reload. One process on purpose: live rooms are kept in the API's memory,
+    # so a second worker process would split the players of a room.
+    # No access log here: Caddy's log (deleted after 14 days) already has the requests.
+    command: >
+      sh -c "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+      --workers 1 --proxy-headers --forwarded-allow-ips=172.31.240.10 --no-access-log"
+    volumes: !override
+      - ./config:/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  worker:
+    environment:
+      <<: *api-env
+      HF_HOME: /models/huggingface
+      TORCH_HOME: /models/torch
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      PYANNOTE_METRICS_ENABLED: "false"
+    volumes: !override
+      - ./config:/config:ro
+      - ml_models:/models
+    restart: unless-stopped
+
+  livekit:
+    command: --config /etc/livekit.yaml --node-ip ${PUBLIC_IP:?set PUBLIC_IP in .env (the server's public IP address)}
+    environment: !override
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:?set LIVEKIT_API_KEY in .env}: ${LIVEKIT_API_SECRET:?set LIVEKIT_API_SECRET in .env}"
+    ports: !override
+      - "7881:7881" # audio over TCP (fallback)
+      - "50000-50060:50000-50060/udp" # audio over UDP
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:7880/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    restart: unless-stopped
+
+  redis:
+    restart: unless-stopped
+
+  storage:
+    # No file browser from outside. The S3 login is written from .env at start
+    # (infra/seaweedfs/s3.json has the local PC's login and isn't used here).
+    ports: !reset []
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?set S3_ACCESS_KEY in .env}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?set S3_SECRET_KEY in .env}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        printf '{"identities":[{"name":"karaoke","credentials":[{"accessKey":"%s","secretKey":"%s"}],"actions":["Admin","Read","Write","List","Tagging"]}]}'
+        "$$S3_ACCESS_KEY" "$$S3_SECRET_KEY" > /tmp/s3.json
+        && exec /usr/bin/weed server -dir=/data -s3 -s3.port=8333 -s3.config=/tmp/s3.json
+    volumes: !override
+      - storage_data:/data
+    restart: unless-stopped
+
+  # The website is served by Caddy (above); the Vite dev server and Mailpit are
+  # for your PC only. They only start with "--profile local", which the server never uses.
+  web:
+    profiles: ["local"]
+  mailpit:
+    profiles: ["local"]
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.31.240.0/24
+
+volumes:
+  caddy_config:
