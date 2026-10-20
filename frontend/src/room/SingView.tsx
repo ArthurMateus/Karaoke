@@ -72,6 +72,17 @@ export default function SingView(props: Props) {
   const [myTotal, setMyTotal] = useState(0)
   const [view, setView] = useState<View>({ line: 0, sung: 0, countdown: null, rating: null })
 
+  // The lobby is usually scrolled down (song picker); start each song at the top.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [performanceId])
+
+  // Lets the page drop costly effects (the header blur) while the lanes move.
+  useEffect(() => {
+    document.documentElement.classList.add('singing')
+    return () => document.documentElement.classList.remove('singing')
+  }, [])
+
   // The backing track (everyone hears it, singers and watchers), unless the stage screen plays it.
   useEffect(() => {
     if (!player || !buffer || !performanceId || !(musicHere || listening)) return

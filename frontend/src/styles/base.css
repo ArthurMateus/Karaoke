@@ -83,6 +83,11 @@ a {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
+/* No blur over the moving note lanes while a song plays (the sing screen must stay smooth). */
+.singing .header {
+  background: var(--paper);
+  backdrop-filter: none;
+}
 .logo {
   display: flex;
   align-items: center;
