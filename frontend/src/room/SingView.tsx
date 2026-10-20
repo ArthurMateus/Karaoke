@@ -23,6 +23,8 @@ interface Props {
   send: (message: ClientMessage) => void
   subscribe: (listener: (message: ServerMessage) => void) => () => void
   onUpload: (performanceId: string, upload: Promise<void>) => void
+  musicHere: boolean // play the backing track on this phone (off while a stage screen plays it)
+  onMusicHere: (on: boolean) => void
 }
 
 interface View {
@@ -34,7 +36,7 @@ interface View {
 
 const TRAIL_SECONDS = 2
 
-export default function SingView({ room, me, engine, clock, chart, buffer, latencyMs, send, subscribe, onUpload }: Props) {
+export default function SingView({ room, me, engine, clock, chart, buffer, latencyMs, send, subscribe, onUpload, musicHere, onMusicHere }: Props) {
   const { t } = useTranslation()
   const part = room.parts[me]
   const singing = !!part && !!engine
@@ -52,11 +54,11 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
   const [myTotal, setMyTotal] = useState(0)
   const [view, setView] = useState<View>({ line: 0, sung: 0, countdown: null, rating: null })
 
-  // The backing track (everyone hears it, singers and watchers).
+  // The backing track (everyone hears it, singers and watchers), unless the stage screen plays it.
   useEffect(() => {
-    if (!engine || !buffer || !performanceId) return
+    if (!engine || !buffer || !performanceId || !musicHere) return
     return engine.playAt(buffer, startLocal)
-  }, [engine, buffer, startLocal, performanceId])
+  }, [engine, buffer, startLocal, performanceId, musicHere])
 
   // Singing: analyse the mic, score, record, and report.
   useEffect(() => {
@@ -152,6 +154,11 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
         </div>
         <Scoreboard room={room} singers={singers} me={me} myTotal={singing ? myTotal : null} />
       </div>
+      {room.stage_connected && engine && (
+        <button type="button" className="link-button small music-switch" onClick={() => onMusicHere(!musicHere)}>
+          {musicHere ? t('stage.musicHereOn') : t('stage.musicHereOff')}
+        </button>
+      )}
 
       <div className="stage">
         {timeline && <NoteLane timeline={timeline} songTime={songTime} scorer={scorer} trail={trail} />}

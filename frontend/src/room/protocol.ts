@@ -59,6 +59,7 @@ export interface LobbyRoom {
   queue: QueueEntry[]
   votes: VoteSummary | null // Spotlight, for the current turn
   standings: Standing[] // Spotlight, tonight
+  stage_connected: boolean // a stage screen is playing the music for the room
 }
 
 export type ServerMessage =

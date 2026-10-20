@@ -10,10 +10,12 @@ import type { RoomSong } from '../room/protocol'
  * ready before the countdown ends. The audio needs the AudioEngine (it decodes
  * with the phone's audio system), so it loads once the mic is turned on.
  */
-export function useSongAssets(code: string, song: RoomSong | null, engine: AudioEngine | null) {
+export function useSongAssets(code: string, song: RoomSong | null, engine: AudioEngine | null, stageToken?: string) {
+  // A stage screen isn't signed in: it proves it belongs to the room with its link's token.
+  const access = `room=${code}` + (stageToken ? `&stage=${encodeURIComponent(stageToken)}` : '')
   const chart = useQuery({
     queryKey: ['room-chart', code, song?.id],
-    queryFn: () => api<EditorChart>(`/api/songs/${song!.id}/chart?room=${code}`),
+    queryFn: () => api<EditorChart>(`/api/songs/${song!.id}/chart?${access}`),
     enabled: !!song,
     staleTime: Infinity,
     retry: 1,
@@ -26,13 +28,13 @@ export function useSongAssets(code: string, song: RoomSong | null, engine: Audio
     if (!engine || !songId) return
     let cancelled = false
     engine
-      .loadTrack(`/api/songs/${songId}/audio/instrumental?room=${code}`)
+      .loadTrack(`/api/songs/${songId}/audio/instrumental?${access}`)
       .then((buffer) => !cancelled && setLoaded({ id: songId, buffer }))
       .catch(() => !cancelled && setFailedId(songId))
     return () => {
       cancelled = true
     }
-  }, [engine, songId, code])
+  }, [engine, songId, access])
 
   return {
     chart: chart.data,

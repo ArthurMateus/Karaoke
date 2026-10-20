@@ -9,8 +9,11 @@ const FINAL_MESSAGES = new Set(['kicked', 'replaced', 'room_closed'])
 
 type Listener = (message: ServerMessage) => void
 
-/** Connects to a room and keeps reconnecting until the room tells us to stop. */
-export function useRoomSocket(code: string) {
+/**
+ * Connects to a room and keeps reconnecting until the room tells us to stop.
+ * `path` is the socket address: a player's by default, or a stage screen's (/ws/stage/CODE?t=...).
+ */
+export function useRoomSocket(code: string, path = `/ws/rooms/${code}`) {
   const [state, dispatch] = useReducer(lobbyReducer, initialLobbyState)
   const socketRef = useRef<WebSocket | null>(null)
   const listeners = useRef(new Set<Listener>())
@@ -25,7 +28,7 @@ export function useRoomSocket(code: string) {
 
     const connect = () => {
       const scheme = location.protocol === 'https:' ? 'wss' : 'ws'
-      const ws = new WebSocket(`${scheme}://${location.host}/ws/rooms/${code}`)
+      const ws = new WebSocket(`${scheme}://${location.host}${path}`)
       socketRef.current = ws
 
       ws.onopen = () => {
@@ -59,7 +62,7 @@ export function useRoomSocket(code: string) {
       clearInterval(keepalive)
       socketRef.current?.close()
     }
-  }, [code])
+  }, [path])
 
   const sendMessage = useCallback((message: ClientMessage) => {
     if (socketRef.current) send(socketRef.current, message)

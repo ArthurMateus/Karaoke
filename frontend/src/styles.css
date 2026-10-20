@@ -1218,3 +1218,170 @@ details.picker[open] > summary {
 .star.on {
   color: var(--amber);
 }
+
+/* ---------- Stage screen (TV / laptop): the whole window, dark, big type ---------- */
+.stage-screen {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--stage);
+  color: var(--stage-text);
+  padding: clamp(16px, 3vw, 40px);
+  display: flex;
+  flex-direction: column;
+}
+.stage-screen.center {
+  align-items: center;
+  justify-content: center;
+}
+.stage-screen .muted {
+  color: #a49fb5;
+}
+.stage-message {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  text-align: center;
+}
+.stage-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--amber);
+  color: var(--ink);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.stage-start {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  background: rgb(21 19 26 / 88%);
+  color: var(--stage-text);
+  font: inherit;
+  cursor: pointer;
+}
+.stage-start strong {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 6vw, 4rem);
+  padding: 18px 36px;
+  border-radius: var(--r-card);
+  background: var(--violet);
+}
+.stage-lobby {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 2fr;
+  gap: clamp(20px, 4vw, 64px);
+  align-items: center;
+}
+.stage-join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.stage-join .qr,
+.stage-join svg,
+.stage-join img {
+  background: #fff;
+  padding: 12px;
+  border-radius: var(--r-card);
+  width: min(100%, 320px);
+  height: auto;
+}
+.stage-join .room-code {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+.stage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.stage-info h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.05;
+}
+.stage-sub {
+  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+  color: #c9c3da;
+}
+.stage-votes {
+  font-family: var(--f-display);
+  font-size: clamp(1.2rem, 2.6vw, 2rem);
+  color: var(--amber);
+}
+.stage-ranking .rank {
+  background: var(--stage-2);
+  border-color: var(--stage-line);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+.stage-ranking .rank.first {
+  border-color: var(--amber);
+  background: #2e2620;
+}
+.stage-sing {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.stage-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.stage-top .sing-title {
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+}
+.stage-top .score-chip b {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+}
+.stage-lanes {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 300px;
+}
+.stage-lane {
+  min-height: 140px;
+}
+.lane-label {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  z-index: 1;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #c9c3da;
+}
+.stage-lyrics .lyric-line {
+  font-size: clamp(1.8rem, 4.2vw, 3.6rem);
+}
+.stage-lyrics .lyric-next {
+  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+}
+.stage-card summary {
+  cursor: pointer;
+  list-style: revert;
+}
+.music-switch {
+  align-self: flex-start;
+  color: #c9c3da;
+}
+@media (max-width: 760px) {
+  .stage-lobby {
+    grid-template-columns: 1fr;
+  }
+}

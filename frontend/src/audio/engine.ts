@@ -54,6 +54,15 @@ export class AudioEngine {
     return engine
   }
 
+  /** Sound only, no microphone: for a stage screen. Call from a click. */
+  static async createPlayback(): Promise<AudioEngine> {
+    const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    if (!Ctx) throw new MicUnavailableError('mic_unsupported')
+    const ctx = new Ctx({ latencyHint: 'playback' })
+    await ctx.resume()
+    return new AudioEngine(ctx, false)
+  }
+
   private async connectInput(): Promise<void> {
     let source: AudioNode
     if (this.simulated) {

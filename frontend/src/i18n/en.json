@@ -421,5 +421,26 @@
     "stars_other": "{{count}} stars",
     "voted": "Thanks! You can still change your vote.",
     "noAudience": "Everyone sang this one, so there's no audience to vote: pitch score only."
+  },
+  "stage": {
+    "title": "Stage screen (TV or laptop)",
+    "intro": "Open this on a TV or laptop connected to speakers: it plays the music for the whole room and shows the note lanes, lyrics, scores and reactions big. It doesn't take a player's spot. Phones stop playing the music while it's open.",
+    "openHere": "Open the stage screen on this computer",
+    "scan": "Or scan this with the TV's or laptop's camera / browser",
+    "start": "Start the stage",
+    "startHelp": "Click once so this screen may play sound.",
+    "join": "Join with the code",
+    "players_one": "{{count}} player",
+    "players_other": "{{count}} players",
+    "upNext": "Up next",
+    "queueEmpty": "Queue's empty: add your turn on your phone!",
+    "thenQueue": "Then: {{titles}}",
+    "noSong": "The host is picking a song",
+    "voteNow": "Vote on your phone!",
+    "closed": "The room was closed.",
+    "badLink": "This stage link doesn't work any more. Open a new one from the host's room page.",
+    "connected": "A stage screen is playing the music, so phones stay quiet.",
+    "musicHereOn": "🔊 Music on this phone: on (tap to turn off)",
+    "musicHereOff": "🔇 Music on this phone: off, the stage plays it (tap for headphones)"
   }
 }

@@ -421,5 +421,26 @@
     "stars_other": "{{count}} estrelas",
     "voted": "Valeu! Você ainda pode mudar seu voto.",
     "noAudience": "Todo mundo cantou esta, então não há público para votar: vale só a afinação."
+  },
+  "stage": {
+    "title": "Tela do palco (TV ou notebook)",
+    "intro": "Abra numa TV ou notebook ligado a caixas de som: ela toca a música para a sala toda e mostra as notas, a letra, os pontos e as reações bem grandes. Não ocupa vaga de jogador. Os celulares param de tocar a música enquanto ela estiver aberta.",
+    "openHere": "Abrir a tela do palco neste computador",
+    "scan": "Ou escaneie com a câmera / navegador da TV ou do notebook",
+    "start": "Ligar o palco",
+    "startHelp": "Clique uma vez para esta tela poder tocar som.",
+    "join": "Entre com o código",
+    "players_one": "{{count}} jogador",
+    "players_other": "{{count}} jogadores",
+    "upNext": "Agora vem",
+    "queueEmpty": "Fila vazia: coloque sua vez pelo celular!",
+    "thenQueue": "Depois: {{titles}}",
+    "noSong": "O anfitrião está escolhendo uma música",
+    "voteNow": "Vote pelo celular!",
+    "closed": "A sala foi fechada.",
+    "badLink": "Este link do palco não funciona mais. Abra um novo pela página da sala do anfitrião.",
+    "connected": "Uma tela do palco está tocando a música, então os celulares ficam em silêncio.",
+    "musicHereOn": "🔊 Música neste celular: ligada (toque para desligar)",
+    "musicHereOff": "🔇 Música neste celular: desligada, o palco toca (toque para fones)"
   }
 }

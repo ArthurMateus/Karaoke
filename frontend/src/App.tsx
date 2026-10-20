@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import Header from './components/Header'
 import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
@@ -10,15 +10,26 @@ import LyricsPage from './pages/LyricsPage'
 import ProfilePage from './pages/ProfilePage'
 import SignInPage from './pages/SignInPage'
 import SongsPage from './pages/SongsPage'
+import StagePage from './pages/StagePage'
 import UploadPage from './pages/UploadPage'
 import VerifyPage from './pages/VerifyPage'
 
 export default function App() {
   const { i18n } = useTranslation()
+  const location = useLocation()
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en'
   }, [i18n.resolvedLanguage])
+
+  // The stage screen (a TV) is the whole window: no header, no page margins.
+  if (location.pathname.startsWith('/stage/')) {
+    return (
+      <Routes>
+        <Route path="/stage/:code" element={<StagePage />} />
+      </Routes>
+    )
+  }
 
   return (
     <>

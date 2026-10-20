@@ -17,6 +17,7 @@ const room: LobbyRoom = {
   queue: [],
   votes: null,
   standings: [],
+  stage_connected: false,
 }
 
 function run(...events: LobbyEvent[]): LobbyState {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate, useParams } from 'react-router'
+import { api } from '../api/client'
 import { useMe, useRoomInfo } from '../api/hooks'
 import type { User } from '../api/types'
 import ErrorText from '../components/ErrorText'
@@ -60,6 +61,9 @@ function Lobby({ code, user }: { code: string; user: User }) {
     if (me?.ready && !engine) send({ type: 'set_ready', ready: false })
   }, [me?.ready, engine, send])
   const uploadState: UploadState = upload && upload.id === performanceId ? upload.state : 'idle'
+  // While a stage screen plays the music, phones stay quiet unless switched on (e.g. for headphones).
+  const [musicPref, setMusicPref] = useState(() => readMusicPref())
+  const musicHere = !room?.stage_connected || musicPref
 
   if (state.status === 'ended') {
     return (
@@ -90,6 +94,11 @@ function Lobby({ code, user }: { code: string; user: User }) {
         send={send}
         subscribe={subscribe}
         onUpload={onUpload}
+        musicHere={musicHere}
+        onMusicHere={(on) => {
+          setMusicPref(on)
+          writeMusicPref(on)
+        }}
       />
     )
   }
@@ -166,6 +175,8 @@ function Lobby({ code, user }: { code: string; user: User }) {
             </section>
           )}
           {!iAmHost && spotlight && <p className="banner small">{t('modes.spotlightHelp')}</p>}
+          {room?.stage_connected && <p className="banner small">{t('stage.connected')}</p>}
+          {iAmHost && <StageCard code={code} />}
 
           {spotlight && room ? (
             <SpotlightLobby room={room} me={user.id} send={send} />
@@ -274,5 +285,57 @@ function CopyLink({ url }: { url: string }) {
     <button className="button" onClick={copy}>
       {copied ? t('lobby.copied') : t('lobby.copyLink')}
     </button>
+  )
+}
+
+const MUSIC_KEY = 'kp_music_on_phone'
+
+function readMusicPref(): boolean {
+  try {
+    return localStorage.getItem(MUSIC_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function writeMusicPref(on: boolean) {
+  try {
+    localStorage.setItem(MUSIC_KEY, on ? '1' : '0')
+  } catch {
+    // private mode: just for now
+  }
+}
+
+/** The host's link for a stage screen: a TV or laptop that plays the music and shows the game. */
+function StageCard({ code }: { code: string }) {
+  const { t } = useTranslation()
+  const [link, setLink] = useState<{ token: string; url: string } | null>(null)
+  const [error, setError] = useState<unknown>(null)
+  const load = async () => {
+    try {
+      setLink(await api<{ token: string; url: string }>(`/api/rooms/${code}/stage`))
+    } catch (err) {
+      setError(err)
+    }
+  }
+  // This browser can open it at its own address; other devices use the network address in the QR code.
+  const here = link ? `${location.origin}/stage/${code}?t=${encodeURIComponent(link.token)}` : ''
+  return (
+    <details className="card stack stage-card" onToggle={(e) => (e.currentTarget.open && !link ? void load() : undefined)}>
+      <summary>
+        <span className="eyebrow">{t('stage.title')}</span>
+      </summary>
+      <p className="muted small">{t('stage.intro')}</p>
+      {link && (
+        <>
+          <a className="button primary" href={here} target="_blank" rel="noopener">
+            {t('stage.openHere')}
+          </a>
+          <QrCode text={link.url} label={t('stage.scan')} />
+          <p className="muted small">{t('stage.scan')}</p>
+        </>
+      )}
+      <ErrorText error={error} />
+    </details>
   )
 }
