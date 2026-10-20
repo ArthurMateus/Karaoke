@@ -55,11 +55,20 @@ The user asked for a singleplayer mode and a song of the day with a leaderboard.
 - Fixed on the way: score and recording arriving together could lose the recording (`services/takes.py`, rooms too).
 - Tried with the robot: solo run, daily try, second try refused, guest view, replay.
 - Score checks (asked for afterwards): `app/pipeline/rescore.py` ports the phone's YIN + scoring to numpy (keep in step with yin.ts, micWorklet.ts, timeline.ts, scoring.ts); `app/pipeline/check.py` re-scores top-10 daily tries from the recording (`DailyAttempt.check_status`, `claimed_score`; allowance 1,000; no recording after 5 minutes = off the board). Queued on finish (+20 s) and on upload. On 11 real robot recordings the server was within ~70 points of the phone (one at 400), under 1 s per song.
-- Flaky: twice the full backend suite hung right after another test run; killing the leftover pytest and rerunning passed (245 in ~48 s). Not understood yet.
+- The "hanging" test runs: a socket test waiting for a message that never comes blocks forever (receive_json has no timeout). If the suite hangs, look for a test whose expected message isn't sent.
+
+## Milestone 5 (plans): done and browser-tested
+
+No original plan text; the user chose: premium by admin grants and redeem codes, payments later; Party Pass = 24 h of premium rooms from when its owner starts it; free hosts lose group replays in rooms only (solo keeps its replay).
+- Models `PremiumGrant` (premium with start/end; party_pass waits with starts_at=None) and `RedeemCode` (unique `uq_redeem_code`). Rules in `services/entitlements.py` (`status()`, `plan_for(db, user, now)`, grants chain back to back). API `api/plans.py`: `/api/me/plan|redeem|party-pass`, `/api/admin/grants|codes`. Admins = `ADMIN_EMAILS` (the user's email is set in `.env`).
+- Rooms: `RoomState.apply_plan()` on every connection and when the host's plan changes (`_refresh_live_rooms`); Spotlight refused with `premium_required`; free rooms' performances are `not_included` (no recording, upload 403, no mix).
+- Payments later: make a `PremiumGrant(source="payment")` when a payment succeeds; nothing else needs to change.
+- Tried in the browser: free profile and locked Spotlight, admin made a Party Pass code, redeemed it loosely typed, started it from the room, room went 4 -> 16 and Spotlight opened.
+- Tournaments (`tournaments: true` for premium) don't exist yet.
 
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
-2. Then, **after the user's go-ahead**, Milestone 5 (limits/premium grants and Party Pass). Enforce free-plan `modes: [sing_together]` (Spotlight is open to everyone now) and `replays: false`, which are **not enforced yet**.
+2. Then, **after the user's go-ahead**, Milestone 6. Its plan text isn't in the repo: ask the user what it covers (likely candidates mentioned so far: tournaments for premium, payments, hosting online so remote friends can join).
 
 ## Useful commands
 - Backend tests: `docker compose exec api pytest`
