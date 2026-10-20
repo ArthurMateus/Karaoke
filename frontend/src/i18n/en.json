@@ -26,7 +26,7 @@
     "soloText": "Practise any song on your own, beat your best score and listen back to yourself.",
     "solo": "Sing solo",
     "dailyText": "One song for everyone today, one try each. How high can you get?",
-    "daily": "Today's song and leaderboard",
+    "daily": "See today's song",
     "eyebrow": "Karaoke for parties",
     "joinWithCode": "Join with a code",
     "featuresLabel": "Ways to play",
@@ -80,7 +80,7 @@
     "imReady": "I'm ready",
     "notReady": "Not ready",
     "kick": "Remove",
-    "confirmKick": "Remove {{name}} from the room? They won't be able to rejoin.",
+    "confirmKick": "Remove {{name}} from the room?",
     "leave": "Leave room",
     "closeRoom": "Close room",
     "confirmClose": "Close the room for everyone?",
@@ -110,7 +110,8 @@
     "kickLabel": "Remove {{name}}",
     "waitingSlot": "Waiting for friends…",
     "spotsLeft_one": "{{count}} spot left",
-    "spotsLeft_other": "{{count}} spots left"
+    "spotsLeft_other": "{{count}} spots left",
+    "kickWarning": "They won't be able to rejoin."
   },
   "profile": {
     "title": "Profile",
@@ -476,7 +477,8 @@
     "stars_one": "{{count}} star",
     "stars_other": "{{count}} stars",
     "voted": "Thanks! You can still change your vote.",
-    "noAudience": "Everyone sang this one, so there's no audience to vote: pitch score only."
+    "noAudience": "Everyone sang this one, so there's no audience to vote: pitch score only.",
+    "startMyTurn": "Start my turn"
   },
   "stage": {
     "title": "Stage screen (TV or laptop)",

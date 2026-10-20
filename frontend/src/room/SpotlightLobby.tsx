@@ -20,6 +20,7 @@ export default function SpotlightLobby({ room, me, send }: Props) {
   const { t } = useTranslation()
   const isHost = room.host_id === me
   const nameOf = (id: string | null) => room.players.find((p) => p.id === id)?.name ?? '…'
+  const who = (id: string) => (id === me ? t('lobby.you') : nameOf(id))
   const colorOf = (id: string) => playerColor(Math.max(0, room.players.findIndex((p) => p.id === id)))
   const next = room.queue[0]
   const nextNotReady = nextTurnBlockers(room)
@@ -81,10 +82,14 @@ export default function SpotlightLobby({ room, me, send }: Props) {
           <>
             <Button variant="primary" size="lg" block icon={Mic} className="hide-on-phone" disabled={!next || nextNotReady.length > 0}
               onClick={() => send({ type: 'start' })}>
-              {next ? t('spotlight.startTurn', { name: nameOf(next.singer_id) }) : t('spotlight.startTurnEmpty')}
+              {!next
+                ? t('spotlight.startTurnEmpty')
+                : next.singer_id === me
+                  ? t('spotlight.startMyTurn')
+                  : t('spotlight.startTurn', { name: nameOf(next.singer_id) })}
             </Button>
             {nextNotReady.length > 0 && (
-              <p className="muted small">{t('spotlight.waitingFor', { names: nextNotReady.map(nameOf).join(', ') })}</p>
+              <p className="muted small">{t('spotlight.waitingFor', { names: nextNotReady.map(who).join(', ') })}</p>
             )}
           </>
         ) : (

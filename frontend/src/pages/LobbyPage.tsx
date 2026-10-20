@@ -134,7 +134,7 @@ function Lobby({ code, user }: { code: string; user: User }) {
   const songLoad: SongLoad = assets.failed ? 'failed' : !engine ? 'none' : assets.buffer && assets.chart ? 'loaded' : 'loading'
 
   const kick = async (p: LobbyPlayer) => {
-    if (await confirm({ title: t('lobby.confirmKick', { name: p.name }), confirmLabel: t('lobby.kick'), danger: true })) {
+    if (await confirm({ title: t('lobby.confirmKick', { name: p.name }), message: t('lobby.kickWarning'), confirmLabel: t('lobby.kick'), danger: true })) {
       send({ type: 'kick', player_id: p.id })
     }
   }
@@ -245,12 +245,14 @@ function ActionBar({ room, me, isHost, micReady, anyoneReady, send }: {
   } else if (isHost && room.mode === 'spotlight') {
     const next = room.queue[0]
     const blockers = nextTurnBlockers(room)
-    const label = next ? t('spotlight.startTurn', { name: nameOf(next.singer_id) }) : t('spotlight.startTurnEmpty')
+    // Short enough for one line in the bar: the queue above already says whose turn is next.
+    const label = next && next.singer_id === me?.id ? t('spotlight.startMyTurn') : t('spotlight.startTurnEmpty')
     if (next && blockers.length === 0) main = { label, icon: Play, onClick: () => send({ type: 'start' }) }
     else if (!ready) main = { label: t('game.ready.imReady'), icon: Check, onClick: toggleReady }
     else {
       main = { label, icon: Play, onClick: () => {}, disabled: true }
-      hint = next ? t('spotlight.waitingFor', { names: blockers.map(nameOf).join(', ') }) : t('spotlight.queueEmpty')
+      const who = (id: string) => (id === me?.id ? t('lobby.you') : nameOf(id))
+      hint = next ? t('spotlight.waitingFor', { names: blockers.map(who).join(', ') }) : t('spotlight.queueEmpty')
     }
   } else if (isHost) {
     if (room.song && anyoneReady) main = { label: t('game.start.button'), icon: Play, onClick: () => send({ type: 'start' }) }

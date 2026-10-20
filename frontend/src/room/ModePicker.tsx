@@ -15,9 +15,12 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
   const { t } = useTranslation()
   const open = MODES.filter(({ mode }) => room.allowed_modes.includes(mode))
   const pick = (mode: Mode) => mode !== room.mode && send({ type: 'set_mode', mode })
-  const step = (from: Mode, by: number) => {
+  // Arrow keys: select the next open mode and move focus with it (a radio group).
+  const step = (from: Mode, by: number, group: HTMLElement | null) => {
     const i = open.findIndex((m) => m.mode === from)
-    pick(open[(i + by + open.length) % open.length].mode)
+    const next = open[(i + by + open.length) % open.length].mode
+    pick(next)
+    group?.querySelector<HTMLElement>(`[data-mode="${next}"]`)?.focus()
   }
 
   return (
@@ -27,11 +30,11 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
           const locked = !room.allowed_modes.includes(mode)
           const on = room.mode === mode
           return (
-            <button key={mode} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} disabled={locked}
+            <button key={mode} data-mode={mode} type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} disabled={locked}
               className={cx('mode-card', on && 'on', locked && 'locked')} onClick={() => pick(mode)}
               onKeyDown={(e) => {
-                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') step(mode, 1)
-                else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(mode, -1)
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') step(mode, 1, e.currentTarget.parentElement)
+                else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(mode, -1, e.currentTarget.parentElement)
                 else return
                 e.preventDefault()
               }}>
@@ -41,17 +44,17 @@ export default function ModePicker({ room, send }: { room: LobbyRoom; send: (mes
               <span className="mode-text">
                 <strong>{t(`modes.${mode}`)}</strong>
                 <span className="small">{t(`modes.${mode}Short`)}</span>
+                {/* Under the text, not over it: "Premium or Party Pass" is long, more so in Portuguese. */}
+                {locked && (
+                  <Badge tone="premium" icon={Lock} className="mode-lock">
+                    {t('plan.premiumOrPass')}
+                  </Badge>
+                )}
               </span>
-              {locked ? (
-                <Badge tone="premium" icon={Lock} className="mode-mark">
-                  {t('plan.premiumOrPass')}
-                </Badge>
-              ) : (
-                on && (
-                  <span className="mode-check mode-mark" aria-hidden>
-                    <Check size={14} strokeWidth={3} />
-                  </span>
-                )
+              {on && (
+                <span className="mode-check mode-mark" aria-hidden>
+                  <Check size={14} strokeWidth={3} />
+                </span>
               )}
             </button>
           )

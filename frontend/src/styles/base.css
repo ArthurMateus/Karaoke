@@ -269,6 +269,11 @@ a {
   flex-wrap: wrap;
   align-items: center;
 }
+/* A field in a row may shrink: a select is as wide as its longest option otherwise. */
+.row > label {
+  min-width: 0;
+  max-width: 100%;
+}
 .center {
   text-align: center;
   align-items: center;
@@ -430,6 +435,10 @@ a {
   .profile-chip {
     min-height: 44px;
   }
+  .profile-chip {
+    min-width: 44px;
+    justify-content: center;
+  }
 }
 @media (max-width: 560px) {
   .logo-text,
@@ -455,5 +464,15 @@ a {
 @media (max-width: 380px) {
   .header-sign-in .button-icon {
     display: none;
+  }
+  /* An admin has four nav icons: win back the few pixels they need at 360 px. */
+  .header {
+    padding-left: max(10px, env(safe-area-inset-left, 0px));
+    padding-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+  .lang-select {
+    padding-left: 8px;
+    padding-right: 20px;
+    background-position: right 7px center;
   }
 }

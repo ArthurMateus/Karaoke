@@ -6,13 +6,15 @@ import { ConfirmContext, type Confirm, type ConfirmOptions } from './context'
 import { cx } from './cx'
 
 /** A dialog over the page (the browser's own <dialog>: it keeps focus inside and closes with Esc). */
-export function Modal({ open, onClose, title, children, actions, size = 'sm' }: {
+export function Modal({ open, onClose, title, children, actions, size = 'sm', returnFocus = 'opener' }: {
   open: boolean
   onClose: () => void
   title: ReactNode
   children?: ReactNode
   actions?: ReactNode
   size?: 'sm' | 'md'
+  /** Where focus goes on close: back to the button that opened it, or the page (when that button is about to go). */
+  returnFocus?: 'opener' | 'page'
 }) {
   const { t } = useTranslation()
   const ref = useRef<HTMLDialogElement>(null)
@@ -29,11 +31,11 @@ export function Modal({ open, onClose, title, children, actions, size = 'sm' }: 
     }
     if (!open && dialog.open) {
       dialog.close()
-      // Back to the button that opened it, or the page if that button is gone (e.g. a deleted row).
-      const back = opener.current?.isConnected ? opener.current : document.getElementById('main')
+      // Back to the button that opened it, or the page if that button is gone or going (e.g. a deleted row).
+      const back = returnFocus === 'opener' && opener.current?.isConnected ? opener.current : document.getElementById('main')
       back?.focus()
     }
-  }, [open])
+  }, [open, returnFocus])
 
   return (
     <dialog
@@ -64,10 +66,13 @@ export function Modal({ open, onClose, title, children, actions, size = 'sm' }: 
 export function ConfirmProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   const [request, setRequest] = useState<(ConfirmOptions & { resolve: (ok: boolean) => void }) | null>(null)
+  // After "yes" the thing that opened the dialog is often removed (a revoked grant, a deleted song).
+  const [confirmed, setConfirmed] = useState(false)
 
   const confirm = useCallback<Confirm>((options) => new Promise((resolve) => setRequest({ ...options, resolve })), [])
   const answer = (ok: boolean) => {
     request?.resolve(ok)
+    setConfirmed(ok)
     setRequest(null)
   }
 
@@ -77,13 +82,15 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       <Modal
         open={!!request}
         onClose={() => answer(false)}
+        returnFocus={confirmed ? 'page' : 'opener'}
         title={request?.title ?? ''}
         actions={
           <>
-            <Button variant="ghost" onClick={() => answer(false)}>
+            {/* Dangerous actions start on Cancel, so an accidental Enter doesn't delete anything. */}
+            <Button variant="ghost" onClick={() => answer(false)} data-autofocus={request?.danger || undefined}>
               {t('ui.cancel')}
             </Button>
-            <Button variant={request?.danger ? 'danger' : 'primary'} onClick={() => answer(true)} data-autofocus>
+            <Button variant={request?.danger ? 'danger' : 'primary'} onClick={() => answer(true)} data-autofocus={!request?.danger || undefined}>
               {request?.confirmLabel}
             </Button>
           </>

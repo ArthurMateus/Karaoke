@@ -74,10 +74,13 @@ Done and committed (2026-10-20):
 - Phase 1: tokens and split styles (`frontend/src/styles/`), components in `frontend/src/ui/`, new header and footer, draft Terms/Privacy/Credits pages (`frontend/src/legal/` are copies of the drafts), and confirm dialogs instead of `window.confirm`.
 - QA of Phase 1: `docs/qa/QA-REPORT-2026-10-20-phase1.md`. 3 major (F-1 header overlap at 770-1000 px, F-2 PT revoke dialog says "Cancelar" twice, F-3 new pages don't scroll to the top) and 13 minor findings, **not fixed yet**.
 
-Not committed, waiting:
-- Phase 2 drafts in `docs/ui-polish-drafts/`. `lobby/merge_lobby.py` copies the lobby drafts into `frontend/`. `i18n_set.py <file>` adds each `i18n.json` to both language files. The home draft replaces `pages/HomePage.tsx` and `styles/home.css`. Change the Spotlight tile badge to say premium **or** Party Pass. New, still unused lobby components are already in `frontend/src/room/` (InvitePanel, PlayerGrid, ModePicker, SongPanel, turns, usePresence), plus `components/HeroLane.tsx`.
-- Next: fix the Phase 1 QA findings, merge Phase 2, typecheck/lint/test, take the "after" shots (`node scripts/ui-shots.mjs after p2`), run QA, then **show the user the screenshots and wait for their go-ahead** before Phases 3-6. The user wants parallel subagents where possible: Phases 3-6 touch separate screens. Keep `en.json`/`pt-BR.json` edits in one place, merged by the main session.
-- API gap to ask the user about: guests can't see "Party Pass until 23:10" because the room snapshot has no plan kind or end time. For now they see "Premium room".
+Done and committed later the same day (2026-10-20, in the new Desktop copy `C:/Users/ArthurFerreiradaSilv/Desktop/Karaoke`):
+- **The app is now called "Encore"** (`app.name` in both language files, emails, page title, legal drafts). Old reports and `design/looks.html` keep "Karaoke Party" as a record. Trademark/domain not checked yet: the final legal review should look at it.
+- Phase 1 QA fixes (commit d5ae90d): F-1..F-11, F-13, F-14. Left open: F-12 (backend suite hangs now and then; a per-test timeout would need the `pytest-timeout` dev package, ask the user first), F-15 (editor overflow at 390 px, Phase 5), F-16 (ideas), Credits page not translated to Portuguese.
+- Phase 2 merged (home and lobby). The drafts folder is gone (see commit 688a4c5's history). Spotlight badges say "Premium or Party Pass" (`plan.premiumOrPass`). "After" shots: `design/shots/ui-polish/p2-*-after-*.png`.
+- This copy started with a fresh database: test accounts are created by signing in through Mailpit. `.env` was made from `.env.example` with the user's email as admin.
+- Another Docker project on this PC (SignalDesk) also uses port 8080. It was paused (`docker stop`) so this app could start. If Caddy started while the port was busy, `docker compose up -d --force-recreate caddy` reconnects its ports.
+- API gap still open: guests can't see "Party Pass until 23:10" because the room snapshot has no plan kind or end time. For now they see "Premium room".
 
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.

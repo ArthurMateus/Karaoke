@@ -13,7 +13,7 @@ import { Badge, Button, ButtonLink, Card, Skeleton, SongCover, formatTimeLeft, u
 export default function HomePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { data } = useMe()
+  const { data, isPending: meLoading } = useMe()
   const createRoom = useCreateRoom()
   const [code, setCode] = useState('')
   const [codeInvalid, setCodeInvalid] = useState(false)
@@ -41,7 +41,10 @@ export default function HomePage() {
 
           <div className="hero-actions">
             <div className="hero-host">
-              {canHost ? (
+              {meLoading ? (
+                // The size of "Create a room", so signed-in people don't see "Sign in" flash first.
+                <Skeleton width={190} height={52} radius="var(--r-control)" />
+              ) : canHost ? (
                 <Button
                   variant="primary"
                   size="lg"
@@ -71,7 +74,10 @@ export default function HomePage() {
                   id="room-code"
                   className="input code-input"
                   value={code}
-                  onChange={(e) => setCode(e.target.value)}
+                  onChange={(e) => {
+                    setCode(e.target.value)
+                    setCodeInvalid(false) // the old error no longer fits what's typed
+                  }}
                   placeholder={t('home.codePlaceholder')}
                   autoCapitalize="characters"
                   autoComplete="off"
@@ -140,7 +146,8 @@ function DailyTile() {
             </div>
           </div>
           <Skeleton width="70%" height={20} />
-          <Skeleton width="90%" height={20} />
+          {/* The real text (it never changes), so the tile keeps its height. */}
+          <p className="muted small">{t('home.dailyText')}</p>
         </div>
       ) : daily.data ? (
         <DailyBody daily={daily.data} />

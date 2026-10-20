@@ -19,14 +19,14 @@
     "creating": "Criando…",
     "signInToHost": "Entre para criar uma sala. Seus amigos podem participar sem conta.",
     "codePlaceholder": "ABC 234",
-    "join": "Entrar",
+    "join": "Participar",
     "invalidCode": "O código da sala tem 6 letras e números.",
     "headline": "Cante <em>junto</em>, de qualquer celular.",
     "soloTitle": "Cantar sozinho",
     "soloText": "Treine qualquer música sozinho, bata seu recorde e ouça como ficou.",
     "solo": "Cantar solo",
     "dailyText": "Uma música para todo mundo hoje, uma tentativa cada. Até onde você chega?",
-    "daily": "Música do dia e ranking",
+    "daily": "Ver a música do dia",
     "eyebrow": "Karaokê para festas",
     "joinWithCode": "Entrar com um código",
     "featuresLabel": "Jeitos de jogar",
@@ -78,9 +78,9 @@
     "ready": "Pronto",
     "away": "Reconectando…",
     "imReady": "Estou pronto",
-    "notReady": "Não estou pronto",
+    "notReady": "Não está pronto",
     "kick": "Remover",
-    "confirmKick": "Remover {{name}} da sala? A pessoa não poderá voltar.",
+    "confirmKick": "Remover {{name}} da sala?",
     "leave": "Sair da sala",
     "closeRoom": "Fechar sala",
     "confirmClose": "Fechar a sala para todo mundo?",
@@ -110,7 +110,8 @@
     "kickLabel": "Remover {{name}}",
     "waitingSlot": "Esperando os amigos…",
     "spotsLeft_one": "Falta {{count}} vaga",
-    "spotsLeft_other": "Faltam {{count}} vagas"
+    "spotsLeft_other": "Faltam {{count}} vagas",
+    "kickWarning": "A pessoa não poderá voltar."
   },
   "profile": {
     "title": "Perfil",
@@ -476,7 +477,8 @@
     "stars_one": "{{count}} estrela",
     "stars_other": "{{count}} estrelas",
     "voted": "Valeu! Você ainda pode mudar seu voto.",
-    "noAudience": "Todo mundo cantou esta, então não há público para votar: vale só a afinação."
+    "noAudience": "Todo mundo cantou esta, então não há público para votar: vale só a afinação.",
+    "startMyTurn": "Começar minha vez"
   },
   "stage": {
     "title": "Tela do palco (TV ou notebook)",
