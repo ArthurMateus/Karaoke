@@ -328,7 +328,8 @@ step('spotlight lobby', async () => {
 
 step('spotlight turn', async () => {
   const { host, guest, stage } = ctx
-  await host.click("'s turn", 'button')
+  // The host is first in the queue: "Start my turn" (older builds said "Start <name>'s turn").
+  if (!(await host.eval(`__click('Start my turn', 'button')`))) await host.click("'s turn", 'button')
   await sleep(10000)
   await guest.eval(`document.querySelector('.reaction-button')?.click()`)
   await host.eval(`document.querySelector('.reaction-button')?.click()`)
