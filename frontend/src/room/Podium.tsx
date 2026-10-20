@@ -28,9 +28,10 @@ export function Podium({ top, me }: { top: Placed[]; me: string }) {
 function PodiumStep({ entry, rank, me }: { entry: Placed; rank: number; me: boolean }) {
   const { t, i18n } = useTranslation()
   const shown = useCountUp(entry.score, 1200)
+  // Height and medal follow the place, so tied players stand on steps of the same height.
   const medal = Math.min(entry.place, 3)
   return (
-    <li className={cx('podium-step', `step-${rank}`, me && 'mine')} style={{ '--delay': `${(3 - rank) * 120}ms` } as CSSProperties}>
+    <li className={cx('podium-step', `step-${medal}`, me && 'mine')} style={{ '--delay': `${(3 - rank) * 120}ms` } as CSSProperties}>
       <div className="podium-who">
         <span className="podium-avatar">
           {entry.place === 1 && (
@@ -38,7 +39,7 @@ function PodiumStep({ entry, rank, me }: { entry: Placed; rank: number; me: bool
               <Crown size={20} strokeWidth={2.5} />
             </span>
           )}
-          <Avatar name={entry.name} color={entry.color} size={rank === 1 ? 'xl' : 'lg'} me={me} decorative />
+          <Avatar name={entry.name} color={entry.color} size={medal === 1 ? 'xl' : 'lg'} me={me} decorative />
         </span>
         <span className="podium-name">
           {entry.name}
