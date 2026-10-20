@@ -254,6 +254,9 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 | `frontend/src/room/` | WebSocket connection, lobby state, and the game screens (sing, results, Spotlight queue, reactions) |
 | `frontend/src/voice/` | Live voice through LiveKit (`liveVoice.ts`) |
 | `frontend/src/i18n/` | Translations: `en.json` and `pt-BR.json` (always edit both) |
+| `frontend/src/ui/` | The design system: `Button`, `Card`, `Badge`, `Avatar`, `SongCover`, `Modal`/confirm dialogs, toasts, skeletons, `CountdownRing`, `ReplayPlayer`, the app shell (header, footer). Use these instead of new one-off styles |
+| `frontend/src/styles/` | `tokens.css` (colours, spacing, shadows, motion), `base.css` (page, header, footer), `components.css` (the `ui/` pieces), then one file per area (`home`, `lobby`, `sing`, `spotlight`, `stage`, `songs`, `solo`, `editor`, `plans`) |
+| `frontend/src/stage/`, `frontend/src/legal/` | The TV stage screen's lobby view; the Terms / Privacy / Credits texts shown in the app (drafts) |
 | `config/limits.yaml` | Free/premium limits (room size, modes, replays, conversions, upload size and length, …) |
 | `backend/app/services/entitlements.py` | Which plan applies to whom right now (premium grants, Party Passes) |
 

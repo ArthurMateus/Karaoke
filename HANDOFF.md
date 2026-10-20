@@ -82,6 +82,15 @@ Done and committed later the same day (2026-10-20, in the new Desktop copy `C:/U
 - Another Docker project on this PC (SignalDesk) also uses port 8080. It was paused (`docker stop`) so this app could start. If Caddy started while the port was busy, `docker compose up -d --force-recreate caddy` reconnects its ports.
 - API gap still open: guests can't see "Party Pass until 23:10" because the room snapshot has no plan kind or end time. For now they see "Premium room".
 
+Phases 3-6 done and pushed (2026-10-20): b455266 (sing/results), c8d65a1 (stage), 2d1e183 (songs/solo/daily), 53fa531 (account/admin/legal), 58a8f05 (room snapshot has `plan` + `plan_until`, approved by the user), 310197e (all 58 after shots).
+
+**Paused here (user's credits running out). To resume:**
+1. Run the qa-tester agent on Phases 3-6 (it was stopped before writing a report), fix what it finds.
+2. Run the legal-reviewer agent for the final review (also check the name "Encore": trademark/domain); act on "must fix", list the rest.
+3. Delete `docs/ui-polish-work/` (helper scratch files) and `design/shots/qa/work/`, finish this section.
+Known from the helpers: the Spotlight `votes` message doesn't resend `standings` (client recomputes, ranking.ts); yesterday's daily winner has no song id/artist in the API; the Party Pass card assumes 24 h.
+Test data: p3-host has a 2-day premium grant, p6-free a running Party Pass, unused test Party Pass codes.
+
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
 2. Then, **after the user's go-ahead**, Milestone 6. Its plan text isn't in the repo: ask the user what it covers (likely candidates mentioned so far: tournaments for premium, payments, hosting online so remote friends can join).
