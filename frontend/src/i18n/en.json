@@ -581,6 +581,7 @@
     "queueEmpty": "Queue's empty: add your turn on your phone!",
     "noSong": "The host is picking a song",
     "voteNow": "Vote on your phone!",
+    "noVoters": "Everyone sang this one: pitch score only.",
     "closed": "The room was closed.",
     "badLink": "This stage link doesn't work any more. Open a new one from the host's room page.",
     "connected": "A stage screen is playing the music, so phones stay quiet.",

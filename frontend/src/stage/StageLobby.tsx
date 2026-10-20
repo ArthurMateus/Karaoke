@@ -206,6 +206,9 @@ function JustSung({ room, spotlight, nameOf, colorOf }: {
 }) {
   const { t, i18n } = useTranslation()
   const next = spotlight ? room.queue[0] : undefined
+  // As on the phones: only people in the room who didn't sing this turn can vote.
+  const singers = Object.keys(room.parts)
+  const audience = room.players.filter((p) => p.connected && !singers.includes(p.id)).length
   return (
     <section className="stage-panel stage-next">
       {room.song && <SongHeading song={room.song} eyebrow={spotlight ? t('spotlight.turnOver') : t('stage.songOver')} />}
@@ -214,13 +217,17 @@ function JustSung({ room, spotlight, nameOf, colorOf }: {
           <Star size={34} aria-hidden fill="currentColor" />
           {room.votes?.count
             ? t('spotlight.votes', { count: room.votes.count, average: room.votes.average?.toLocaleString(i18n.language) })
-            : t('stage.voteNow')}
+            : audience > 0 ? t('stage.voteNow') : t('stage.noVoters')}
         </p>
       )}
       {next && (
         <p className="stage-then-one">
           <span className="stage-eyebrow">{t('stage.upNext')}</span>
-          <Avatar name={nameOf(next.singer_id)} color={colorOf(next.singer_id)} size="md" decorative />
+          <span className="stage-then-avatars">
+            {[next.singer_id, ...(next.partner_id ? [next.partner_id] : [])].map((id) => (
+              <Avatar key={id} name={nameOf(id)} color={colorOf(id)} size="md" decorative />
+            ))}
+          </span>
           <b>{next.partner_id ? t('spotlight.duetBy', { a: nameOf(next.singer_id), b: nameOf(next.partner_id) }) : nameOf(next.singer_id)}</b>
           <span className="stage-then-song">{next.song.title}</span>
         </p>

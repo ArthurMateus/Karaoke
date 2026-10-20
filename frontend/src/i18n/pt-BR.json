@@ -581,6 +581,7 @@
     "queueEmpty": "Fila vazia: coloque sua vez pelo celular!",
     "noSong": "O anfitrião está escolhendo uma música",
     "voteNow": "Vote pelo celular!",
+    "noVoters": "Todo mundo cantou esta: vale só a afinação.",
     "closed": "A sala foi fechada.",
     "badLink": "Este link do palco não funciona mais. Abra um novo pela página da sala do anfitrião.",
     "connected": "Uma tela do palco está tocando a música, então os celulares ficam em silêncio.",

@@ -375,7 +375,7 @@
   text-wrap: balance;
   overflow-wrap: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -508,7 +508,16 @@
 }
 .stage-then-song {
   font-size: calc(var(--u) * 2.4);
-  max-width: 28ch;
+  /* A TV has room for the whole title: let it wrap instead of cutting it. */
+  max-width: none;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+.stage-then-avatars {
+  display: inline-flex;
+}
+.stage-then-avatars > * + * {
+  margin-left: calc(var(--u) * -0.8);
 }
 @media (prefers-reduced-motion: no-preference) {
   .stage-next {
