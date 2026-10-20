@@ -32,7 +32,7 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_USE_TLS: ${SMTP_USE_TLS:-false}
-      MAIL_FROM: ${MAIL_FROM:-Karaoke Party <no-reply@karaoke.local>}
+      MAIL_FROM: ${MAIL_FROM:-Encore <no-reply@karaoke.local>}
       # Online lyrics search (empty = off). "-" not ":-": an empty value must stay empty.
       LRCLIB_URL: ${LRCLIB_URL-https://lrclib.net}
       # Who may open the Admin page (grant premium, make codes). Comma separated emails.

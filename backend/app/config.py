@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_password: str = ""
     smtp_use_tls: bool = False
-    mail_from: str = "Karaoke Party <no-reply@karaoke.local>"
+    mail_from: str = "Encore <no-reply@karaoke.local>"
 
     session_days: int = 30
     magic_link_minutes: int = 15

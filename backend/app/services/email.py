@@ -37,14 +37,14 @@ def get_mailer() -> Mailer:
 
 _MAGIC_LINK_TEXT = {
     "en": (
-        "Your Karaoke Party sign-in link",
-        "Hi!\n\nClick this link to sign in to Karaoke Party:\n\n{link}\n\n"
+        "Your Encore sign-in link",
+        "Hi!\n\nClick this link to sign in to Encore:\n\n{link}\n\n"
         "The link works once and expires in {minutes} minutes.\n"
         "If you didn't ask for it, you can ignore this email.\n",
     ),
     "pt-BR": (
-        "Seu link de acesso ao Karaoke Party",
-        "Olá!\n\nClique neste link para entrar no Karaoke Party:\n\n{link}\n\n"
+        "Seu link de acesso ao Encore",
+        "Olá!\n\nClique neste link para entrar no Encore:\n\n{link}\n\n"
         "O link funciona uma vez e expira em {minutes} minutos.\n"
         "Se você não pediu este link, pode ignorar este e-mail.\n",
     ),

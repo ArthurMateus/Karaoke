@@ -13,7 +13,7 @@ import httpx2 as httpx
 
 from app.config import get_settings
 
-USER_AGENT = "KaraokeParty (self-hosted karaoke game)"
+USER_AGENT = "Encore (self-hosted karaoke game)"
 
 log = logging.getLogger(__name__)
 
