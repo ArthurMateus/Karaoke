@@ -83,9 +83,13 @@ def song_out(song: Song, user: User | None) -> SongOut:
     )
 
 
-def _room_host_id(request: Request, user: User | None, room: str | None) -> uuid.UUID | None:
-    """The host of `room`, if the user is in that room right now (so they may use the host's songs)."""
+def _room_host_id(request: Request, user: User | None, room: str | None, db=None, stage: str | None = None) -> uuid.UUID | None:
+    """The host of `room`, if the user is in that room right now (so they may use the host's songs).
+    A stage screen proves it belongs to the room with its link's token instead."""
     code = room_service.normalize_code(room) if room else None
+    if stage and db is not None:
+        stage_room = room_service.room_for_stage(db, code, stage)
+        return stage_room.host_id if stage_room else None
     live = request.app.state.hub.rooms.get(code) if code else None
     if live is None or user is None or str(user.id) not in live.state.players:
         return None
@@ -268,10 +272,10 @@ def import_song(
 
 @router.get("/{song_id}/chart")
 def get_chart(
-    song_id: uuid.UUID, request: Request, db: Db, user: OptionalUser, room: str | None = None
+    song_id: uuid.UUID, request: Request, db: Db, user: OptionalUser, room: str | None = None, stage: str | None = None
 ) -> editor.EditorChart:
-    """`room`: players in a room may load the host's private songs."""
-    song = _get_song(db, song_id, user, _room_host_id(request, user, room))
+    """`room`: players in a room (or its stage screen, with `stage`) may load the host's private songs."""
+    song = _get_song(db, song_id, user, _room_host_id(request, user, room, db, stage))
     if not song.chart_txt:
         raise api_error(409, "song_not_ready")
     return editor.to_editor(ultrastar.parse(song.chart_txt))
@@ -322,9 +326,10 @@ def export_song(song_id: uuid.UUID, db: Db, user: OptionalUser) -> Response:
 
 @router.get("/{song_id}/audio/{track}")
 def stream_audio(
-    song_id: uuid.UUID, track: Track, request: Request, db: Db, user: OptionalUser, room: str | None = None
+    song_id: uuid.UUID, track: Track, request: Request, db: Db, user: OptionalUser, room: str | None = None,
+    stage: str | None = None,
 ):
-    song = _get_song(db, song_id, user, _room_host_id(request, user, room))
+    song = _get_song(db, song_id, user, _room_host_id(request, user, room, db, stage))
     key = {"instrumental": song.instrumental_key, "vocals": song.vocals_key, "original": song.original_key}[track]
     if key is None:
         raise api_error(404, "track_not_found")

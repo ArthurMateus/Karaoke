@@ -42,6 +42,22 @@ def _lookup(token: str | None, raw_code: str) -> _Lookup:
     return found
 
 
+@dataclass
+class _StageLookup:
+    room_code: str | None = None
+    host_id: str = ""
+    capacity: int = 0
+
+
+def _lookup_stage(raw_code: str, token: str | None) -> _StageLookup:
+    found = _StageLookup()
+    with get_sessionmaker()() as db:
+        room = room_service.room_for_stage(db, room_service.normalize_code(raw_code), token)
+        if room is not None:
+            found.room_code, found.host_id, found.capacity = room.code, str(room.host_id), room_capacity(room.host)
+    return found
+
+
 def _close_in_db(code: str) -> None:
     with get_sessionmaker()() as db:
         room = room_service.find_open_room(db, code)
@@ -95,3 +111,32 @@ async def room_socket(websocket: WebSocket, code: str) -> None:
                 return
     except WebSocketDisconnect:
         await hub.on_disconnect(room, player_id, websocket)
+
+
+@router.websocket("/ws/stage/{code}")
+async def stage_socket(websocket: WebSocket, code: str, t: str = "") -> None:
+    """A stage screen: gets everything players get (state, scores, reactions, votes) and only
+    sends pings for clock sync. It isn't a player and doesn't use a spot in the room."""
+    if websocket.headers.get("origin", "").rstrip("/") not in get_settings().allowed_origins:
+        await websocket.close(code=protocol.CLOSE_REFUSED)
+        return
+    found = await run_in_threadpool(_lookup_stage, code, t)
+    await websocket.accept()
+    if found.room_code is None:
+        await websocket.close(code=protocol.CLOSE_ROOM_NOT_FOUND)
+        return
+
+    hub: RoomHub = websocket.app.state.hub
+    room = hub.get_or_create(found.room_code, found.host_id, found.capacity)
+    await websocket.send_json({"type": "welcome", "you": None, "server_time": server_time_ms()})
+    await hub.attach_stage(room, websocket)
+    try:
+        while True:
+            try:
+                msg = protocol.client_message.validate_python(json.loads(await websocket.receive_text()))
+            except (ValueError, ValidationError):
+                continue
+            if isinstance(msg, protocol.Ping):
+                await websocket.send_json({"type": "pong", "t0": msg.t0, "server_time": server_time_ms()})
+    except WebSocketDisconnect:
+        await hub.detach_stage(room, websocket)

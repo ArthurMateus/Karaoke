@@ -58,6 +58,8 @@ class Room(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     code: Mapped[str] = mapped_column(String(6), index=True)
+    # Secret in the stage screen's link (a TV or laptop showing the game, not a player).
+    stage_token: Mapped[str | None] = mapped_column(String(64))
     host_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     status: Mapped[str] = mapped_column(String(16), default="open")  # open | closed
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

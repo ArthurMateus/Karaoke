@@ -11,6 +11,11 @@ from app.ws.hub import RoomHub
 router = APIRouter(prefix="/api/rooms", tags=["rooms"])
 
 
+class StageLink(BaseModel):
+    token: str
+    url: str  # for other devices (QR code); the host's own browser can use its own address
+
+
 class RoomOut(BaseModel):
     code: str
     host_name: str
@@ -49,6 +54,17 @@ def get_room(code: str, request: Request, db: Db) -> RoomOut:
     if room is None:
         raise api_error(404, "room_not_found")
     return _room_out(room, _hub(request))
+
+
+@router.get("/{code}/stage")
+def stage_link(code: str, user: CurrentAccount, db: Db) -> StageLink:
+    """The host's link for a stage screen: a TV or laptop that plays the music and shows the game."""
+    normalized = room_service.normalize_code(code)
+    room = room_service.find_open_room(db, normalized) if normalized else None
+    if room is None or room.host_id != user.id:
+        raise api_error(404, "room_not_found")
+    token = room_service.stage_token(db, room)
+    return StageLink(token=token, url=f"{get_settings().public_base_url}/stage/{room.code}?t={token}")
 
 
 @router.post("/{code}/close")

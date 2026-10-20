@@ -1,5 +1,6 @@
 """Room codes and the durable room record."""
 
+import hmac
 import re
 import secrets
 
@@ -27,6 +28,22 @@ def normalize_code(raw: str) -> str | None:
 
 def find_open_room(db: Session, code: str) -> Room | None:
     return db.scalar(select(Room).where(Room.code == code, Room.status == "open"))
+
+
+def stage_token(db: Session, room: Room) -> str:
+    """The secret for this room's stage screen link, made the first time it is asked for."""
+    if not room.stage_token:
+        room.stage_token = secrets.token_urlsafe(24)
+        db.commit()
+    return room.stage_token
+
+
+def room_for_stage(db: Session, code: str | None, token: str | None) -> Room | None:
+    """The open room whose stage link this is, or None."""
+    room = find_open_room(db, code) if code and token else None
+    if room is None or not room.stage_token or not hmac.compare_digest(room.stage_token, token or ""):
+        return None
+    return room
 
 
 def create_room(db: Session, host: User) -> tuple[Room, list[str]]:

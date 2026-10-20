@@ -25,6 +25,7 @@ class LiveRoom:
     state: RoomState
     sockets: dict[str, WebSocket] = field(default_factory=dict)  # player id -> socket
     reaction_times: dict[str, list[float]] = field(default_factory=dict)  # player id -> recent reactions
+    stages: set[WebSocket] = field(default_factory=set)  # stage screens: see everything, aren't players
 
 
 async def _send(ws: WebSocket, message: dict) -> None:
@@ -54,10 +55,24 @@ class RoomHub:
         return len(room.state.players) if room else 0
 
     async def broadcast_state(self, room: LiveRoom) -> None:
-        await self.broadcast(room, {"type": "lobby_state", "room": room.state.snapshot()})
+        await self.broadcast(room, {"type": "lobby_state", "room": self.snapshot(room)})
+
+    def snapshot(self, room: LiveRoom) -> dict:
+        # Phones play the music themselves unless a stage screen is playing it for the room.
+        return {**room.state.snapshot(), "stage_connected": bool(room.stages)}
 
     async def broadcast(self, room: LiveRoom, message: dict) -> None:
-        await asyncio.gather(*(_send(ws, message) for ws in list(room.sockets.values())))
+        targets = [*room.sockets.values(), *room.stages]
+        await asyncio.gather(*(_send(ws, message) for ws in targets))
+
+    async def attach_stage(self, room: LiveRoom, ws: WebSocket) -> None:
+        room.stages.add(ws)
+        await self.broadcast_state(room)
+
+    async def detach_stage(self, room: LiveRoom, ws: WebSocket) -> None:
+        room.stages.discard(ws)
+        await self.broadcast_state(room)
+        self._forget_if_empty(room)
 
     async def send(self, ws: WebSocket, message: dict) -> None:
         await _send(ws, message)
@@ -129,17 +144,18 @@ class RoomHub:
 
     def _forget_if_empty(self, room: LiveRoom) -> None:
         # The database still has the room; it comes back the next time someone joins.
-        if room.state.is_empty and self.rooms.get(room.state.code) is room:
+        if room.state.is_empty and not room.stages and self.rooms.get(room.state.code) is room:
             del self.rooms[room.state.code]
 
     async def close_room(self, code: str) -> None:
         room = self.rooms.pop(code, None)
         if room is None:
             return
-        for ws in list(room.sockets.values()):
+        for ws in [*room.sockets.values(), *room.stages]:
             await _send(ws, {"type": "room_closed"})
             await _close(ws, protocol.CLOSE_ROOM_CLOSED)
         room.sockets.clear()
+        room.stages.clear()
 
     async def shutdown(self) -> None:
         for task in list(self._tasks):
