@@ -18,6 +18,10 @@
 	handle /ws/* {
 		reverse_proxy api:8000
 	}
+	# Live voice (LiveKit) signalling. The audio itself goes to LAN_IP directly.
+	handle /rtc* {
+		reverse_proxy livekit:7880
+	}
 	handle {
 		reverse_proxy web:5173
 	}

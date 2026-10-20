@@ -55,6 +55,11 @@ class Settings(BaseSettings):
     # Lyrics lookup (LRCLIB: a free, open lyrics database with line timings). "" turns it off.
     lrclib_url: str = "https://lrclib.net"
 
+    # Live voice (LiveKit). The secret must match LIVEKIT_KEYS in docker-compose.yml.
+    livekit_api_key: str = "karaoke"
+    livekit_api_secret: str = "karaoke-dev-secret-change-me-0123456789"
+    livekit_url: str = ""  # "" = the app's own address; Caddy forwards /rtc to LiveKit
+
     @property
     def allowed_origins(self) -> set[str]:
         origins = {self.public_base_url.rstrip("/")}

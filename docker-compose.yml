@@ -16,6 +16,7 @@ services:
     depends_on:
       - api
       - web
+      - livekit
 
   api:
     build: ./backend
@@ -34,6 +35,9 @@ services:
       MAIL_FROM: ${MAIL_FROM:-Karaoke Party <no-reply@karaoke.local>}
       # Online lyrics search (empty = off). "-" not ":-": an empty value must stay empty.
       LRCLIB_URL: ${LRCLIB_URL-https://lrclib.net}
+      # Live voice (LiveKit). Change the secret if this server is reachable from the internet.
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-karaoke}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-karaoke-dev-secret-change-me-0123456789}
       S3_ENDPOINT_URL: http://storage:8333
       S3_ACCESS_KEY: karaoke
       S3_SECRET_KEY: karaoke-secret
@@ -74,6 +78,19 @@ services:
         condition: service_healthy
       storage-init:
         condition: service_completed_successfully
+
+  # Live voice for Spotlight: the singer's microphone, streamed to the stage
+  # screen and to listeners. See infra/livekit/livekit.yaml.
+  livekit:
+    image: livekit/livekit-server:v1.13.7
+    command: --config /etc/livekit.yaml --node-ip ${LAN_IP:-127.0.0.1}
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:-karaoke}: ${LIVEKIT_API_SECRET:-karaoke-dev-secret-change-me-0123456789}"
+    ports:
+      - "7881:7881" # audio over TCP (fallback)
+      - "50000-50060:50000-50060/udp" # audio over UDP
+    volumes:
+      - ./infra/livekit/livekit.yaml:/etc/livekit.yaml:ro
 
   web:
     build: ./frontend
