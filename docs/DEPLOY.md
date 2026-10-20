@@ -169,7 +169,7 @@ getent hosts miccheck-party.duckdns.org
 ## 9. Brevo: the SMTP key for sign-in emails
 
 1. Sign in at https://app.brevo.com.
-2. Your sender `devswebt@gmail.com` must be verified: **Senders, domains & IPs** >
+2. Your sender `<your sender email>` must be verified: **Senders, domains & IPs** >
    **Senders**. It is already, as far as we know; if not, add it and click the link in
    the email Brevo sends.
 3. Top right menu > **SMTP & API** > **SMTP** tab. Note the **Login** (looks like
@@ -203,7 +203,7 @@ Fill in every `CHANGE_ME`. For this beta:
 | `ACME_EMAIL` | your email (Let's Encrypt only writes if a certificate has a problem) |
 | `DUCKDNS_TOKEN` | the token from step 8 |
 | `SMTP_USER` / `SMTP_PASSWORD` | the Brevo login and SMTP key from step 9 |
-| `MAIL_FROM` | `"Mic Check <devswebt@gmail.com>"` (with the quotes) |
+| `MAIL_FROM` | `"Mic Check <<your sender email>>"` (with the quotes) |
 | `ADMIN_EMAILS` | your email |
 | `BETA_ALLOWED_EMAILS` | your friends' emails, comma separated |
 | `OPERATOR_NAME`, `OPERATOR_CITY`, `CONTACT_EMAIL` | shown on the Terms and Privacy pages |
