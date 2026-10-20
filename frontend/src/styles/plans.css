@@ -1,32 +1,903 @@
-/* ---------- Plans and admin ---------- */
-.plan-limits {
-  margin: 0;
-  padding-left: 1.2em;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.pass-box {
-  border: 1px dashed var(--violet);
-  border-radius: var(--r-control);
-  padding: 12px 14px;
-  background: var(--violet-soft);
-}
+/* Account, plans, admin and the footer pages (Phase 6). */
+
 .ok-text {
-  color: var(--ok);
+  color: var(--teal-ink);
+}
+.mono {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
 }
 .table-scroll {
   overflow-x: auto;
 }
-.admin-table {
+.field-label {
+  font-weight: 400;
+}
+
+/* ---------- Auth card: sign in, the emailed link, joining a room ---------- */
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  margin: clamp(0px, 4vh, 40px) auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.auth-art .lane-art {
+  height: 112px;
+  border-radius: 0;
+}
+.auth-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 26px 26px;
+}
+.auth-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin-top: -30px; /* sits over the lane's lower edge */
+  border-radius: 18px;
+  border: 4px solid var(--card);
+  background: var(--violet);
+  color: #fff;
+  box-shadow: var(--shadow-1);
+  box-sizing: content-box;
+}
+.auth-icon.ok {
+  background: var(--teal-ink);
+}
+.auth-icon.danger {
+  background: var(--danger);
+}
+.auth-title {
+  font-size: clamp(1.5rem, 6vw, 1.9rem);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.auth-lead {
+  color: var(--ink-2);
+  font-size: 1.05rem;
+}
+.auth-email {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.auth-form .button {
+  margin-top: 6px;
+}
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.auth-note {
+  padding: 10px 12px;
+  border-radius: var(--r-control);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.auth-foot {
+  text-align: center;
+}
+.auth-working {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+
+/* A text field with an icon inside on the left. */
+.input-with-icon {
+  position: relative;
+  display: flex;
+}
+.input-with-icon > svg {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+.input-with-icon > .input {
+  flex: 1;
+  padding-left: 40px;
+  min-height: 48px;
+}
+
+/* The room on the join card: host, code, how full. */
+.join-room {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.join-room-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.join-room-code {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 0.06em;
+}
+.join-room-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 420px) {
+  .auth-card {
+    margin-top: 0;
+  }
+  .auth-body {
+    padding: 0 18px 20px;
+  }
+  .auth-art .lane-art {
+    height: 92px;
+  }
+}
+
+/* ---------- Profile ---------- */
+.profile {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+.profile-grid {
+  display: grid;
+  gap: var(--s-5);
+  align-items: start;
+}
+.profile-grid > .card {
+  max-width: none;
+  margin: 0;
+}
+@media (min-width: 900px) {
+  .profile-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}
+.profile.guest {
+  max-width: 600px;
+}
+.profile-who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.profile-who-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+.profile-who-text h2 {
+  font-size: 1.35rem;
+  overflow-wrap: anywhere;
+}
+.profile-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+.profile-email svg {
+  flex-shrink: 0;
+}
+.profile-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.profile-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+.profile-guest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--r-control);
+  background: var(--violet-soft);
+}
+
+/* ---------- Plan card ---------- */
+.plan-card {
+  gap: 18px;
+}
+.plan-sub {
+  font-family: var(--f-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.plan-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  min-width: 0;
+}
+.plan-hero-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+.plan-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.plan-hero-text h2 {
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+/* Free: plain and calm. */
+.plan-hero.free {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+}
+.plan-hero.free .plan-hero-icon {
+  background: var(--card);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+.plan-hero.free .small {
+  color: var(--ink-2);
+}
+
+/* Premium: the celebration gradient. The darker pink end keeps white text at 4.5:1. */
+.plan-hero.premium {
+  background: linear-gradient(135deg, var(--violet) 0%, #9a3fe0 55%, var(--pink-ink) 100%);
+  color: #fff;
+  box-shadow: 0 14px 30px -18px rgb(91 61 245 / 80%);
+}
+.plan-hero.premium .eyebrow,
+.plan-hero.premium .small {
+  color: rgb(255 255 255 / 90%);
+}
+.plan-hero.premium .plan-hero-icon {
+  background: rgb(255 255 255 / 18%);
+  color: #fff;
+}
+
+/* Party Pass: a ticket with a stub, notches and the time left. */
+.plan-hero.party {
+  background: linear-gradient(135deg, var(--amber-soft), var(--coral-soft));
+  border: 1px solid #f3cfa8;
+  padding-left: 14px;
+}
+.plan-hero.party::before,
+.plan-hero.party::after {
+  content: '';
+  position: absolute;
+  left: 76px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid #f3cfa8;
+  transform: translateX(-50%);
+}
+.plan-hero.party::before {
+  top: -10px;
+}
+.plan-hero.party::after {
+  bottom: -10px;
+}
+.plan-hero.party .plan-hero-icon {
+  width: 48px;
+  height: auto;
+  align-self: stretch;
+  padding-right: 14px;
+  border-right: 2px dashed #ebb98a;
+  border-radius: 0;
+  color: var(--coral-ink);
+  box-sizing: content-box;
+}
+.plan-hero.party h2,
+.plan-hero.party .eyebrow {
+  color: var(--coral-ink);
+}
+.plan-time {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.plan-time b {
+  font-family: var(--f-display);
+  font-size: clamp(1.5rem, 6vw, 1.9rem);
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.plan-hero.party .progress {
+  background: rgb(255 255 255 / 70%);
+}
+.plan-hero.party .progress-label .muted {
+  color: var(--ink-2);
+}
+
+/* What the plan includes: an icon, the line, and a check or a lock. */
+.plan-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.plan-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.plan-feature-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--violet-soft);
+  color: var(--violet);
+}
+.plan-feature-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.92rem;
+}
+.plan-feature-mark {
+  flex-shrink: 0;
+}
+.plan-feature.on .plan-feature-mark {
+  color: var(--teal-ink);
+}
+.plan-feature.off {
+  background: transparent;
+  border-style: dashed;
+}
+.plan-feature.off .plan-feature-icon {
+  background: var(--paper-2);
+  color: var(--muted);
+}
+.plan-feature.off .plan-feature-text {
+  color: var(--ink-2);
+}
+.plan-feature.off .plan-feature-mark {
+  color: var(--muted);
+}
+
+.plan-ticket .ticket-icon {
+  align-self: stretch;
+}
+.plan-ticket .ticket-body {
+  flex: 1;
+}
+
+/* The code field: an input with its button attached, like the copy fields. */
+.redeem-field {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.redeem-field:focus-within {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgb(91 61 245 / 22%);
+}
+.redeem-icon {
+  align-self: center;
+  flex-shrink: 0;
+  margin-left: 13px;
+  color: var(--muted);
+}
+.redeem-value {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.redeem-value::placeholder {
+  color: var(--muted);
+  font-weight: 600;
+}
+.redeem-value:focus {
+  outline: none;
+}
+.redeem-field .copy-button:disabled {
+  color: var(--muted);
+  cursor: default;
+  background: var(--paper-2);
+}
+.redeem-field .copy-button:not(:disabled) {
+  background: var(--violet);
+  color: #fff;
+}
+.redeem-field .copy-button:not(:disabled):hover {
+  background: var(--violet-dark);
+}
+.redeem-field .copy-button .spinner {
+  border-color: rgb(255 255 255 / 35%);
+  border-top-color: #fff;
+}
+
+/* ---------- Admin ---------- */
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+.admin .page-header {
+  margin-bottom: 0;
+}
+.admin .card-head {
+  flex-wrap: wrap;
+}
+.admin .card-titles {
+  flex-basis: 200px; /* the sort button moves under the title on phones */
+}
+.admin-forms {
+  display: grid;
+  gap: var(--s-5);
+  align-items: start;
+}
+@media (min-width: 1000px) {
+  .admin-forms {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.admin-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+}
+.admin-numbers .input.number {
+  width: 100%;
+}
+.admin .button.danger-text {
+  color: var(--danger);
+}
+.new-codes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--teal-soft);
+}
+.new-codes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 8px;
+}
+.new-codes-list .copy-value {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.data-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem;
 }
-.admin-table td {
+.data-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
   padding: 8px 10px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-strong);
   white-space: nowrap;
 }
-.mono {
-  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+.data-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.data-table tbody tr:hover {
+  background: var(--paper);
+}
+.data-table tr.is-off td:not(.cell-action) {
+  color: var(--muted);
+}
+.data-table tr.is-off .badge.premium,
+.data-table tr.is-off .badge.pass {
+  opacity: 0.6;
+}
+.data-table .num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.data-table .cell-main {
+  min-width: 180px;
+}
+.cell-main,
+.data-table td:has(.cell-note) {
+  overflow-wrap: anywhere;
+}
+.cell-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+@media (max-width: 760px) {
+  .cell-stack {
+    align-items: flex-end;
+  }
+}
+.cell-strong {
+  display: block;
+  font-weight: 700;
+}
+.cell-note {
+  display: block;
+}
+.cell-action {
+  text-align: right;
+  white-space: nowrap;
+}
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.sort-button:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+.code-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.code-cell .mono {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.code-cell .icon-button.copied {
+  color: var(--teal-ink);
+}
+
+/* Phones: each row is a small card, every cell with its column name. */
+@media (max-width: 760px) {
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+  }
+  .data-table tr {
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--card);
+  }
+  .data-table tbody tr:hover {
+    background: var(--card);
+  }
+  .data-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--line);
+    text-align: right;
+  }
+  .data-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: left;
+  }
+  .data-table td.cell-main {
+    display: block;
+    text-align: left;
+    padding-top: 0;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+  }
+  .data-table td.cell-main::before {
+    content: none;
+  }
+  .data-table td.cell-action {
+    border-bottom: 0;
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+  .data-table td.cell-action:empty {
+    display: none;
+  }
+  .data-table td.cell-action::before {
+    content: none;
+  }
+  .data-table td:nth-last-child(2):has(+ .cell-action:empty) {
+    border-bottom: 0;
+  }
+}
+
+/* ---------- Footer pages: Terms, Privacy, Credits ---------- */
+.legal-layout {
+  display: grid;
+  gap: var(--s-7);
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.legal-layout .legal {
+  max-width: 760px;
+  width: 100%;
+  min-width: 0;
+}
+.legal-side {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .legal-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+  .legal-side {
+    display: block;
+  }
+  .legal-toc {
+    position: sticky;
+    top: 92px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-bottom: 8px;
+  }
+  .legal-toc-mobile {
+    display: none;
+  }
+}
+.legal-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.legal-toc-list a {
+  display: block;
+  padding: 7px 12px;
+  border-left: 2px solid var(--line);
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  border-radius: 0 8px 8px 0;
+}
+.legal-toc-list a:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+.legal-toc-list a.on {
+  color: var(--violet-dark);
+  font-weight: 700;
+  border-left-color: var(--violet);
+  background: var(--violet-soft);
+}
+.legal-toc-mobile {
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--card);
+}
+.legal-toc-mobile summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.legal-toc-mobile[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+.legal-toc-mobile .legal-toc-list {
+  padding: 8px 10px 10px;
+}
+.legal-toc-mobile .legal-toc-list a {
+  padding-block: 10px;
+}
+
+.legal .legal-draft {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid #f0d49a;
+}
+.legal .legal-draft svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.legal-lang-note {
+  padding: 10px 14px;
+  border-radius: var(--r-control);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+.legal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.legal .legal-section h2 {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 84px;
+}
+.legal p,
+.legal li {
+  max-width: 68ch;
+}
+.legal a {
+  color: var(--violet-dark);
+  overflow-wrap: anywhere;
+}
+.legal .table-scroll {
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+}
+.legal table {
+  border-radius: 0;
+}
+.legal tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Phones: table rows as stacked cards, the column name above each value. */
+@media (max-width: 640px) {
+  .legal .table-scroll {
+    border: 0;
+    overflow: visible;
+  }
+  .legal table,
+  .legal tbody,
+  .legal tr,
+  .legal td {
+    display: block;
+    width: 100%;
+  }
+  .legal table {
+    background: none;
+  }
+  .legal thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .legal tr {
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-control);
+    background: var(--card);
+  }
+  .legal td {
+    padding: 4px 0;
+    border: 0;
+  }
+  .legal td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .legal td:first-child {
+    font-weight: 600;
+  }
+  .legal td:first-child[data-label]::before {
+    content: none;
+  }
+}
+
+.legal p.legal-draft,
+.legal p.legal-lang-note {
+  max-width: none;
 }

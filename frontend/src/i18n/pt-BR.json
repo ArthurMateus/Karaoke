@@ -47,14 +47,21 @@
     "send": "Me envie um link",
     "sending": "Enviando…",
     "sentTitle": "Confira seu e-mail",
-    "sent": "Enviamos um link de acesso para {{email}}. Ele funciona uma vez e expira em 15 minutos.",
     "devHint": "Rodando localmente? O e-mail está no Mailpit: http://localhost:8025",
-    "useOther": "Usar outro e-mail"
+    "useOther": "Usar outro e-mail",
+    "sentTo": "Enviamos um link de acesso para <b>{{email}}</b>.",
+    "sentHelp": "Abra neste aparelho. Ele funciona uma vez e expira em 15 minutos. Não chegou em um minuto? Olhe a pasta de spam.",
+    "sendAgain": "Enviar de novo",
+    "sentAgain": "Enviamos um novo link.",
+    "emailPlaceholder": "voce@exemplo.com",
+    "newHere": "Primeira vez? O mesmo link cria a sua conta."
   },
   "verify": {
     "working": "Entrando…",
     "failedTitle": "Esse link não funcionou",
-    "tryAgain": "Pedir um novo link"
+    "tryAgain": "Pedir um novo link",
+    "wait": "Leva só um segundo.",
+    "whyExpired": "Os links de acesso funcionam uma vez e expiram em 15 minutos. Peça um novo: é rapidinho."
   },
   "join": {
     "title": "Entrar na sala de {{host}}",
@@ -64,7 +71,12 @@
     "asGuest": "Entrar como convidado",
     "joining": "Entrando…",
     "haveAccount": "Já tem conta?",
-    "continueAs": "Entrar como {{name}}"
+    "continueAs": "Entrar como {{name}}",
+    "notFoundTitle": "Sala não encontrada",
+    "backHome": "Voltar para o início",
+    "signInInstead": "Entrar com a conta",
+    "codeLabel": "Código da sala {{code}}",
+    "full": "Lotada"
   },
   "lobby": {
     "code": "Código da sala",
@@ -119,7 +131,9 @@
     "email": "E-mail",
     "guestNote": "Você está jogando como convidado. Entre para criar salas e manter seu nome.",
     "save": "Salvar",
-    "saved": "Salvo!"
+    "saved": "Salvo!",
+    "guest": "Convidado",
+    "nameHelp": "Aparece para todos nas suas salas e no ranking da música do dia."
   },
   "errors": {
     "not_signed_in": "Entre primeiro.",
@@ -587,21 +601,25 @@
     "startPassHere_one": "Começar seu Passe de Festa (24 h)",
     "startPassHere_other": "Começar um Passe de Festa (24 h, restam {{count}})",
     "getPremium": "Tem um código? Resgate no seu perfil",
-    "premiumOrPass": "Premium ou Passe de Festa"
+    "premiumOrPass": "Premium ou Passe de Festa",
+    "whatYouGet": "O que está incluído",
+    "freeHint": "Cante com até 4 amigos. Um código ou um Passe de Festa libera mais.",
+    "timeLeft": "Faltam {{time}}",
+    "left": "restantes",
+    "included": "Incluído",
+    "notIncluded": "Não incluído",
+    "confirmStart": "Começar um Passe de Festa agora?",
+    "passStarted": "Seu Passe de Festa começou. Boa festa!",
+    "redeemHelp": "Os códigos são assim: KP-XXXX-XXXX. Espaços e letras minúsculas não têm problema."
   },
   "admin": {
     "title": "Admin",
     "give": "Dar premium ou um Passe de Festa",
     "email": "E-mail da conta",
     "what": "O quê",
-    "kinds": {
-      "premium": "Premium",
-      "party_pass": "Passe de Festa (24 h, a pessoa começa)"
-    },
     "days": "Dias",
     "note": "Nota (só admins veem)",
     "giveButton": "Dar",
-    "given": "Feito.",
     "grants": "Concessões recentes",
     "notStarted": "ainda não começou",
     "sources": {
@@ -610,7 +628,6 @@
       "payment": "pagamento"
     },
     "revoke": "Revogar",
-    "revoked": "revogado",
     "confirmRevoke": "Revogar isto para {{email}}?",
     "makeCodes": "Criar códigos de resgate",
     "codesHelp": "Distribua códigos (presente, sorteio). Cada pessoa usa um código uma vez; um código pode ser usado por várias pessoas.",
@@ -623,11 +640,40 @@
     "codes": "Códigos",
     "premiumDays_one": "Premium, {{count}} dia",
     "premiumDays_other": "Premium, {{count}} dias",
-    "used": "usado {{uses}}/{{max}}",
-    "expires": "expira {{date}}",
     "disable": "Desativar",
-    "disabled": "desativado",
-    "noneYet": "Nada ainda."
+    "noneYet": "Nada ainda.",
+    "subtitle": "Dê premium ou Passes de Festa e crie códigos para distribuir.",
+    "givenTo": "Concedido para {{email}}.",
+    "premiumHelp": "Começa agora (ou quando o premium atual acabar) e dura os dias abaixo.",
+    "passHelp": "24 horas de salas premium; a pessoa começa quando a festa começar.",
+    "newestFirst": "Mais novos primeiro",
+    "oldestFirst": "Mais antigos primeiro",
+    "cols": {
+      "who": "Conta",
+      "what": "O quê",
+      "period": "Período",
+      "source": "Origem",
+      "created": "Criado",
+      "status": "Situação",
+      "actions": "Ações",
+      "code": "Código",
+      "uses": "Usos",
+      "expires": "Expira"
+    },
+    "status": {
+      "active": "Ativo",
+      "waiting": "Não começou",
+      "upcoming": "Agendado",
+      "ended": "Encerrado",
+      "revoked": "Revogado",
+      "disabled": "Desativado",
+      "usedUp": "Esgotado",
+      "expired": "Expirado"
+    },
+    "never": "Nunca",
+    "copyAll": "Copiar todos",
+    "confirmDisable": "Desativar o código {{code}}?",
+    "confirmDisableText": "Ninguém mais consegue resgatá-lo. Os planos já dados com ele continuam."
   },
   "ui": {
     "skip": "Pular para o conteúdo",
@@ -645,5 +691,22 @@
     "note": "Feito para cantar com os amigos.",
     "draft": "Rascunho",
     "draftNote": "Esta página é um rascunho. Ainda não foi revisada por um advogado, então não é a versão final."
+  },
+  "legal": {
+    "onThisPage": "Nesta página",
+    "credits": {
+      "title": "Créditos e licenças",
+      "intro": "O Encore é feito com software, fontes e modelos livres e de código aberto. Obrigado a todo mundo que os criou.",
+      "englishNote": "Os avisos e os textos das licenças abaixo ficam em inglês, como os autores escreveram.",
+      "headings": {
+        "songs": "Músicas",
+        "fonts": "Fontes",
+        "icons": "Ícones e efeitos",
+        "browser": "No seu navegador",
+        "servers": "Nos nossos servidores",
+        "models": "Modelos de IA",
+        "licences": "Textos das licenças"
+      }
+    }
   }
 }

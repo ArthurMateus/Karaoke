@@ -47,14 +47,21 @@
     "send": "Email me a link",
     "sending": "Sending…",
     "sentTitle": "Check your email",
-    "sent": "We sent a sign-in link to {{email}}. It works once and expires in 15 minutes.",
     "devHint": "Running locally? The email is in Mailpit: http://localhost:8025",
-    "useOther": "Use a different email"
+    "useOther": "Use a different email",
+    "sentTo": "We sent a sign-in link to <b>{{email}}</b>.",
+    "sentHelp": "Open it on this device. It works once and expires in 15 minutes. Not there after a minute? Check your spam folder.",
+    "sendAgain": "Send it again",
+    "sentAgain": "We sent a new link.",
+    "emailPlaceholder": "you@example.com",
+    "newHere": "New here? The same link creates your account."
   },
   "verify": {
     "working": "Signing you in…",
     "failedTitle": "That link didn't work",
-    "tryAgain": "Get a new link"
+    "tryAgain": "Get a new link",
+    "wait": "This takes a second.",
+    "whyExpired": "Sign-in links work once and expire after 15 minutes. Ask for a new one: it only takes a moment."
   },
   "join": {
     "title": "Join {{host}}'s room",
@@ -64,7 +71,12 @@
     "asGuest": "Join as guest",
     "joining": "Joining…",
     "haveAccount": "Have an account?",
-    "continueAs": "Join as {{name}}"
+    "continueAs": "Join as {{name}}",
+    "notFoundTitle": "Room not found",
+    "backHome": "Back to the home page",
+    "signInInstead": "Sign in and join",
+    "codeLabel": "Room code {{code}}",
+    "full": "Full"
   },
   "lobby": {
     "code": "Room code",
@@ -119,7 +131,9 @@
     "email": "Email",
     "guestNote": "You're playing as a guest. Sign in to host rooms and keep your name.",
     "save": "Save",
-    "saved": "Saved!"
+    "saved": "Saved!",
+    "guest": "Guest",
+    "nameHelp": "Shown to everyone in your rooms and on the song-of-the-day board."
   },
   "errors": {
     "not_signed_in": "Please sign in first.",
@@ -587,21 +601,25 @@
     "startPassHere_one": "Start your Party Pass (24 h)",
     "startPassHere_other": "Start a Party Pass (24 h, {{count}} left)",
     "getPremium": "Have a code? Redeem it in your profile",
-    "premiumOrPass": "Premium or Party Pass"
+    "premiumOrPass": "Premium or Party Pass",
+    "whatYouGet": "What you get",
+    "freeHint": "Sing with up to 4 friends. A code or a Party Pass unlocks more.",
+    "timeLeft": "{{time}} left",
+    "left": "left",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "confirmStart": "Start a Party Pass now?",
+    "passStarted": "Your Party Pass is running. Have fun!",
+    "redeemHelp": "Codes look like KP-XXXX-XXXX. Spaces and small letters are fine."
   },
   "admin": {
     "title": "Admin",
     "give": "Give premium or a Party Pass",
     "email": "Account email",
     "what": "What",
-    "kinds": {
-      "premium": "Premium",
-      "party_pass": "Party Pass (24 h, started by them)"
-    },
     "days": "Days",
     "note": "Note (only admins see it)",
     "giveButton": "Give",
-    "given": "Given.",
     "grants": "Recent grants",
     "notStarted": "not started yet",
     "sources": {
@@ -610,7 +628,6 @@
       "payment": "payment"
     },
     "revoke": "Revoke",
-    "revoked": "revoked",
     "confirmRevoke": "Revoke this for {{email}}?",
     "makeCodes": "Make redeem codes",
     "codesHelp": "Hand codes out (a gift, a giveaway). Each person can use a code once; a code can be used by several people.",
@@ -623,11 +640,40 @@
     "codes": "Codes",
     "premiumDays_one": "Premium, {{count}} day",
     "premiumDays_other": "Premium, {{count}} days",
-    "used": "used {{uses}}/{{max}}",
-    "expires": "expires {{date}}",
     "disable": "Disable",
-    "disabled": "disabled",
-    "noneYet": "None yet."
+    "noneYet": "None yet.",
+    "subtitle": "Give premium or Party Passes, and make codes to hand out.",
+    "givenTo": "Given to {{email}}.",
+    "premiumHelp": "Starts now (or when their current premium ends) and lasts the days below.",
+    "passHelp": "24 hours of premium rooms, started by them when the party begins.",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first",
+    "cols": {
+      "who": "Account",
+      "what": "What",
+      "period": "Period",
+      "source": "Source",
+      "created": "Created",
+      "status": "Status",
+      "actions": "Actions",
+      "code": "Code",
+      "uses": "Used",
+      "expires": "Expires"
+    },
+    "status": {
+      "active": "Active",
+      "waiting": "Not started",
+      "upcoming": "Upcoming",
+      "ended": "Ended",
+      "revoked": "Revoked",
+      "disabled": "Disabled",
+      "usedUp": "Used up",
+      "expired": "Expired"
+    },
+    "never": "Never",
+    "copyAll": "Copy all",
+    "confirmDisable": "Disable code {{code}}?",
+    "confirmDisableText": "Nobody can redeem it any more. Plans already given with it stay."
   },
   "ui": {
     "skip": "Skip to content",
@@ -645,5 +691,22 @@
     "note": "Made for singing with friends.",
     "draft": "Draft",
     "draftNote": "This page is a draft. A lawyer hasn't reviewed it yet, so it isn't final."
+  },
+  "legal": {
+    "onThisPage": "On this page",
+    "credits": {
+      "title": "Credits and licences",
+      "intro": "Encore is made with free and open-source software, fonts and models. Thank you to everyone who made them.",
+      "englishNote": "The notices and licence texts below stay in English, as their authors wrote them.",
+      "headings": {
+        "songs": "Songs",
+        "fonts": "Fonts",
+        "icons": "Icons and effects",
+        "browser": "In your browser",
+        "servers": "On our servers",
+        "models": "AI models",
+        "licences": "Licence texts"
+      }
+    }
   }
 }

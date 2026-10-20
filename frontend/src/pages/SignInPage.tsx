@@ -1,54 +1,91 @@
+import { ArrowLeft, LogIn, Mail, MailCheck, RotateCw, Send } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 import { useRequestMagicLink } from '../api/hooks'
+import AuthCard from '../components/AuthCard'
 import ErrorText from '../components/ErrorText'
 import { currentLocale } from '../i18n'
+import { Button, useToast } from '../ui'
 
 export default function SignInPage() {
   const { t } = useTranslation()
+  const toast = useToast()
   const [params] = useSearchParams()
   const [email, setEmail] = useState('')
+  const [sentTo, setSentTo] = useState<string | null>(null)
   const request = useRequestMagicLink()
+
+  const send = (again = false) =>
+    request.mutate(
+      { email, locale: currentLocale(), next: params.get('next') ?? undefined },
+      {
+        onSuccess: () => {
+          setSentTo(email)
+          if (again) toast.success(t('signIn.sentAgain'))
+        },
+      },
+    )
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    request.mutate({ email, locale: currentLocale(), next: params.get('next') ?? undefined })
+    send()
   }
 
-  if (request.isSuccess) {
+  if (sentTo) {
     return (
-      <section className="card stack">
-        <h1>{t('signIn.sentTitle')}</h1>
-        <p>{t('signIn.sent', { email })}</p>
-        {import.meta.env.DEV && <p className="muted small">{t('signIn.devHint')}</p>}
-        <button className="link-button" onClick={() => request.reset()}>
-          {t('signIn.useOther')}
-        </button>
-      </section>
+      <AuthCard
+        icon={MailCheck}
+        tone="ok"
+        title={t('signIn.sentTitle')}
+        lead={<Trans i18nKey="signIn.sentTo" values={{ email: sentTo }} components={{ b: <b className="auth-email" /> }} />}
+      >
+        <p className="muted small">{t('signIn.sentHelp')}</p>
+        {import.meta.env.DEV && <p className="auth-note small">{t('signIn.devHint')}</p>}
+        <div className="auth-actions">
+          <Button icon={RotateCw} loading={request.isPending} onClick={() => send(true)}>
+            {t('signIn.sendAgain')}
+          </Button>
+          <Button
+            variant="ghost"
+            icon={ArrowLeft}
+            onClick={() => {
+              setSentTo(null)
+              request.reset()
+            }}
+          >
+            {t('signIn.useOther')}
+          </Button>
+        </div>
+        <ErrorText error={request.error} />
+      </AuthCard>
     )
   }
 
   return (
-    <section className="card stack">
-      <h1>{t('signIn.title')}</h1>
-      <p className="muted">{t('signIn.intro')}</p>
-      <form className="stack" onSubmit={submit}>
+    <AuthCard icon={LogIn} title={t('signIn.title')} lead={t('signIn.intro')}>
+      <form className="auth-form" onSubmit={submit}>
         <label htmlFor="email">{t('signIn.email')}</label>
-        <input
-          id="email"
-          className="input"
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button className="button primary" type="submit" disabled={request.isPending}>
+        <div className="input-with-icon">
+          <Mail size={18} aria-hidden />
+          <input
+            id="email"
+            className="input"
+            type="email"
+            required
+            autoComplete="email"
+            inputMode="email"
+            placeholder={t('signIn.emailPlaceholder')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <Button variant="primary" size="lg" block type="submit" icon={Send} loading={request.isPending}>
           {request.isPending ? t('signIn.sending') : t('signIn.send')}
-        </button>
+        </Button>
       </form>
       <ErrorText error={request.error} />
-    </section>
+      <p className="muted small auth-foot">{t('signIn.newHere')}</p>
+    </AuthCard>
   )
 }
