@@ -36,6 +36,7 @@ export default function NoteLane({ timeline, songTime, scorer, trail }: Props) {
       note: cssColor('--stage-note', '#3d3850'),
       hit: cssColor('--violet', '#5b3df5'),
       gold: cssColor('--amber', '#e0951a'),
+      rap: cssColor('--teal', '#14a3a3'),
       trace: cssColor('--coral', '#ff6b4a'),
       text: cssColor('--stage-text', '#f3f1fa'),
     }
@@ -86,9 +87,21 @@ export default function NoteLane({ timeline, songTime, scorer, trail }: Props) {
         const left = x(note.start)
         const w = Math.max(4, (note.end - note.start) * pps - 2)
         const top = y(note.midi) - barHeight / 2
-        ctx.fillStyle = colors.note
+        // Rap notes (also screams): any pitch counts, only the timing. Drawn see-through and dashed.
+        const rap = note.kind === 'rap' || note.kind === 'rap_golden'
+        ctx.fillStyle = rap ? colors.rap : colors.note
+        ctx.globalAlpha = rap ? 0.35 : 1
         roundRect(ctx, left, top, w, barHeight)
         ctx.fill()
+        ctx.globalAlpha = 1
+        if (rap) {
+          ctx.strokeStyle = colors.rap
+          ctx.lineWidth = 1.5
+          ctx.setLineDash([5, 4])
+          roundRect(ctx, left, top, w, barHeight)
+          ctx.stroke()
+          ctx.setLineDash([])
+        }
         if (scorer) {
           // Fill the part that was sung on pitch.
           const index = timeline.notes.indexOf(note)
