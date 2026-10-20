@@ -7,7 +7,26 @@ import type { LyricsSource } from '../api/types'
 import ErrorText from '../components/ErrorText'
 import FormStep from '../components/FormStep'
 import LyricsField from '../components/LyricsField'
-import { Button, ButtonLink, PageHeader, Skeleton, SongCover, useConfirm } from '../ui'
+import { Button, ButtonLink, Card, EmptyState, PageHeader, Skeleton, SongCover, useConfirm } from '../ui'
+
+/** This song can't get new lyrics (not found, or not an upload of yours): say why, with a way back. */
+function Unavailable({ error }: { error: unknown }) {
+  const { t } = useTranslation()
+  return (
+    <Card wide>
+      <EmptyState
+        action={
+          <>
+            <ErrorText error={error} />
+            <ButtonLink variant="primary" icon={ArrowLeft} to="/songs">
+              {t('upload.back')}
+            </ButtonLink>
+          </>
+        }
+      />
+    </Card>
+  )
+}
 
 /** Give an uploaded song (new) lyrics and rebuild its chart from the saved vocals. */
 export default function LyricsPage() {
@@ -15,7 +34,7 @@ export default function LyricsPage() {
   const song = useSong(id)
   const saved = useSongLyrics(id)
 
-  if (song.isError || saved.isError) return <ErrorText error={song.error ?? saved.error} />
+  if (song.isError || saved.isError) return <Unavailable error={song.error ?? saved.error} />
   if (!song.data || !saved.data) {
     return (
       <div className="upload-page" aria-busy="true">
@@ -26,7 +45,7 @@ export default function LyricsPage() {
     )
   }
   if (!song.data.is_owner || song.data.source !== 'upload' || !song.data.has_vocals_track) {
-    return <ErrorText error="no_vocals_track" />
+    return <Unavailable error="no_vocals_track" />
   }
   return <LyricsForm id={id} title={song.data.title} artist={song.data.artist} duration={song.data.duration_seconds}
     busy={song.data.status === 'processing'} initial={saved.data.lyrics} initialSource={saved.data.source} />
