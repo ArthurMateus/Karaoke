@@ -79,7 +79,7 @@ Browsers only allow microphone access on `https://` pages or on `localhost`. You
 
 1. **Starter library.** Click **Songs** in the header. Six free songs are listed: four in English, two in Portuguese, and two of them are rounds for two singers (*Duet*). The worker creates them the first time it starts.
 2. **Look at a chart.** Press **View chart** on *Row, Row, Row Your Boat*. Press **Play** and watch the green line move over the notes. Click lines on the left to jump around. Starter songs are read-only.
-3. **Upload your own song.** Sign in, go to **Songs → Upload a song**, pick a short audio file you have the rights to (MP3, WAV, M4A or OGG), tick the rights checkbox and press **Upload and convert**. The song appears under *My songs* with a progress bar: separating the voice, writing down the lyrics, finding the melody. On CPU, a 3-minute song takes roughly 3–8 minutes. The first conversion also downloads the AI models (about 3 GB, once).
+3. **Upload your own song.** Sign in, go to **Songs → Upload a song**, pick a short audio file you have the rights to (MP3, WAV, M4A or OGG), tick the rights checkbox and press **Upload and convert**. The song appears under *My songs* with a progress bar: separating the voice, writing down the lyrics, finding the melody. On CPU, a 3-minute song takes roughly 3–8 minutes. The first conversion also downloads the AI models (about 3 GB, once). For better lyrics, fill in the **Lyrics** box before uploading (see *Better lyrics* below).
 4. **Fix the chart.** When it's ready, press **Edit chart**:
    - Click a line on the left, then a note in the piano roll. Drag notes to move them, or drag the right edge to make them longer. Arrow keys move the selected note, and Shift + arrows change its length.
    - Fix lyrics in the **Syllable** box. **Split**, **Merge with next** and **New line from here** fix how lines are divided.
@@ -91,6 +91,20 @@ Browsers only allow microphone access on `https://` pages or on `localhost`. You
 7. **Limits.** Free accounts get 3 conversions per month (`config/limits.yaml`). After three uploads the button is disabled. Deleting a song doesn't give the conversion back.
 
 Your uploaded songs are private: other users never see them, except that rooms you host can sing them.
+
+### Better lyrics: find them online or paste them
+
+Without help, the converter *guesses* the words by listening to the separated voice. That works for clear singing, but screamed, growled, very fast or heavily processed vocals come out wrong, and the timing then follows the wrong words. If you give it the lyrics, it only has to work out *when* each known word is sung, which works much better.
+
+1. On **Upload a song**, type the **Song title** and **Artist** first. Use the real names ("King for a Day", "Pierce the Veil"), not the file name.
+2. In the **Lyrics** box, press **Find lyrics online**. The app looks the song up in [LRCLIB](https://lrclib.net), a free lyrics database made for music players (your PC needs internet for this).
+3. Pick a match with **Use these**. Prefer one marked **Timed**: those lyrics say when each line starts, which keeps every line in sync. *Another version* means the length differs from your file (a music video with a longer intro, say). That's fine: the converter detects the shift and moves the lyrics to fit.
+4. Check the text, fix anything you like (leave the `[01:23.45]` times in), then upload as usual.
+5. No match? Paste the lyrics yourself, one line per line. Plain lyrics without times work too.
+
+**Already converted a song with bad lyrics?** On **Songs**, press **Redo lyrics** next to it. Find or paste the lyrics and press **Redo with these lyrics**. This takes a minute or two, doesn't use up a conversion (the voice isn't separated again), and **replaces the chart**, including changes you made in the chart editor. If a conversion failed with *We couldn't hear any singing*, press **Add lyrics** instead.
+
+**Screams count too.** Parts with no clear note (screams, shouts) become *rap notes*: teal, see-through bars with a dashed edge. Any pitch counts for them: you score by making the sound on time.
 
 ## Try Milestone 3 by hand (Sing Together)
 
@@ -200,6 +214,8 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 - **The microphone button says the mic isn't available:** the browser only allows the mic on `https://` addresses and on `localhost`/`127.0.0.1`. On a phone, use `https://<LAN_IP>:8443`. If you pressed *Block* by accident, allow the microphone again in the browser's site settings (the icon left of the address).
 - **The room forgot the chosen song or who was ready:** that live state is kept in the api's memory, so it resets when the api restarts (for example after `docker compose restart api`). Players reconnect automatically. Pick the song and press ready again.
 - **Code changes don't show up:** the api and web servers reload automatically. The worker doesn't: run `docker compose restart worker` after changing conversion code.
+- **"The lyrics search isn't working right now":** your PC can't reach lrclib.net (no internet, or the site is down). Paste the lyrics instead, or try later. To turn the search off, set `LRCLIB_URL=` (empty) in `.env`.
+- **Lyrics are in the wrong place after using online lyrics:** the online version may be very different from your file (a live version, a remix). Try another match, or paste plain lyrics. Then fix single lines in the chart editor.
 - **A conversion failed:** the song shows the reason (for example *We couldn't hear any singing*). Press **Try again**, which doesn't use another conversion. Details are in `docker compose logs worker`.
 - **Conversion is very slow:** that's normal on CPU for long songs. See the NVIDIA section above.
 - **Docker Desktop says "An unexpected error occurred" on start:** quit Docker Desktop, rename the folder `%LOCALAPPDATA%\Docker\run` (e.g. to `run.old`), and start Docker Desktop again.

@@ -32,6 +32,8 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       SMTP_USE_TLS: ${SMTP_USE_TLS:-false}
       MAIL_FROM: ${MAIL_FROM:-Karaoke Party <no-reply@karaoke.local>}
+      # Online lyrics search (empty = off). "-" not ":-": an empty value must stay empty.
+      LRCLIB_URL: ${LRCLIB_URL-https://lrclib.net}
       S3_ENDPOINT_URL: http://storage:8333
       S3_ACCESS_KEY: karaoke
       S3_SECRET_KEY: karaoke-secret

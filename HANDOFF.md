@@ -25,8 +25,20 @@ Known limits:
 - The robot's measured delay is about -20 ms (no real mic path). Real devices should show a positive number.
 - HTTPS on an IP address (what phones use) failed the TLS handshake: browsers send no SNI for IPs. Fixed with `default_sni` in the Caddyfile and checked with curl. The built-in browser pane refuses the self-signed certificate, so it was not checked in a browser.
 
+## Known lyrics (built after Milestone 3, before M4)
+
+The user asked for better lyrics on screamed/metal songs. Built and committed:
+- `app/services/lrclib.py` + `GET /api/lyrics/search` (LRCLIB, free, no key; title cleaning, looser fallback search, one retry).
+- `Song.lyrics_txt` / `lyrics_source`. Upload takes `lyrics`; `POST /api/songs/{id}/lyrics` redoes the chart from the saved vocals (`jobs.redo_lyrics`; a failed redo keeps the old chart and sets `error_code`).
+- `app/pipeline/lyrics.py`: LRC/plain parsing, language guess, `match_offset` (shift by matching recognized words), `best_offset` (loudness fallback), `time_plain_lines` (line times for plain lyrics), `fit_line`.
+- `steps.align_lyrics`: WhisperX forced alignment per line. With known lyrics the job also runs the recognizer once, only to place the lines.
+- Rap notes for loud unpitched words (`notes.py`), drawn teal and dashed on the sing screen.
+- Measured on the user's 4:54 music-video upload (*King for a Day*): 57.7 s shift found, all words placed, 146 rap notes, redo about 1.5 min on CPU. Loudness alone is unreliable on dense metal mixes (guitar bleed makes the voice track "loud" 90% of the time), so word matching is the main method.
+- Test copies left in the database: "King for a Day ... (lyrics test)" in the user's account, plus "King for a Day (test)" and "Speech test (pasted lyrics)" for host@example.com.
+- **Not yet checked by eye:** the rap-note drawing and the lyrics box layout (the browser pane was hidden). The user hasn't sung a known-lyrics song yet.
+
 ## Next steps
-1. The user tries Milestone 3 on real phones (README "Try Milestone 3 by hand"). Fix what they report.
+1. The user tries known lyrics on their own songs (README "Better lyrics"). Fix what they report.
 2. Then, **after the user's go-ahead**, Milestone 4 (Spotlight: parts, LiveKit spectator audio, reactions, votes) and Milestone 5 (limits/premium grants and Party Pass, see the plan). Free-plan `replays: false` in config/limits.yaml is **not enforced yet**. Enforce it in M5.
 
 ## Useful commands
