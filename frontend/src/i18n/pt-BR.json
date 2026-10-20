@@ -9,7 +9,10 @@
     "profile": "Perfil",
     "language": "Idioma",
     "songs": "Músicas",
-    "admin": "Admin"
+    "admin": "Admin",
+    "solo": "Solo",
+    "daily": "Música do dia",
+    "main": "Principal"
   },
   "home": {
     "createRoom": "Criar uma sala",
@@ -175,7 +178,7 @@
     "starter": "Biblioteca inicial",
     "starterNote": "Músicas gratuitas que todo mundo pode cantar.",
     "mine": "Minhas músicas",
-    "private": "Só você, e as salas que você criar, podem usar suas músicas.",
+    "private": "Só você vê suas músicas. Quando você cria uma sala, quem está nela pode ouvi-las.",
     "empty": "Você ainda não adicionou nenhuma música.",
     "signInToUpload": "Entre para adicionar suas próprias músicas.",
     "upload": "Enviar uma música",
@@ -217,7 +220,7 @@
       "pt": "Português"
     },
     "rights": "Confirmo que tenho o direito de usar este áudio (por exemplo, eu gravei ou tenho licença para usá-lo).",
-    "rightsNote": "Sua música fica privada. Só você e as salas que você criar podem usá-la.",
+    "rightsNote": "Só você vê suas músicas. Quando você cria uma sala, quem está nela pode ouvi-las.",
     "submit": "Enviar e converter",
     "uploading": "Enviando… {{pct}}%",
     "noConversionsLeft": "Você já usou todas as {{total}} conversões deste mês."
@@ -583,5 +586,22 @@
     "disable": "Desativar",
     "disabled": "desativado",
     "noneYet": "Nada ainda."
+  },
+  "ui": {
+    "skip": "Pular para o conteúdo",
+    "dismiss": "Fechar aviso",
+    "close": "Fechar",
+    "cancel": "Cancelar",
+    "copy": "Copiar",
+    "copied": "Copiado!"
+  },
+  "footer": {
+    "label": "Sobre o app",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "credits": "Créditos e licenças",
+    "note": "Feito para cantar com os amigos.",
+    "draft": "Rascunho",
+    "draftNote": "Esta página é um rascunho. Ainda não foi revisada por um advogado, então não é a versão final."
   }
 }

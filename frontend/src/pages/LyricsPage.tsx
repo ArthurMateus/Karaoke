@@ -5,6 +5,7 @@ import { useRedoLyrics, useSong, useSongLyrics } from '../api/hooks'
 import type { LyricsSource } from '../api/types'
 import ErrorText from '../components/ErrorText'
 import LyricsField from '../components/LyricsField'
+import { useConfirm } from '../ui'
 
 /** Give an uploaded song (new) lyrics and rebuild its chart from the saved vocals. */
 export default function LyricsPage() {
@@ -33,14 +34,15 @@ function LyricsForm(props: {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const redo = useRedoLyrics(props.id)
+  const confirm = useConfirm()
   const [lyrics, setLyrics] = useState(props.initial)
   const [source, setSource] = useState<LyricsSource>(props.initialSource)
   // The song's own title is often a file name ("Band - Song (Official Video)"); let people tidy it for the search.
   const [title, setTitle] = useState(props.title)
   const [artist, setArtist] = useState(props.artist)
 
-  const submit = () => {
-    if (!confirm(t('lyrics.redoConfirm'))) return
+  const submit = async () => {
+    if (!(await confirm({ title: t('lyrics.redoConfirm'), message: t('lyrics.redoWarning'), confirmLabel: t('lyrics.redo'), danger: true }))) return
     redo.mutate({ lyrics, source }, { onSuccess: () => navigate('/songs') })
   }
 

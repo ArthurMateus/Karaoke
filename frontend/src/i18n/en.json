@@ -9,7 +9,10 @@
     "profile": "Profile",
     "language": "Language",
     "songs": "Songs",
-    "admin": "Admin"
+    "admin": "Admin",
+    "solo": "Solo",
+    "daily": "Song of the day",
+    "main": "Main"
   },
   "home": {
     "createRoom": "Create a room",
@@ -175,7 +178,7 @@
     "starter": "Starter library",
     "starterNote": "Free songs everyone can sing.",
     "mine": "My songs",
-    "private": "Only you, and rooms you host, can use your songs.",
+    "private": "Only you can see your songs. When you host a room, the people in it can hear them.",
     "empty": "You haven't added any songs yet.",
     "signInToUpload": "Sign in to add your own songs.",
     "upload": "Upload a song",
@@ -217,7 +220,7 @@
       "pt": "Portuguese"
     },
     "rights": "I confirm I have the right to use this audio (for example, I recorded it or I have a licence for it).",
-    "rightsNote": "Your song stays private. Only you and the rooms you host can use it.",
+    "rightsNote": "Only you can see your songs. When you host a room, the people in it can hear them.",
     "submit": "Upload and convert",
     "uploading": "Uploading… {{pct}}%",
     "noConversionsLeft": "You've used all {{total}} conversions for this month."
@@ -583,5 +586,22 @@
     "disable": "Disable",
     "disabled": "disabled",
     "noneYet": "None yet."
+  },
+  "ui": {
+    "skip": "Skip to content",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "copied": "Copied!"
+  },
+  "footer": {
+    "label": "About this app",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "credits": "Credits & licences",
+    "note": "Made for singing with friends.",
+    "draft": "Draft",
+    "draftNote": "This page is a draft. A lawyer hasn't reviewed it yet, so it isn't final."
   }
 }

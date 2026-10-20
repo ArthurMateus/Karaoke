@@ -4,6 +4,7 @@ import { Navigate } from 'react-router'
 import { useAdminAction, useAdminCodes, useAdminGrants, useMe } from '../api/hooks'
 import type { AdminCode } from '../api/types'
 import ErrorText from '../components/ErrorText'
+import { useConfirm } from '../ui'
 
 type Kind = 'premium' | 'party_pass'
 
@@ -84,6 +85,7 @@ function Grants() {
   const date = useDate()
   const grants = useAdminGrants()
   const revoke = useAdminAction<string>((id) => `/api/admin/grants/${id}/revoke`)
+  const confirm = useConfirm()
   return (
     <section className="card stack">
       <h2>{t('admin.grants')}</h2>
@@ -100,7 +102,9 @@ function Grants() {
                 <td>{t(`admin.sources.${g.source}`, { defaultValue: g.source })}{g.note && ` · ${g.note}`}</td>
                 <td>
                   {g.revoked ? t('admin.revoked') : (
-                    <button className="link-button danger small" onClick={() => confirm(t('admin.confirmRevoke', { email: g.email })) && revoke.mutate(g.id)}>
+                    <button className="link-button danger small" onClick={async () => {
+                      if (await confirm({ title: t('admin.confirmRevoke', { email: g.email }), confirmLabel: t('admin.revoke'), danger: true })) revoke.mutate(g.id)
+                    }}>
                       {t('admin.revoke')}
                     </button>
                   )}

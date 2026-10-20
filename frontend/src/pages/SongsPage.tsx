@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { useDeleteSong, useMe, useRetrySong, useSongs } from '../api/hooks'
 import type { Song } from '../api/types'
 import ErrorText from '../components/ErrorText'
+import { useConfirm } from '../ui'
 import { formatDuration } from '../lib/format'
 
 export default function SongsPage() {
@@ -71,6 +72,7 @@ function SongList({ songs }: { songs: Song[] }) {
 function SongCard({ song }: { song: Song }) {
   const { t } = useTranslation()
   const remove = useDeleteSong()
+  const confirm = useConfirm()
   const retry = useRetrySong()
   // Uploaded songs keep their separated voice, so their lyrics can be redone.
   const canRedoLyrics = song.is_owner && song.source === 'upload' && song.has_vocals_track
@@ -145,7 +147,9 @@ function SongCard({ song }: { song: Song }) {
         {song.is_owner && (
           <button
             className="link-button danger small"
-            onClick={() => confirm(t('songs.confirmDelete', { title: song.title })) && remove.mutate(song.id)}
+            onClick={async () => {
+              if (await confirm({ title: t('songs.confirmDelete', { title: song.title }), confirmLabel: t('songs.delete'), danger: true })) remove.mutate(song.id)
+            }}
           >
             {t('songs.delete')}
           </button>
