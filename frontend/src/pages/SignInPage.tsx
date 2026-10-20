@@ -2,8 +2,9 @@ import { ArrowLeft, LogIn, Mail, MailCheck, RotateCw, Send } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
-import { useRequestMagicLink } from '../api/hooks'
+import { useRequestMagicLink, useSiteConfig } from '../api/hooks'
 import AuthCard from '../components/AuthCard'
+import { LEGAL_LINKS } from '../components/legalLinks'
 import ErrorText from '../components/ErrorText'
 import { currentLocale } from '../i18n'
 import { Button, useToast } from '../ui'
@@ -14,11 +15,13 @@ export default function SignInPage() {
   const [params] = useSearchParams()
   const [email, setEmail] = useState('')
   const [sentTo, setSentTo] = useState<string | null>(null)
+  const [agreed, setAgreed] = useState(false)
   const request = useRequestMagicLink()
+  const config = useSiteConfig()
 
   const send = (again = false) =>
     request.mutate(
-      { email, locale: currentLocale(), next: params.get('next') ?? undefined },
+      { email, locale: currentLocale(), next: params.get('next') ?? undefined, accept_terms: agreed },
       {
         onSuccess: () => {
           setSentTo(email)
@@ -80,12 +83,18 @@ export default function SignInPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+        <label className="checkbox auth-agree small">
+          <input type="checkbox" checked={agreed} required onChange={(e) => setAgreed(e.target.checked)} />
+          <span>
+            <Trans i18nKey="signIn.agree" components={LEGAL_LINKS} />
+          </span>
+        </label>
         <Button variant="primary" size="lg" block type="submit" icon={Send} loading={request.isPending}>
           {request.isPending ? t('signIn.sending') : t('signIn.send')}
         </Button>
       </form>
       <ErrorText error={request.error} />
-      <p className="muted small auth-foot">{t('signIn.newHere')}</p>
+      <p className="muted small auth-foot">{t(config.data?.invite_only ? 'signIn.newHereInvite' : 'signIn.newHere')}</p>
     </AuthCard>
   )
 }

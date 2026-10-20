@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type { EditorChart } from '../editor/chartModel'
-import type { AdminCode, AdminGrant, DailyInfo, Locale, PlanInfo, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
+import type { AdminCode, AdminGrant, DailyInfo, Locale, PlanInfo, LyricsMatch, LyricsSource, Me, RoomInfo, SiteConfig, Song, SongList, User } from './types'
 
 export function useMe() {
   return useQuery({ queryKey: ['me'], queryFn: () => api<Me>('/api/me'), staleTime: 60_000 })
@@ -13,9 +13,14 @@ function useSetMe() {
   return (user: User | null) => queryClient.setQueryData<Me>(['me'], { user })
 }
 
+/** Who runs the app: footer and the Terms/Privacy pages. Changes only when the server restarts. */
+export function useSiteConfig() {
+  return useQuery({ queryKey: ['config'], queryFn: () => api<SiteConfig>('/api/config'), staleTime: Infinity })
+}
+
 export function useRequestMagicLink() {
   return useMutation({
-    mutationFn: (body: { email: string; locale: Locale; next?: string }) =>
+    mutationFn: (body: { email: string; locale: Locale; next?: string; accept_terms: boolean }) =>
       api('/api/auth/magic-link', { body }),
   })
 }

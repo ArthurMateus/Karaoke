@@ -89,6 +89,15 @@
 .auth-foot {
   text-align: center;
 }
+.auth-agree,
+.auth-legal {
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+.auth-legal {
+  margin: 0;
+  text-align: center;
+}
 .auth-working {
   display: flex;
   align-items: center;

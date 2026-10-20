@@ -10,7 +10,7 @@ from app.db import utcnow
 from app.deps import SESSION_COOKIE, Db, OptionalUser, api_error
 from app.security import clean_display_name, safe_next_path
 from app.services import auth
-from app.services.email import Mailer, get_mailer, magic_link_email
+from app.services.email import Mailer, get_mailer, invite_only_email, magic_link_email
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -21,6 +21,8 @@ class MagicLinkRequest(BaseModel):
     email: EmailStr
     locale: Locale = "en"
     next: str | None = None
+    # The "I'm 18 or older and agree to the beta terms" box on the sign-in form.
+    accept_terms: bool = False
 
 
 class VerifyRequest(BaseModel):
@@ -62,16 +64,25 @@ def request_magic_link(
     background: BackgroundTasks,
     mailer: Annotated[Mailer, Depends(get_mailer)],
 ) -> dict:
+    if not body.accept_terms:
+        raise api_error(422, "terms_required")
     try:
         token = auth.create_magic_link_token(db, body.email, utcnow())
     except auth.RateLimited:
         raise api_error(429, "too_many_links") from None
 
+    email = auth.normalize_email(body.email)
+    if not auth.account_exists(db, email) and not auth.may_create_account(email):
+        # Private beta, not invited: same answer as a sent link (so nobody can test who is
+        # invited), but the email explains instead of carrying a link.
+        background.add_task(mailer.send, invite_only_email(email, body.locale))
+        return {"ok": True}
+
     # The link opens a page in the app, which then calls /verify. Email scanners
     # that pre-open links therefore can't use up the token.
     query = urlencode({"token": token, "next": safe_next_path(body.next)})
     link = f"{_link_base(request)}/auth/verify?{query}"
-    background.add_task(mailer.send, magic_link_email(auth.normalize_email(body.email), link, body.locale))
+    background.add_task(mailer.send, magic_link_email(email, link, body.locale))
     return {"ok": True}
 
 

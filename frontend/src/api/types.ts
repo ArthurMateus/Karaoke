@@ -11,6 +11,18 @@ export interface User {
   is_admin: boolean // may open the Admin page
 }
 
+/** Who runs the app (GET /api/config). Empty strings: not set yet. */
+export interface SiteConfig {
+  operator_name: string
+  operator_city: string
+  contact_email: string
+  hosting_provider: string
+  email_provider: string
+  beta_end_date: string // YYYY-MM-DD or ""
+  invite_only: boolean
+  terms_version: string
+}
+
 export interface Me {
   user: User | null
 }

@@ -54,7 +54,9 @@
     "sendAgain": "Enviar de novo",
     "sentAgain": "Enviamos um novo link.",
     "emailPlaceholder": "voce@exemplo.com",
-    "newHere": "Primeira vez? O mesmo link cria a sua conta."
+    "newHere": "Primeira vez? O mesmo link cria a sua conta.",
+    "agree": "Tenho 18 anos ou mais e aceito os <terms>Termos do beta</terms> e a <privacy>Política de Privacidade</privacy>.",
+    "newHereInvite": "O Encore está num beta fechado: só e-mails convidados podem criar conta. Peça um convite a quem te chamou."
   },
   "verify": {
     "working": "Entrando…",
@@ -76,7 +78,8 @@
     "backHome": "Voltar para o início",
     "signInInstead": "Entrar com a conta",
     "codeLabel": "Código da sala {{code}}",
-    "full": "Lotada"
+    "full": "Lotada",
+    "notice": "Você precisa ter 18 anos ou mais. Ao continuar, você aceita os <terms>Termos do beta</terms> e a <privacy>Política de Privacidade</privacy>."
   },
   "lobby": {
     "code": "Código da sala",
@@ -207,7 +210,8 @@
     "admins_only": "Só admins podem fazer isso.",
     "no_such_account": "Não há conta com esse e-mail (convidados não podem ter premium).",
     "grant_not_found": "Essa concessão não existe.",
-    "unknown_error": "Algo deu errado. Tente de novo."
+    "unknown_error": "Algo deu errado. Tente de novo.",
+    "terms_required": "Marque a caixa para aceitar os Termos do beta primeiro."
   },
   "songs": {
     "title": "Músicas",
@@ -382,7 +386,7 @@
       "robot": "Modo de teste: um robô canta no lugar do seu microfone.",
       "level": "Volume do microfone",
       "setUp": "Configurar meu microfone",
-      "recorded": "Quando há replay (solo, música do dia, salas com replay em grupo), seu canto é gravado, e quem está na sala pode ouvir o replay em grupo."
+      "recorded": "Quando há replay (solo, música do dia, salas com replay em grupo), seu canto é gravado, e quem está na sala pode ouvir o replay em grupo. As gravações são apagadas depois de 30 dias."
     },
     "calibrate": {
       "title": "Teste de atraso do microfone",
@@ -776,7 +780,12 @@
     "credits": "Créditos e licenças",
     "note": "Feito para cantar com os amigos.",
     "draft": "Rascunho",
-    "draftNote": "Esta página é um rascunho. Ainda não foi revisada por um advogado, então não é a versão final."
+    "draftNote": "Versão beta desta página. Ainda não foi revisada por um advogado.",
+    "runBy": "Mantido por {{name}}",
+    "contact": "Contato: {{email}}",
+    "notSet": "ainda não definido",
+    "beta": "Beta",
+    "betaNote": "Uma versão de teste fechada: as coisas podem mudar, quebrar ou ser apagadas."
   },
   "legal": {
     "onThisPage": "Nesta página",
@@ -793,6 +802,8 @@
         "models": "Modelos de IA",
         "licences": "Textos das licenças"
       }
-    }
+    },
+    "notSet": "ainda não definido",
+    "betaEndUnset": "uma data que o responsável vai anunciar por e-mail"
   }
 }

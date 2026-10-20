@@ -1,6 +1,6 @@
 import { DoorOpen, Home, LogIn, PartyPopper, UserRound, Users } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { useMe, usePlayAsGuest, useRoomInfo } from '../api/hooks'
 import type { RoomInfo } from '../api/types'
@@ -10,6 +10,7 @@ import { currentLocale } from '../i18n'
 import { playerColor } from '../lib/colors'
 import { normalizeCode } from '../lib/roomCode'
 import { Avatar, Badge, Button, ButtonLink, Skeleton } from '../ui'
+import { LEGAL_LINKS } from '../components/legalLinks'
 
 /** Where QR codes and invite links point. Signed-in players go straight to the room. */
 export default function JoinPage() {
@@ -81,6 +82,9 @@ function Join({ code }: { code: string }) {
         <Button variant="primary" size="lg" block type="submit" icon={PartyPopper} loading={playAsGuest.isPending}>
           {playAsGuest.isPending ? t('join.joining') : t('join.asGuest')}
         </Button>
+        <p className="muted small auth-legal">
+          <Trans i18nKey="join.notice" components={LEGAL_LINKS} />
+        </p>
       </form>
       <ErrorText error={playAsGuest.error} />
       <div className="auth-divider">

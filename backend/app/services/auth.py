@@ -10,6 +10,11 @@ from app.models import AuthSession, MagicLinkToken, User
 from app.security import MAX_NAME_LENGTH, hash_token, new_token
 
 
+# The beta terms people accept at sign-in. Change it whenever frontend/src/legal/terms.*.md
+# changes in a way people should agree to again (it is saved on each account).
+TERMS_VERSION = "beta-1"
+
+
 class RateLimited(Exception):
     pass
 
@@ -20,6 +25,19 @@ class InvalidToken(Exception):
 
 def normalize_email(email: str) -> str:
     return email.strip().lower()
+
+
+def may_create_account(email: str) -> bool:
+    """Private beta: only invited emails (BETA_ALLOWED_EMAILS) and admins get a new account.
+    An empty list means sign-up is open (local development and tests)."""
+    settings = get_settings()
+    invited = settings.beta_allowed
+    email = normalize_email(email)
+    return not invited or email in invited or email in settings.admins
+
+
+def account_exists(db: Session, email: str) -> bool:
+    return db.scalar(select(User.id).where(User.email == normalize_email(email))) is not None
 
 
 def create_magic_link_token(db: Session, email: str, now: datetime) -> str:
@@ -49,7 +67,9 @@ def create_magic_link_token(db: Session, email: str, now: datetime) -> str:
 
 
 def redeem_magic_link_token(db: Session, token: str, now: datetime, locale: str = "en") -> User:
-    """Use up a token and return the account for its email, creating the account if needed."""
+    """Use up a token and return the account for its email, creating the account if needed
+    (only for invited emails during the private beta). Records that the current beta terms
+    were accepted: the sign-in form asks for that before it sends the link."""
     row = db.scalar(
         select(MagicLinkToken).where(MagicLinkToken.token_hash == hash_token(token)).with_for_update()
     )
@@ -59,8 +79,14 @@ def redeem_magic_link_token(db: Session, token: str, now: datetime, locale: str 
 
     user = db.scalar(select(User).where(User.email == row.email))
     if user is None:
+        if not may_create_account(row.email):
+            db.commit()  # the token stays used up
+            raise InvalidToken()
         user = User(email=row.email, display_name=row.email.split("@")[0][:MAX_NAME_LENGTH], locale=locale)
         db.add(user)
+    if user.terms_version != TERMS_VERSION:
+        user.terms_version = TERMS_VERSION
+        user.terms_accepted_at = row.created_at  # when the box was ticked and the link asked for
     db.commit()
     return user
 

@@ -149,7 +149,7 @@ async function newPage() {
 async function signIn(page, email) {
   await page.goto(`${HOST}/`)
   const before = Date.now()
-  const r = await page.fetch('/api/auth/magic-link', { email, locale: 'en', next: '/' })
+  const r = await page.fetch('/api/auth/magic-link', { email, locale: 'en', next: '/', accept_terms: true })
   if (r.status !== 202) throw new Error(`magic link: ${r.status}`)
   let link
   for (let i = 0; i < 40 && !link; i++) {

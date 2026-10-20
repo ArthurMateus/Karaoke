@@ -2,7 +2,7 @@ import { CalendarDays, ChevronDown, LogIn, LogOut, Mic, Music, ShieldCheck, User
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
-import { useMe, usePlan, useSignOut } from '../api/hooks'
+import { useMe, usePlan, useSignOut, useSiteConfig } from '../api/hooks'
 import type { User } from '../api/types'
 import { BrandMark } from '../components/Brand'
 import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -55,6 +55,9 @@ function Header() {
       <Link to="/" className="logo" aria-label={t('app.name')}>
         <BrandMark /> <span className="logo-text">{t('app.name')}</span>
       </Link>
+      <Badge tone="warn" className="beta-badge header-beta" title={t('footer.betaNote')}>
+        {t('footer.beta')}
+      </Badge>
       <nav className="header-nav" aria-label={t('nav.main')}>
         {nav.map(({ to, label, icon: Icon }) => (
           <Link key={to} to={to} className={isActive(to) ? 'nav-link active' : 'nav-link'} aria-current={isActive(to) ? 'page' : undefined} title={label}>
@@ -164,17 +167,38 @@ function ProfileMenu({ user }: { user: User }) {
 
 function Footer() {
   const { t } = useTranslation()
+  const config = useSiteConfig().data
+  const name = config?.operator_name || t('footer.notSet')
+  const email = config?.contact_email
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <Link to="/" className="footer-brand">
-          <BrandMark size={22} /> {t('app.name')}
-        </Link>
+        <span className="footer-brand-row">
+          <Link to="/" className="footer-brand">
+            <BrandMark size={22} /> {t('app.name')}
+          </Link>
+          <Badge tone="warn" className="beta-badge" title={t('footer.betaNote')}>
+            {t('footer.beta')}
+          </Badge>
+        </span>
         <nav className="footer-links" aria-label={t('footer.label')}>
           <Link to="/terms">{t('footer.terms')}</Link>
           <Link to="/privacy">{t('footer.privacy')}</Link>
           <Link to="/credits">{t('footer.credits')}</Link>
         </nav>
+        <p className="footer-operator">
+          <span>{t('footer.runBy', { name })}</span>
+          <span>
+            {email ? (
+              <>
+                {t('footer.contact', { email: '' })}
+                <a href={`mailto:${email}`}>{email}</a>
+              </>
+            ) : (
+              t('footer.contact', { email: t('footer.notSet') })
+            )}
+          </span>
+        </p>
         <p className="footer-note">{t('footer.note')}</p>
       </div>
     </footer>

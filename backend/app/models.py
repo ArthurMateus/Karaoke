@@ -17,6 +17,9 @@ class User(Base):
     display_name: Mapped[str] = mapped_column(String(40))
     is_guest: Mapped[bool] = mapped_column(default=False)
     locale: Mapped[str] = mapped_column(String(10), default="en")
+    # Which beta terms the account accepted, and when (app/services/auth.py TERMS_VERSION).
+    terms_version: Mapped[str | None] = mapped_column(String(32))
+    terms_accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 

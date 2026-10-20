@@ -37,6 +37,14 @@ services:
       LRCLIB_URL: ${LRCLIB_URL-https://lrclib.net}
       # Who may open the Admin page (grant premium, make codes). Comma separated emails.
       ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      # Private beta: who may create an account (empty = anyone) and who runs the app.
+      BETA_ALLOWED_EMAILS: ${BETA_ALLOWED_EMAILS:-}
+      OPERATOR_NAME: ${OPERATOR_NAME:-}
+      OPERATOR_CITY: ${OPERATOR_CITY:-}
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-}
+      HOSTING_PROVIDER: ${HOSTING_PROVIDER:-}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-}
+      BETA_END_DATE: ${BETA_END_DATE:-}
       # Live voice (LiveKit). Change the secret if this server is reachable from the internet.
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-karaoke}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-karaoke-dev-secret-change-me-0123456789}

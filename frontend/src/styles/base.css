@@ -340,6 +340,28 @@ a {
   color: var(--violet);
   text-decoration: underline;
 }
+.footer-brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.beta-badge {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+}
+.footer-operator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.footer-operator a {
+  color: inherit;
+}
 .footer-note {
   margin-left: auto;
   color: var(--muted);

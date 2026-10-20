@@ -54,7 +54,9 @@
     "sendAgain": "Send it again",
     "sentAgain": "We sent a new link.",
     "emailPlaceholder": "you@example.com",
-    "newHere": "New here? The same link creates your account."
+    "newHere": "New here? The same link creates your account.",
+    "agree": "I'm 18 or older and I agree to the beta <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>.",
+    "newHereInvite": "Encore is in a private beta: only invited emails can create an account. Ask the host for an invite."
   },
   "verify": {
     "working": "Signing you in…",
@@ -76,7 +78,8 @@
     "backHome": "Back to the home page",
     "signInInstead": "Sign in and join",
     "codeLabel": "Room code {{code}}",
-    "full": "Full"
+    "full": "Full",
+    "notice": "You must be 18 or older. By continuing you agree to the beta <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>."
   },
   "lobby": {
     "code": "Room code",
@@ -207,7 +210,8 @@
     "admins_only": "Only admins can do that.",
     "no_such_account": "There's no account with that email (guests can't get premium).",
     "grant_not_found": "That grant doesn't exist.",
-    "unknown_error": "Something went wrong. Please try again."
+    "unknown_error": "Something went wrong. Please try again.",
+    "terms_required": "Tick the box to agree to the beta Terms first."
   },
   "songs": {
     "title": "Songs",
@@ -382,7 +386,7 @@
       "robot": "Test mode: a robot sings instead of your mic.",
       "level": "Mic level",
       "setUp": "Set up my microphone",
-      "recorded": "When there's a replay (solo, song of the day, rooms with group replays), your singing is recorded, and the room can hear group replays."
+      "recorded": "When there's a replay (solo, song of the day, rooms with group replays), your singing is recorded, and the room can hear group replays. Recordings are deleted after 30 days."
     },
     "calibrate": {
       "title": "Mic delay check",
@@ -776,7 +780,12 @@
     "credits": "Credits & licences",
     "note": "Made for singing with friends.",
     "draft": "Draft",
-    "draftNote": "This page is a draft. A lawyer hasn't reviewed it yet, so it isn't final."
+    "draftNote": "Beta version of this page. A lawyer hasn't reviewed it yet.",
+    "runBy": "Run by {{name}}",
+    "contact": "Contact: {{email}}",
+    "notSet": "not set yet",
+    "beta": "Beta",
+    "betaNote": "A private test version: things may change, break or be reset."
   },
   "legal": {
     "onThisPage": "On this page",
@@ -793,6 +802,8 @@
         "models": "AI models",
         "licences": "Licence texts"
       }
-    }
+    },
+    "notSet": "not set yet",
+    "betaEndUnset": "a date the operator will announce by email"
   }
 }

@@ -55,3 +55,28 @@ def magic_link_email(to: str, link: str, locale: str) -> OutgoingEmail:
     subject, body = _MAGIC_LINK_TEXT.get(locale, _MAGIC_LINK_TEXT["en"])
     minutes = get_settings().magic_link_minutes
     return OutgoingEmail(to=to, subject=subject, text=body.format(link=link, minutes=minutes))
+
+
+_INVITE_ONLY_TEXT = {
+    "en": (
+        "About your Encore sign-in",
+        "Hi!\n\nSomeone (hopefully you) asked to sign in to Encore with this email address.\n\n"
+        "Encore is in a small private beta, and this address isn't on the invite list yet, "
+        "so we didn't create an account. If a friend invited you, ask them to add this address.\n\n"
+        "If you didn't ask for this, you can ignore this email.\n",
+    ),
+    "pt-BR": (
+        "Sobre o seu acesso ao Encore",
+        "Olá!\n\nAlguém (esperamos que você) pediu para entrar no Encore com este e-mail.\n\n"
+        "O Encore está num pequeno beta fechado, e este endereço ainda não está na lista de convidados, "
+        "então não criamos uma conta. Se um amigo te convidou, peça para ele incluir este endereço.\n\n"
+        "Se você não pediu isso, pode ignorar este e-mail.\n",
+    ),
+}
+
+
+def invite_only_email(to: str, locale: str) -> OutgoingEmail:
+    """Sent instead of a sign-in link to an address that isn't invited to the private beta."""
+    subject, body = _INVITE_ONLY_TEXT.get(locale, _INVITE_ONLY_TEXT["en"])
+    return OutgoingEmail(to=to, subject=subject, text=body)
+

@@ -58,6 +58,19 @@ class Settings(BaseSettings):
     # Admins (comma separated emails): they grant premium and make redeem codes (Admin page).
     admin_emails: str = ""
 
+    # Private beta: only these emails (comma separated) may create an account. Empty = anyone
+    # may sign up (local development). Admins and existing accounts can always sign in.
+    beta_allowed_emails: str = ""
+
+    # Who runs the app and how to reach them: shown in the footer and on the Terms and Privacy
+    # pages (GET /api/config). Empty = the pages say "not set yet".
+    operator_name: str = ""
+    operator_city: str = ""  # city and state, e.g. "Campinas, SP"
+    contact_email: str = ""  # general contact, privacy requests and copyright reports
+    hosting_provider: str = ""  # e.g. "Example Cloud, Brazil (Sao Paulo)"
+    email_provider: str = ""  # who delivers the sign-in emails, and its country
+    beta_end_date: str = ""  # YYYY-MM-DD, or empty while the end date isn't decided
+
     # Live voice (LiveKit). The secret must match LIVEKIT_KEYS in docker-compose.yml.
     livekit_api_key: str = "karaoke"
     livekit_api_secret: str = "karaoke-dev-secret-change-me-0123456789"
@@ -66,6 +79,10 @@ class Settings(BaseSettings):
     @property
     def admins(self) -> set[str]:
         return {e.strip().lower() for e in self.admin_emails.split(",") if e.strip()}
+
+    @property
+    def beta_allowed(self) -> set[str]:
+        return {e.strip().lower() for e in self.beta_allowed_emails.split(",") if e.strip()}
 
     @property
     def allowed_origins(self) -> set[str]:

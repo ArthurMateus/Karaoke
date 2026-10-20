@@ -157,7 +157,7 @@ def token_from(mailer: FakeMailer) -> str:
 
 def sign_in(client: TestClient, mailer: FakeMailer, email: str) -> Player:
     """Go through the real magic-link flow."""
-    client.post("/api/auth/magic-link", json={"email": email}).raise_for_status()
+    client.post("/api/auth/magic-link", json={"accept_terms": True, "email": email}).raise_for_status()
     return _take_session(client, client.post("/api/auth/verify", json={"token": token_from(mailer)}))
 
 
