@@ -1,0 +1,3 @@
+# Private beta: please don't index any of this site.
+User-agent: *
+Disallow: /

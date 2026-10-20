@@ -2,8 +2,18 @@
 # Then open:          http://localhost:8080   (phones: https://<LAN_IP>:8443)
 # Emails (magic links) arrive at http://localhost:8025
 
+# Logs (they hold IP addresses): Docker keeps at most 5 files of 10 MB per service and
+# drops the oldest. The Privacy page promises 14 days at most; on a quiet beta server 50 MB
+# can last longer, so the weekly routine also clears them (HANDOFF.md, "Beta admin routine").
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   caddy:
+    logging: *logging
     image: caddy:2.10-alpine
     ports:
       - "8080:8080" # this PC (http://localhost counts as secure for the mic)
@@ -19,6 +29,7 @@ services:
       - livekit
 
   api:
+    logging: *logging
     build: ./backend
     environment: &api-env
       DATABASE_URL: postgresql+psycopg://karaoke:karaoke@postgres:5432/karaoke
@@ -68,6 +79,7 @@ services:
   # Converts uploaded songs in the background (separate vocals, transcribe
   # lyrics, find the melody). CPU by default; see docker-compose.gpu.yml.
   worker:
+    logging: *logging
     build:
       context: ./backend
       dockerfile: Dockerfile.worker
@@ -95,6 +107,7 @@ services:
   # Live voice for Spotlight: the singer's microphone, streamed to the stage
   # screen and to listeners. See infra/livekit/livekit.yaml.
   livekit:
+    logging: *logging
     image: livekit/livekit-server:v1.13.7
     command: --config /etc/livekit.yaml --node-ip ${LAN_IP:-127.0.0.1}
     environment:
@@ -106,6 +119,7 @@ services:
       - ./infra/livekit/livekit.yaml:/etc/livekit.yaml:ro
 
   web:
+    logging: *logging
     build: ./frontend
     environment:
       CHOKIDAR_USEPOLLING: "true"
@@ -115,6 +129,7 @@ services:
       - web_node_modules:/app/node_modules
 
   postgres:
+    logging: *logging
     image: postgres:17-alpine
     environment:
       POSTGRES_USER: karaoke
@@ -129,6 +144,7 @@ services:
       retries: 20
 
   redis:
+    logging: *logging
     image: redis:7.4-alpine
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -138,6 +154,7 @@ services:
   # S3-compatible file storage (songs, recordings). The app talks plain S3,
   # so any S3 service (AWS S3, Cloudflare R2, ...) can replace it in production.
   storage:
+    logging: *logging
     image: chrislusf/seaweedfs:4.48
     command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
     ports:
@@ -152,6 +169,7 @@ services:
 
   # Creates the storage bucket once, then exits.
   storage-init:
+    logging: *logging
     image: chrislusf/seaweedfs:4.48
     depends_on:
       storage:
@@ -160,6 +178,7 @@ services:
       sh -c "echo 's3.bucket.create -name karaoke' | weed shell -master=storage:9333 2>&1 | grep -v 'already exists' ; true"
 
   mailpit:
+    logging: *logging
     image: axllent/mailpit:v1.27
     ports:
       - "8025:8025" # inbox web UI
