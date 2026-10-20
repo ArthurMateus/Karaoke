@@ -1,15 +1,18 @@
-You're continuing my karaoke party app in this folder. Read HANDOFF.md, README.md and docs/ui-polish-plan.md first.
+You're finishing the UI polish step of my karaoke app **Encore** in this folder (C:\Users\ArthurFerreiradaSilv\Desktop\Karaoke; GitHub ArthurMateus/Karaoke, branch main). Read HANDOFF.md first, especially "UI polish step" and the part "Paused here", then docs/ui-polish-plan.md.
 
-The task is the UI polish step in docs/ui-polish-plan.md: I like the current "Pitch Lane" style, but every screen is still too simple. Make the whole app look like a finished, fun product while keeping that style. Follow the plan's phases, quality bars and "Done means".
+Where we are: Phases 1-6 are built, committed and pushed, with before/after screenshots. Guests now see "Party Pass until HH:MM" (approved API change). Not done yet: QA of Phases 3-6 and the final legal review.
 
-This project has two subagents in .claude/agents/. Use them through the Agent tool:
-- qa-tester: after every phase, to run all tests and walk the flows in the browser with the robot singer at phone and desktop sizes. Fix what it reports before moving on.
-- legal-reviewer: at the start (to check any new dependency, font or icon set, and to draft the Terms, Privacy and Credits pages for the footer) and again at the end. Act on its "must fix" items and list the rest for me.
+Do this, in order:
+1. Make sure Docker Desktop is running and `docker compose up -d` works (if port 8080 is busy, another project like SignalDesk is running: ask me before stopping it).
+2. Run the qa-tester agent on Phases 3-6 and fix what it reports (all blockers and majors, the minors that make sense; list the rest for me).
+3. Run the legal-reviewer agent for the final review, including whether the name "Encore" is safe to use (trademark, domain). Act on its "must fix" items and list the rest for me.
+4. Delete the helper scratch folders docs/ui-polish-work/ and design/shots/qa/work/, finish the HANDOFF.md section, and show me a short summary.
 
-Rules:
-- Don't change game rules, scoring, audio timing or the API. If a screen needs something the API doesn't give, ask me.
-- Take before/after screenshots of every screen you touch (390 px and 1280 px) as described in the plan.
-- After Phase 2 (design system + home + lobby), stop, show me the screenshots and wait for my go-ahead before the other phases.
-- Keep English and Portuguese texts in step, run the typecheck, lint and tests before every commit, and make small, well-described commits.
+Rules (same as before):
+- Don't change game rules, scoring, audio timing or the API without asking me.
+- Keep English and Portuguese in step.
+- Run the typecheck, lint and tests before every commit. Small, well-described commits, pushed to main.
+- The API reloads on every backend save, which resets live rooms: don't edit the backend while a QA run is testing rooms.
+- Credits are limited: prefer one agent at a time, and don't redo work that's already done.
 
 I'm not an expert, so explain steps plainly.
