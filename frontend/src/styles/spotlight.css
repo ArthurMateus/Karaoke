@@ -282,6 +282,13 @@
   flex-direction: column;
   gap: 8px;
 }
+/* The turn count goes under the name, so a long name and the badges still fit a phone. */
+.spot-standings .player-sub {
+  display: block;
+}
+.spot-standings .rank-score {
+  white-space: nowrap;
+}
 .spot-standings .rank.just-sang {
   border-color: #d8d0ff;
   background: var(--violet-soft);
@@ -314,6 +321,15 @@
   .spot-standings .rank {
     gap: 8px;
     padding: 10px;
+  }
+  /* All five reactions on one row. */
+  .reaction-bar {
+    gap: 6px;
+  }
+  .reaction-button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 9px;
   }
   .star {
     min-width: 44px;

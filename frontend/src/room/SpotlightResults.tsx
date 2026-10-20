@@ -228,7 +228,7 @@ function MovingStandings({ standings, singers, turnPoints, me, nameOf, colorOf }
               <Avatar name={nameOf(row.id)} color={colorOf(row.id)} size="sm" decorative />
               <span className="player-name">
                 {nameOf(row.id)}
-                <span className="muted small"> · {t('spotlight.turns', { count: row.turns })}</span>
+                <span className="muted small player-sub">{t('spotlight.turns', { count: row.turns })}</span>
               </span>
               <Movement moved={moved} />
               <b className="rank-score">{t('game.results.points', { score: formatScore(row.points, i18n.language) })}</b>
