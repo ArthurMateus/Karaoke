@@ -48,6 +48,13 @@ The original plan text wasn't available (not in the repo, no transcript on this 
 - Gotcha: the built-in browser freezes hidden background tabs and LiveKit then leaves the room (`CLIENT_REQUEST_LEAVE`). Test voice in the visible tab.
 - Gotcha: Caddy doesn't reload the Caddyfile on `docker compose up -d` when only the file changed: `docker compose restart caddy`.
 
+## Solo and song of the day (built after M4, before M5)
+
+The user asked for a singleplayer mode and a song of the day with a leaderboard. Chosen: one try per day, accounts only on the board, the day changes at midnight UTC.
+- Solo runs are `Performance(kind="solo"|"daily", room_code="")` with one singer; the phone's clock times start and recording (no clock sync). API in `app/api/solo.py`, day logic in `app/services/daily.py` (`DailySong` fixes the day's song; `DailyAttempt` has a unique (day, user)). Screens `pages/SoloPage.tsx` (also `SoloSingPage`, which feeds SingView a made-up room) and `pages/DailyPage.tsx`.
+- Fixed on the way: score and recording arriving together could lose the recording (`services/takes.py`, rooms too).
+- Tried with the robot: solo run, daily try, second try refused, guest view, replay. Scores are trusted from the phone.
+
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
 2. Then, **after the user's go-ahead**, Milestone 5 (limits/premium grants and Party Pass). Enforce free-plan `modes: [sing_together]` (Spotlight is open to everyone now) and `replays: false`, which are **not enforced yet**.

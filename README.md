@@ -2,7 +2,7 @@
 
 A multiplayer karaoke party game that runs in the browser. Players join a room with a short code or by scanning a QR code, and each person sings into their own phone or laptop.
 
-> **Status:** Milestones 1–4 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically, with lyrics you can find online), UltraStar import/export, a chart editor, **Sing Together** (everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay) and **Spotlight** (take turns while everyone else watches, cheers and votes, with a stage screen for the TV and the singer's live voice). Plans and limits (free/premium) come in Milestone 5.
+> **Status:** Milestones 1–4 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically, with lyrics you can find online), UltraStar import/export, a chart editor, **Sing Together** (everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay) **Spotlight** (take turns while everyone else watches, cheers and votes, with a stage screen for the TV and the singer's live voice), **solo** singing with personal bests, and a **song of the day** with a leaderboard. Plans and limits (free/premium) come in Milestone 5.
 
 ---
 
@@ -169,6 +169,18 @@ The singer's phone also streams their voice live, through a small streaming serv
 
 **Free and premium:** `config/limits.yaml` lists Spotlight for premium only. That split isn't enforced yet (Milestone 5), so every host can use it for now.
 
+## Sing alone and the song of the day
+
+**Solo.** On the home page press **Sing solo** (or go to `/solo`). Every song you may sing is listed with your best score so far. Press **Sing**, turn on the mic (do the delay check once), and press **Start singing**. After the song you see your score, *New personal best!* when you beat it, and a replay of your voice over the music. Without an account you just type a name; sign in to keep your scores. Add `?robot` to the address to let the robot sing.
+
+**Song of the day.** The home page shows today's song; **Today's song and leaderboard** (or `/daily`) opens its page.
+
+- Everyone gets the same song for the day, picked from the starter library (uploaded songs are private, so they can't be the song of the day). A new one starts at **midnight UTC** (21:00 in Brasília); the page shows how long until then.
+- Signed in, you get **one try a day**. It counts from the moment the song starts, so get the mic and delay check right first; leaving halfway uses it up.
+- The **leaderboard** ranks today's tries (a tie goes to whoever finished first) and shows yesterday's winner. Guests can **practise** the song but aren't ranked.
+- With only 6 starter songs, the song of the day comes back about once a week. A bigger library fixes that.
+- Scores are worked out on each phone, so someone technical could send a fake one. Fine among friends; before a public launch the server should check scores itself.
+
 ## Faster song conversion with an NVIDIA graphics card (optional)
 
 By default the worker runs on the CPU. With an NVIDIA card (any recent GeForce RTX, including the RTX 50 series), conversion should take about a minute instead of several (not yet measured on real hardware):
@@ -211,14 +223,14 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 
 | Folder | What's inside |
 |---|---|
-| `backend/app/api/` | HTTP endpoints: sign-in, profile, rooms, songs |
+| `backend/app/api/` | HTTP endpoints: sign-in, profile, rooms, songs, lyrics, voice, solo and song of the day |
 | `backend/app/charts/` | UltraStar chart reading/writing (`ultrastar.py`) and the editor format |
 | `backend/app/pipeline/` | Song conversion: ML steps (`steps.py`), notes from pitch (`notes.py`), the job (`jobs.py`) |
 | `backend/app/starter/` | The starter songs (`songs.py`, written as notes and chords) and how they're rendered |
 | `backend/app/ws/` | The live room: who's connected, the game rules for Sing Together and Spotlight (`room_state.py`), messages (`game.py`), stage screens (`hub.py`) |
 | `backend/app/services/` | Business logic: auth tokens, room codes, email, plan limits, storage, song access |
 | `backend/alembic/` | Database migrations |
-| `frontend/src/pages/` | Screens: home, sign in, join, lobby, profile, songs, upload, chart editor |
+| `frontend/src/pages/` | Screens: home, sign in, join, lobby, stage, solo, song of the day, profile, songs, upload, chart editor |
 | `frontend/src/editor/` | Chart editor logic (`chartModel.ts`) and the piano roll |
 | `frontend/src/room/` | WebSocket connection, lobby state, and the game screens (sing, results, Spotlight queue, reactions) |
 | `frontend/src/voice/` | Live voice through LiveKit (`liveVoice.ts`) |
