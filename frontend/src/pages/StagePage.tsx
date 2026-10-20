@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Play, WifiOff } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useSearchParams } from 'react-router'
-import { useRoomInfo } from '../api/hooks'
 import { AudioEngine } from '../audio/engine'
-import QrCode from '../components/QrCode'
+import { BrandMark } from '../components/Brand'
 import type { EditorChart } from '../editor/chartModel'
 import { wallNow, type ClockSync } from '../game/clock'
 import { buildTimeline, lineIndexAt, type Part, type Timeline } from '../game/timeline'
@@ -16,6 +16,11 @@ import NoteLane from '../room/NoteLane'
 import type { LobbyRoom, ServerMessage } from '../room/protocol'
 import { ReactionLayer } from '../room/Reactions'
 import { useRoomSocket } from '../room/useRoomSocket'
+import FullscreenButton from '../stage/FullscreenButton'
+import StageLobby from '../stage/StageLobby'
+import { Avatar } from '../ui/Avatar'
+import { SongCover } from '../ui/SongCover'
+import { cx } from '../ui/cx'
 import { useListenVoice } from '../voice/liveVoice'
 
 /**
@@ -44,6 +49,8 @@ export default function StagePage() {
   if (state.status === 'ended') {
     return (
       <div className="stage-screen center">
+        <div className="stage-bg" aria-hidden />
+        <BrandMark size={72} />
         <p className="stage-message">{t(state.endReason === 'room_closed' ? 'stage.closed' : 'stage.badLink')}</p>
       </div>
     )
@@ -51,126 +58,56 @@ export default function StagePage() {
   if (!room) {
     return (
       <div className="stage-screen center">
-        <p className="stage-message">{t('lobby.connecting')}</p>
+        <div className="stage-bg" aria-hidden />
+        <BrandMark size={72} />
+        <p className="stage-message" role="status">
+          <span className="spinner" aria-hidden />
+          {t('lobby.connecting')}
+        </p>
       </div>
     )
   }
 
   const nameOf = (id: string) => room.players.find((p) => p.id === id)?.name ?? '…'
   const singing = room.phase === 'countdown' || room.phase === 'playing'
+  const onStage = singing && !!room.performance_id
 
   return (
-    <div className="stage-screen">
+    <div className={cx('stage-screen', onStage ? 'is-singing' : 'is-between')}>
+      <div className="stage-bg" aria-hidden />
       {!engine && (
-        <button className="stage-start" onClick={async () => setEngine(await AudioEngine.createPlayback())}>
+        <button type="button" className="stage-start" onClick={async () => setEngine(await AudioEngine.createPlayback())}>
+          <span className="stage-start-icon" aria-hidden>
+            <Play size={64} fill="currentColor" />
+          </span>
           <strong>{t('stage.start')}</strong>
-          <span>{t('stage.startHelp')}</span>
+          <span className="stage-start-help">{t('stage.startHelp')}</span>
+          <span className="stage-start-code">{formatCode(code)}</span>
         </button>
       )}
-      {singing && room.performance_id ? (
+      {onStage ? (
         <StageSing room={room} clock={clock} engine={engine} chart={assets.chart} buffer={assets.buffer}
           subscribe={subscribe} nameOf={nameOf} />
       ) : (
         <StageLobby room={room} code={code} subscribe={subscribe} nameOf={nameOf} />
       )}
-      {room.mode === 'spotlight' && engine && (
-        <button type="button" className="stage-voice-switch" onClick={() => {
-          setVoiceOn(!voiceOn)
-          writeVoicePref(!voiceOn)
-        }}>
-          {voiceOn ? t('voice.stageOn', { count: voice.voices }) : t('voice.stageOff')}
-        </button>
+      <div className="stage-controls">
+        {room.mode === 'spotlight' && engine && (
+          <button type="button" className="stage-voice-switch" aria-pressed={voiceOn} onClick={() => {
+            setVoiceOn(!voiceOn)
+            writeVoicePref(!voiceOn)
+          }}>
+            {voiceOn ? t('voice.stageOn', { count: voice.voices }) : t('voice.stageOff')}
+          </button>
+        )}
+        <FullscreenButton />
+      </div>
+      {state.status !== 'open' && (
+        <p className="stage-banner" role="status">
+          <WifiOff size={20} aria-hidden />
+          {t('lobby.reconnecting')}
+        </p>
       )}
-      {state.status !== 'open' && <p className="stage-banner">{t('lobby.reconnecting')}</p>}
-    </div>
-  )
-}
-
-/** Between songs: how to join, what's next, and the scores so far. */
-function StageLobby({ room, code, subscribe, nameOf }: {
-  room: LobbyRoom
-  code: string
-  subscribe: (listener: (message: ServerMessage) => void) => () => void
-  nameOf: (id: string) => string
-}) {
-  const { t, i18n } = useTranslation()
-  const info = useRoomInfo(code)
-  const joinUrl = info.data?.join_url ?? `${location.origin}/join/${code}`
-  const order = room.players.map((p) => p.id)
-  const spotlight = room.mode === 'spotlight'
-  const next = room.queue[0]
-
-  // After a song: this turn's (Spotlight) or this song's (Sing Together) ranking.
-  const results =
-    room.phase === 'results'
-      ? Object.keys(room.parts)
-          .map((id) => ({ id, points: room.votes?.points[id] ?? room.scores[id] ?? 0 }))
-          .sort((a, b) => b.points - a.points)
-      : null
-  const ranking = results ?? (spotlight ? room.standings.map((s) => ({ id: s.id, points: s.points })) : [])
-
-  return (
-    <div className="stage-lobby">
-      <ReactionLayer subscribe={subscribe} nameOf={nameOf} />
-      <section className="stage-join">
-        <QrCode text={joinUrl} label={t('lobby.scanToJoin')} />
-        <p className="eyebrow">{t('stage.join')}</p>
-        <p className="room-code">{formatCode(code)}</p>
-        <p className="muted">{t('stage.players', { count: room.players.length })}</p>
-      </section>
-
-      <section className="stage-info">
-        {results ? (
-          <>
-            <p className="eyebrow">{spotlight ? t('spotlight.turnOver') : t('game.results.title')}</p>
-            <h1>{room.song?.title}</h1>
-            {spotlight && (
-              <p className="stage-votes">
-                {room.votes?.count
-                  ? t('spotlight.votes', { count: room.votes.count, average: room.votes.average?.toLocaleString(i18n.language) })
-                  : t('stage.voteNow')}
-              </p>
-            )}
-          </>
-        ) : spotlight ? (
-          <>
-            <p className="eyebrow">{t('stage.upNext')}</p>
-            <h1>{next ? next.song.title : t('stage.queueEmpty')}</h1>
-            {next && (
-              <p className="stage-sub">
-                {next.partner_id ? t('spotlight.duetBy', { a: nameOf(next.singer_id), b: nameOf(next.partner_id) }) : nameOf(next.singer_id)}
-              </p>
-            )}
-            {room.queue.length > 1 && (
-              <p className="muted">{t('stage.thenQueue', { titles: room.queue.slice(1, 4).map((e) => nameOf(e.singer_id)).join(', ') })}</p>
-            )}
-          </>
-        ) : (
-          <>
-            <p className="eyebrow">{t('game.song.next')}</p>
-            <h1>{room.song?.title ?? t('stage.noSong')}</h1>
-            {room.song && <p className="stage-sub">{room.song.artist}</p>}
-          </>
-        )}
-
-        {ranking.length > 0 && (
-          <>
-            {!results && <p className="eyebrow">{t('spotlight.standings')}</p>}
-            <ol className="ranking stage-ranking">
-              {ranking.slice(0, 6).map((row, i) => (
-                <li key={row.id} className={`rank ${i === 0 ? 'first' : ''}`}>
-                  <span className="rank-place">{i + 1}</span>
-                  <span className="avatar" style={{ background: playerColor(order.indexOf(row.id)) }} aria-hidden>
-                    {nameOf(row.id).slice(0, 1).toUpperCase()}
-                  </span>
-                  <span className="player-name">{nameOf(row.id)}</span>
-                  <b className="rank-score">{t('game.results.points', { score: formatScore(row.points, i18n.language) })}</b>
-                </li>
-              ))}
-            </ol>
-          </>
-        )}
-      </section>
     </div>
   )
 }
@@ -204,20 +141,37 @@ function StageSing({ room, clock, engine, chart, buffer, subscribe, nameOf }: {
 
   const countdown = useCountdown(songTime)
 
+  const top = Math.max(0, ...singers.map((id) => room.scores[id] ?? 0))
+  const colorOf = (id: string) => playerColor(Math.max(0, order.indexOf(id)))
+
   return (
     <div className="stage-sing">
       <header className="stage-top">
-        <div>
-          <h1 className="sing-title">{room.song?.title}</h1>
-          <p className="stage-sub">{t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })}</p>
+        <div className="stage-now">
+          {room.song && <SongCover song={room.song} size={72} className="stage-now-cover" />}
+          <div className="stage-now-text">
+            <h1 className="stage-now-title">{room.song?.title}</h1>
+            <p className="stage-now-sub">
+              {room.mode === 'spotlight'
+                ? t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })
+                : room.song?.artist}
+            </p>
+          </div>
         </div>
-        <ol className="scoreboard">
-          {singers.map((id) => (
-            <li key={id} className="score-chip" style={{ boxShadow: `inset 0 -3px 0 ${playerColor(order.indexOf(id))}` }}>
-              <span className="score-name">{nameOf(id)}</span>
-              <b>{formatScore(room.scores[id] ?? 0, i18n.language)}</b>
-            </li>
-          ))}
+        <ol className="stage-live-scores">
+          {singers.map((id) => {
+            const score = room.scores[id] ?? 0
+            return (
+              <li key={id} className={cx('stage-live', top > 0 && score === top && singers.length > 1 && 'leading')}
+                style={{ '--row-color': colorOf(id) } as CSSProperties}>
+                <Avatar name={nameOf(id)} color={colorOf(id)} size="lg" decorative />
+                <span className="stage-live-text">
+                  <span className="stage-live-name">{nameOf(id)}</span>
+                  <b className="stage-live-score">{formatScore(score, i18n.language)}</b>
+                </span>
+              </li>
+            )
+          })}
         </ol>
       </header>
 
@@ -226,7 +180,12 @@ function StageSing({ room, clock, engine, chart, buffer, subscribe, nameOf }: {
           <div key={part} className="stage stage-lane">
             {timelines.length > 1 && (
               <span className="lane-label">
-                {singers.filter((id) => room.parts[id] === part).map(nameOf).join(' & ')}
+                {singers.filter((id) => room.parts[id] === part).map((id) => (
+                  <span key={id} className="lane-label-singer">
+                    <Avatar name={nameOf(id)} color={colorOf(id)} size="sm" decorative />
+                    {nameOf(id)}
+                  </span>
+                ))}
               </span>
             )}
             <NoteLane timeline={timeline} songTime={songTime} scorer={null} trail={null} />
@@ -235,14 +194,18 @@ function StageSing({ room, clock, engine, chart, buffer, subscribe, nameOf }: {
         <ReactionLayer subscribe={subscribe} nameOf={nameOf} />
         {countdown !== null && (
           <div className="countdown" aria-live="assertive">
-            {countdown <= 3 ? countdown : t('game.sing.getReady')}
+            <span key={countdown <= 3 ? countdown : 'ready'} className={cx('countdown-value', countdown > 3 && 'ready')}>
+              {countdown <= 3 ? countdown : t('game.sing.getReady')}
+            </span>
           </div>
         )}
       </div>
 
-      {timelines.map(({ part, timeline }) => (
-        <StageLyrics key={part} timeline={timeline} songTime={songTime} />
-      ))}
+      <div className={cx('stage-lyrics-wrap', timelines.length > 1 && 'duet')}>
+        {timelines.map(({ part, timeline }) => (
+          <StageLyrics key={part} timeline={timeline} songTime={songTime} />
+        ))}
+      </div>
     </div>
   )
 }

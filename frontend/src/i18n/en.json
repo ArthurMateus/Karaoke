@@ -492,14 +492,19 @@
     "players_other": "{{count}} players",
     "upNext": "Up next",
     "queueEmpty": "Queue's empty: add your turn on your phone!",
-    "thenQueue": "Then: {{titles}}",
     "noSong": "The host is picking a song",
     "voteNow": "Vote on your phone!",
     "closed": "The room was closed.",
     "badLink": "This stage link doesn't work any more. Open a new one from the host's room page.",
     "connected": "A stage screen is playing the music, so phones stay quiet.",
     "musicHereOn": "🔊 Music on this phone: on (tap to turn off)",
-    "musicHereOff": "🔇 Music on this phone: off, the stage plays it (tap for headphones)"
+    "musicHereOff": "🔇 Music on this phone: off, the stage plays it (tap for headphones)",
+    "orVisit": "or go to {{url}}",
+    "then": "Then",
+    "readyOf": "{{ready}} of {{count}} ready to sing",
+    "songOver": "Song over",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen"
   },
   "voice": {
     "afarOff": "🎧 Not in the room? Listen from afar",

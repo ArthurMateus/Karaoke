@@ -492,14 +492,19 @@
     "players_other": "{{count}} jogadores",
     "upNext": "Agora vem",
     "queueEmpty": "Fila vazia: coloque sua vez pelo celular!",
-    "thenQueue": "Depois: {{titles}}",
     "noSong": "O anfitrião está escolhendo uma música",
     "voteNow": "Vote pelo celular!",
     "closed": "A sala foi fechada.",
     "badLink": "Este link do palco não funciona mais. Abra um novo pela página da sala do anfitrião.",
     "connected": "Uma tela do palco está tocando a música, então os celulares ficam em silêncio.",
     "musicHereOn": "🔊 Música neste celular: ligada (toque para desligar)",
-    "musicHereOff": "🔇 Música neste celular: desligada, o palco toca (toque para fones)"
+    "musicHereOff": "🔇 Música neste celular: desligada, o palco toca (toque para fones)",
+    "orVisit": "ou acesse {{url}}",
+    "then": "Depois",
+    "readyOf": "Prontos para cantar: {{ready}} de {{count}}",
+    "songOver": "Fim da música",
+    "fullscreen": "Tela cheia",
+    "exitFullscreen": "Sair da tela cheia"
   },
   "voice": {
     "afarOff": "🎧 Não está na sala? Ouça de longe",
