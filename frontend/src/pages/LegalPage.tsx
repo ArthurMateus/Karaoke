@@ -4,11 +4,15 @@ import { useTranslation } from 'react-i18next'
 import credits from '../legal/credits.md?raw'
 import privacyEn from '../legal/privacy.en.md?raw'
 import privacyPt from '../legal/privacy.pt-BR.md?raw'
-import termsEn from '../legal/terms.en.md?raw'
-import termsPt from '../legal/terms.pt-BR.md?raw'
+import termsEn from '../legal/beta-terms.en.md?raw'
+import termsPt from '../legal/beta-terms.pt-BR.md?raw'
+import { useSiteConfig } from '../api/hooks'
+import { fillLegalText, formatIsoDate } from '../lib/legalFacts'
 import { Markdown } from '../lib/markdown'
 import { Badge, cx } from '../ui'
 
+// During the private beta the Terms page shows the short beta terms; the long launch draft
+// stays in docs/legal/drafts/terms.*.md.
 const PAGES = {
   terms: { en: termsEn, pt: termsPt, icon: Scale },
   privacy: { en: privacyEn, pt: privacyPt, icon: ShieldCheck },
@@ -57,7 +61,18 @@ export default function LegalPage({ page }: { page: keyof typeof PAGES }) {
   const { t, i18n } = useTranslation()
   const pt = i18n.resolvedLanguage === 'pt-BR'
   const { en, pt: ptSource, icon: Icon } = PAGES[page]
-  const source = pt ? ptSource : en
+  const config = useSiteConfig().data
+  const lang = i18n.resolvedLanguage ?? 'en'
+  // Who runs the app comes from the server's settings ({{operator}}, {{contact}}, ...).
+  const source = useMemo(
+    () =>
+      fillLegalText(pt ? ptSource : en, config, {
+        notSet: t('legal.notSet'),
+        betaEndUnset: t('legal.betaEndUnset'),
+        formatDate: (iso) => formatIsoDate(iso, lang),
+      }),
+    [pt, ptSource, en, config, t, lang],
+  )
   const translateCredits = pt && page === 'credits'
 
   const { intro, parts } = useMemo(() => {
