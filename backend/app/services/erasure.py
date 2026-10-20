@@ -111,6 +111,17 @@ def erase_user(db: Session, user: User, report: Report, apply: bool) -> None:
         db.delete(user)
 
 
+def erase_song(db: Session, song: Song, report: Report, apply: bool) -> None:
+    """Take a song down (a copyright report): its files, and the replays that mix its music.
+    Results and scores stay (they keep the title, the song link becomes empty)."""
+    for performance in db.scalars(select(Performance).where(Performance.song_id == song.id)):
+        _drop_replay(performance, report, apply)
+    report.add("songs")
+    if apply:
+        storage.delete_prefix(f"songs/{song.id}/")
+        db.delete(song)
+
+
 def delete_old_recordings(db: Session, before: datetime, report: Report, apply: bool) -> None:
     """Recordings and replays of songs sung before `before`. Scores and results stay."""
     old = select(Performance).where(Performance.created_at < before)

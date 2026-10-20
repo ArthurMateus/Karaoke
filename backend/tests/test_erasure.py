@@ -166,3 +166,21 @@ def test_cleanup_deletes_old_guests_and_expired_sign_ins(client, mailer, db):
     assert db.get(User, uuid.UUID(new_guest.id)) is not None
     assert db.get(User, uuid.UUID(host.id)) is not None
     assert host.get("/api/me").json()["user"]["id"] == host.id  # the live session stays
+
+
+def test_delete_song_takes_it_down_with_its_replays(world, db):
+    from app.scripts import delete_song
+
+    song = db.scalar(select(Song))
+    perf = world["bias"]
+    perf.song_id = song.id
+    db.commit()
+    replay = perf.replay_key
+    assert delete_song.find("min")[0][3] == "ana@example.com"
+    assert delete_song.run(str(song.id)).counts == {"songs": 1, "replays": 1}
+    assert exists(world["song_key"])  # dry run
+    delete_song.run(str(song.id), apply=True)
+    db.expire_all()
+    assert count(db, Song) == 0
+    assert not exists(world["song_key"]) and not exists(replay)
+    assert db.get(Performance, perf.id).takes  # scores stay
