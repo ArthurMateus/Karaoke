@@ -494,6 +494,14 @@
     "nobodyYet": "Nobody has sung it yet today. Be the first!",
     "yesterday": "Yesterday's winner: {{name}} with {{score}} on “{{title}}”.",
     "yourRank": "#{{rank}} today",
-    "seeBoard": "See the leaderboard"
+    "seeBoard": "See the leaderboard",
+    "noRecording": "Your recording never arrived, so your try couldn't be checked and isn't on the board.",
+    "adjustedNote": "Your phone said {{claimed}}; the server listened to your recording and scored it lower.",
+    "checksExplained": "The top 10 are checked: the server listens to each recording and scores it again. ✓ = checked, ✓* = corrected by the check.",
+    "checks": {
+      "verified": "Checked from the recording",
+      "adjusted": "Corrected after checking the recording",
+      "pending": "checking…"
+    }
   }
 }

@@ -494,6 +494,14 @@
     "nobodyYet": "Ninguém cantou ainda hoje. Seja o primeiro!",
     "yesterday": "Vencedor de ontem: {{name}} com {{score}} em “{{title}}”.",
     "yourRank": "{{rank}}º hoje",
-    "seeBoard": "Ver o ranking"
+    "seeBoard": "Ver o ranking",
+    "noRecording": "Sua gravação não chegou, então sua tentativa não pôde ser conferida e não está no ranking.",
+    "adjustedNote": "Seu celular disse {{claimed}}; o servidor ouviu sua gravação e deu menos.",
+    "checksExplained": "Os 10 primeiros são conferidos: o servidor ouve cada gravação e pontua de novo. ✓ = conferido, ✓* = corrigido na conferência.",
+    "checks": {
+      "verified": "Conferido pela gravação",
+      "adjusted": "Corrigido depois de ouvir a gravação",
+      "pending": "conferindo…"
+    }
   }
 }

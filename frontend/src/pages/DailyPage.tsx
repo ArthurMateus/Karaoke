@@ -31,11 +31,18 @@ export default function DailyPage() {
 
         {song &&
           (mine ? (
-            <p className="daily-mine">
-              {mine.score != null
-                ? t('daily.yourScore', { score: formatScore(mine.score, i18n.language), rank: mine.rank })
-                : t('daily.unfinished')}
-            </p>
+            <>
+              <p className="daily-mine">
+                {mine.check === 'no_recording'
+                  ? t('daily.noRecording')
+                  : mine.score != null
+                    ? t('daily.yourScore', { score: formatScore(mine.score, i18n.language), rank: mine.rank })
+                    : t('daily.unfinished')}
+              </p>
+              {mine.check === 'adjusted' && mine.claimed != null && (
+                <p className="muted small">{t('daily.adjustedNote', { claimed: formatScore(mine.claimed, i18n.language) })}</p>
+              )}
+            </>
           ) : canCompete ? (
             <>
               <Link className="button primary big" to={`/solo/${song.id}?daily=1`}>
@@ -69,10 +76,12 @@ export default function DailyPage() {
                   {row.is_me && <span className="muted"> ({t('lobby.you')})</span>}
                 </span>
                 <b className="rank-score">{t('game.results.points', { score: formatScore(row.score, i18n.language) })}</b>
+                <CheckMark check={row.check} />
               </li>
             ))}
           </ol>
         )}
+        {leaderboard.length > 0 && <p className="muted small">{t('daily.checksExplained')}</p>}
         {yesterday && (
           <p className="muted small">
             {t('daily.yesterday', { name: yesterday.name, score: formatScore(yesterday.score, i18n.language), title: yesterday.song_title })}
@@ -81,6 +90,15 @@ export default function DailyPage() {
       </section>
     </div>
   )
+}
+
+/** Whether the server has re-scored this try from its recording. */
+function CheckMark({ check }: { check: string }) {
+  const { t } = useTranslation()
+  if (check === 'verified') return <span className="check ok" title={t('daily.checks.verified')}>✓</span>
+  if (check === 'adjusted') return <span className="check adjusted" title={t('daily.checks.adjusted')}>✓*</span>
+  if (check === 'pending') return <span className="check muted small">{t('daily.checks.pending')}</span>
+  return <span className="check" aria-hidden />
 }
 
 /** "5 h 12 min" until `iso`, updated every minute. */

@@ -53,7 +53,9 @@ The original plan text wasn't available (not in the repo, no transcript on this 
 The user asked for a singleplayer mode and a song of the day with a leaderboard. Chosen: one try per day, accounts only on the board, the day changes at midnight UTC.
 - Solo runs are `Performance(kind="solo"|"daily", room_code="")` with one singer; the phone's clock times start and recording (no clock sync). API in `app/api/solo.py`, day logic in `app/services/daily.py` (`DailySong` fixes the day's song; `DailyAttempt` has a unique (day, user)). Screens `pages/SoloPage.tsx` (also `SoloSingPage`, which feeds SingView a made-up room) and `pages/DailyPage.tsx`.
 - Fixed on the way: score and recording arriving together could lose the recording (`services/takes.py`, rooms too).
-- Tried with the robot: solo run, daily try, second try refused, guest view, replay. Scores are trusted from the phone.
+- Tried with the robot: solo run, daily try, second try refused, guest view, replay.
+- Score checks (asked for afterwards): `app/pipeline/rescore.py` ports the phone's YIN + scoring to numpy (keep in step with yin.ts, micWorklet.ts, timeline.ts, scoring.ts); `app/pipeline/check.py` re-scores top-10 daily tries from the recording (`DailyAttempt.check_status`, `claimed_score`; allowance 1,000; no recording after 5 minutes = off the board). Queued on finish (+20 s) and on upload. On 11 real robot recordings the server was within ~70 points of the phone (one at 400), under 1 s per song.
+- Flaky: twice the full backend suite hung right after another test run; killing the leftover pytest and rerunning passed (245 in ~48 s). Not understood yet.
 
 ## Next steps
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.

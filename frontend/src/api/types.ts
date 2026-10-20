@@ -77,7 +77,8 @@ export interface DailyInfo {
   song: { id: string; title: string; artist: string; duration_seconds: number | null } | null
   next_song_at: string
   can_compete: boolean
-  my_attempt: { score: number | null; rank: number | null } | null
-  leaderboard: { rank: number; name: string; score: number; is_me: boolean }[]
+  // check: the server re-scores top-10 recordings. pending | verified | adjusted | skipped | no_recording
+  my_attempt: { score: number | null; rank: number | null; check: string; claimed: number | null } | null
+  leaderboard: { rank: number; name: string; score: number; is_me: boolean; check: string }[]
   yesterday: { name: string; score: number; song_title: string } | null
 }

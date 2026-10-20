@@ -179,7 +179,7 @@ The singer's phone also streams their voice live, through a small streaming serv
 - Signed in, you get **one try a day**. It counts from the moment the song starts, so get the mic and delay check right first; leaving halfway uses it up.
 - The **leaderboard** ranks today's tries (a tie goes to whoever finished first) and shows yesterday's winner. Guests can **practise** the song but aren't ranked.
 - With only 6 starter songs, the song of the day comes back about once a week. A bigger library fixes that.
-- Scores are worked out on each phone, so someone technical could send a fake one. Fine among friends; before a public launch the server should check scores itself.
+- **The top 10 are checked.** Scores are worked out on each phone, so someone could fake one. For every try that reaches the top 10, the server listens to its recording and scores it again with the same rules. Within 1,000 points (or higher) the phone's score stands and gets a **✓**. Clearly lower, and the server's score counts instead (**✓\***, and the singer sees what their phone said). A top-10 try whose recording never arrives (about 5 minutes) leaves the board. Honest tries usually come out within about 100 points of the phone.
 
 ## Faster song conversion with an NVIDIA graphics card (optional)
 
