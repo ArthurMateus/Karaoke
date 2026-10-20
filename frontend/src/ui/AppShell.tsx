@@ -1,7 +1,7 @@
 import { CalendarDays, ChevronDown, LogIn, LogOut, Mic, Music, ShieldCheck, User as UserIcon } from 'lucide-react'
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, NavLink, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { useMe, usePlan, useSignOut } from '../api/hooks'
 import type { User } from '../api/types'
 import { BrandMark } from '../components/Brand'
@@ -38,6 +38,11 @@ function Header() {
   const { t } = useTranslation()
   const { data, isPending } = useMe()
   const user = data?.user
+  const { pathname, search } = useLocation()
+  // The song of the day is sung on a /solo/... page: light up "Song of the day" there, not "Solo".
+  const dailyTry = pathname.startsWith('/solo/') && new URLSearchParams(search).get('daily') === '1'
+  const isActive = (to: string) =>
+    to === '/daily' ? pathname === '/daily' || dailyTry : !(to === '/solo' && dailyTry) && (pathname === to || pathname.startsWith(`${to}/`))
   const nav = [
     { to: '/songs', label: t('nav.songs'), icon: Music },
     { to: '/solo', label: t('nav.solo'), icon: Mic },
@@ -52,10 +57,10 @@ function Header() {
       </Link>
       <nav className="header-nav" aria-label={t('nav.main')}>
         {nav.map(({ to, label, icon: Icon }) => (
-          <NavLink key={to} to={to} className="nav-link" title={label}>
+          <Link key={to} to={to} className={isActive(to) ? 'nav-link active' : 'nav-link'} aria-current={isActive(to) ? 'page' : undefined} title={label}>
             <Icon size={18} aria-hidden />
             <span className="nav-label">{label}</span>
-          </NavLink>
+          </Link>
         ))}
       </nav>
       <div className="header-end">

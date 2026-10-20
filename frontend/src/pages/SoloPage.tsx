@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { api } from '../api/client'
-import { useMe, usePlayAsGuest, useSoloBests, useSongs } from '../api/hooks'
+import { useDaily, useMe, usePlayAsGuest, useSoloBests, useSongs } from '../api/hooks'
 import type { Locale, Song, SoloResult } from '../api/types'
 import { savedLatency } from '../audio/calibration'
 import type { AudioEngine } from '../audio/engine'
@@ -16,7 +16,7 @@ import type { ClientMessage, LobbyRoom } from '../room/protocol'
 import ReadyPanel from '../room/ReadyPanel'
 import { ReplayPanel, SoloScore, type UploadState } from '../room/ResultsView'
 import SingView from '../room/SingView'
-import { Badge, Button, ButtonLink, Card, PageHeader, Skeleton, SongCover, cx } from '../ui'
+import { Badge, Button, ButtonLink, Card, EmptyState, PageHeader, Skeleton, SongCover, cx } from '../ui'
 
 const COUNTDOWN_MS = 4000
 const noSubscribe = () => () => undefined
@@ -153,6 +153,7 @@ export function SoloSingPage() {
   const isDaily = params.get('daily') === '1'
   const me = useMe()
   const songs = useSongs()
+  const daily = useDaily()
   const queryClient = useQueryClient()
   const user = me.data?.user
   const song = useMemo(
@@ -207,6 +208,23 @@ export function SoloSingPage() {
   if (me.isPending || !songs.data) return null
   if (!user) return <GuestName />
   if (!song || !roomSong) return <ErrorText error="song_not_found" />
+
+  // Today's one try is used (e.g. Back after the results): say so now, not after the mic setup.
+  const usedToday = isDaily && !user.is_guest && daily.data?.song?.id === songId && !!daily.data.my_attempt
+  if (usedToday && stage.kind === 'setup') {
+    return (
+      <Card wide>
+        <EmptyState
+          title={t('errors.already_played_today')}
+          action={
+            <ButtonLink variant="primary" icon={Trophy} to="/daily">
+              {t('daily.seeBoard')}
+            </ButtonLink>
+          }
+        />
+      </Card>
+    )
+  }
 
   if (stage.kind === 'singing') {
     const room: LobbyRoom = {
