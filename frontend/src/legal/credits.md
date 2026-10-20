@@ -41,11 +41,11 @@ Packaged by Fontsource. Licence: [SIL Open Font License 1.1](https://openfontlic
 | TanStack Query | MIT, Tanner Linsley |
 | i18next, react-i18next, i18next-browser-languagedetector | MIT, i18next authors |
 | node-qrcode | MIT, Ryan Day |
-| LiveKit client SDK, LiveKit protocol | Apache-2.0, LiveKit, Inc. |
+| LiveKit client SDK, LiveKit protocol, @livekit/mutex | Apache-2.0, LiveKit, Inc. |
 | RxJS | Apache-2.0, Google, Inc., Netflix, Inc., Microsoft Corp. and contributors |
 | Protobuf-ES | Apache-2.0 and BSD-3-Clause, Buf Technologies, Inc. |
 | webrtc-adapter | BSD-3-Clause, The WebRTC project authors |
-| sdp, sdp-transform, events, loglevel, jose, typed-emitter, machina, pngjs, dijkstrajs | MIT, their authors |
+| sdp, sdp-transform, events, loglevel, jose, typed-emitter, machina, pngjs, dijkstrajs, scheduler, use-sync-external-store, cookie, set-cookie-parser, html-parse-stringify, @babel/runtime | MIT, their authors |
 | tslib | 0BSD, Microsoft Corp. |
 
 ## On our servers
