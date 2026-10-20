@@ -1,0 +1,9 @@
+{
+  "stage.orVisit": ["or go to {{url}}", "ou acesse {{url}}"],
+  "stage.then": ["Then", "Depois"],
+  "stage.readyOf": ["{{ready}} of {{count}} ready to sing", "Prontos para cantar: {{ready}} de {{count}}"],
+  "stage.songOver": ["Song over", "Fim da música"],
+  "stage.fullscreen": ["Full screen", "Tela cheia"],
+  "stage.exitFullscreen": ["Exit full screen", "Sair da tela cheia"],
+  "stage.thenQueue": null
+}

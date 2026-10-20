@@ -87,7 +87,9 @@ Phases 3-6 done and pushed (2026-10-20): b455266 (sing/results), c8d65a1 (stage)
 **Paused here (user's credits running out). To resume:**
 1. Run the qa-tester agent on Phases 3-6 (it was stopped before writing a report), fix what it finds.
 2. Run the legal-reviewer agent for the final review (also check the name "Encore": trademark/domain); act on "must fix", list the rest.
-3. Delete `docs/ui-polish-work/` (helper scratch files) and `design/shots/qa/work/`, finish this section.
+3. Finish this section (what changed, what's left). `docs/ui-polish-work/` (the helpers' brief and texts, see its README) and `design/shots/qa/work/` (their check screenshots) are kept as a record.
+
+The QA run on Phases 3-6 was stopped early: it left only two screenshots (`design/shots/qa/2026-10-20-p36-profile-free-en-*.png`) and no report. Start it again from scratch.
 Known from the helpers: the Spotlight `votes` message doesn't resend `standings` (client recomputes, ranking.ts); yesterday's daily winner has no song id/artist in the API; the Party Pass card assumes 24 h.
 Test data: p3-host has a 2-day premium grant, p6-free a running Party Pass, unused test Party Pass codes.
 

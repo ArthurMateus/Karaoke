@@ -1,0 +1,86 @@
+{
+  "game.replay.play": [
+    "Play the replay",
+    "Tocar o replay"
+  ],
+  "game.replay.pause": [
+    "Pause",
+    "Pausar"
+  ],
+  "game.replay.seek": [
+    "Position in the replay",
+    "Posição no replay"
+  ],
+  "game.replay.position": [
+    "{{time}} of {{total}}",
+    "{{time}} de {{total}}"
+  ],
+  "game.results.place": [
+    "Place {{place}}",
+    "{{place}}º lugar"
+  ],
+  "game.results.youWon": [
+    "You won this round!",
+    "Você venceu esta rodada!"
+  ],
+  "game.results.winner": [
+    "{{name}} wins this round!",
+    "{{name}} venceu esta rodada!"
+  ],
+  "game.sing.scoreboard": [
+    "Live scores",
+    "Placar ao vivo"
+  ],
+  "spotlight.voteMeter": [
+    "Votes in",
+    "Votos recebidos"
+  ],
+  "spotlight.votedOf": [
+    "{{count}} of {{total}}",
+    "{{count}} de {{total}}"
+  ],
+  "spotlight.pitchPart": [
+    "Pitch (70%): {{score}}",
+    "Afinação (70%): {{score}}"
+  ],
+  "spotlight.pitchOnly": [
+    "Pitch only, no votes: {{score}}",
+    "Só afinação, sem votos: {{score}}"
+  ],
+  "spotlight.starsPart": [
+    "Stars (30%): {{score}}",
+    "Estrelas (30%): {{score}}"
+  ],
+  "spotlight.averageStars": [
+    "Average {{average}} of 5 stars",
+    "Média de {{average}} de 5 estrelas"
+  ],
+  "spotlight.rankNew": [
+    "New",
+    "Novo"
+  ],
+  "spotlight.rankSame": [
+    "Same place",
+    "Mesma posição"
+  ],
+  "spotlight.rankUp_one": [
+    "Up {{count}} place",
+    "Subiu {{count}} posição"
+  ],
+  "spotlight.rankUp_other": [
+    "Up {{count}} places",
+    "Subiu {{count}} posições"
+  ],
+  "spotlight.rankDown_one": [
+    "Down {{count}} place",
+    "Caiu {{count}} posição"
+  ],
+  "spotlight.rankDown_other": [
+    "Down {{count}} places",
+    "Caiu {{count}} posições"
+  ],
+  "game.results.tie": [
+    "It's a tie: {{names}}!",
+    "Empate: {{names}}!"
+  ]
+}

@@ -1,0 +1,262 @@
+{
+ "signIn.sent": null,
+ "signIn.sentTo": [
+  "We sent a sign-in link to <b>{{email}}</b>.",
+  "Enviamos um link de acesso para <b>{{email}}</b>."
+ ],
+ "signIn.sentHelp": [
+  "Open it on this device. It works once and expires in 15 minutes. Not there after a minute? Check your spam folder.",
+  "Abra neste aparelho. Ele funciona uma vez e expira em 15 minutos. Não chegou em um minuto? Olhe a pasta de spam."
+ ],
+ "signIn.sendAgain": [
+  "Send it again",
+  "Enviar de novo"
+ ],
+ "signIn.sentAgain": [
+  "We sent a new link.",
+  "Enviamos um novo link."
+ ],
+ "signIn.emailPlaceholder": [
+  "you@example.com",
+  "voce@exemplo.com"
+ ],
+ "signIn.newHere": [
+  "New here? The same link creates your account.",
+  "Primeira vez? O mesmo link cria a sua conta."
+ ],
+ "verify.wait": [
+  "This takes a second.",
+  "Leva só um segundo."
+ ],
+ "verify.whyExpired": [
+  "Sign-in links work once and expire after 15 minutes. Ask for a new one: it only takes a moment.",
+  "Os links de acesso funcionam uma vez e expiram em 15 minutos. Peça um novo: é rapidinho."
+ ],
+ "join.notFoundTitle": [
+  "Room not found",
+  "Sala não encontrada"
+ ],
+ "join.backHome": [
+  "Back to the home page",
+  "Voltar para o início"
+ ],
+ "join.signInInstead": [
+  "Sign in and join",
+  "Entrar com a conta"
+ ],
+ "join.codeLabel": [
+  "Room code {{code}}",
+  "Código da sala {{code}}"
+ ],
+ "join.full": [
+  "Full",
+  "Lotada"
+ ],
+ "profile.guest": [
+  "Guest",
+  "Convidado"
+ ],
+ "profile.nameHelp": [
+  "Shown to everyone in your rooms and on the song-of-the-day board.",
+  "Aparece para todos nas suas salas e no ranking da música do dia."
+ ],
+ "plan.whatYouGet": [
+  "What you get",
+  "O que está incluído"
+ ],
+ "plan.freeHint": [
+  "Sing with up to 4 friends. A code or a Party Pass unlocks more.",
+  "Cante com até 4 amigos. Um código ou um Passe de Festa libera mais."
+ ],
+ "plan.timeLeft": [
+  "{{time}} left",
+  "Faltam {{time}}"
+ ],
+ "plan.left": [
+  "left",
+  "restantes"
+ ],
+ "plan.included": [
+  "Included",
+  "Incluído"
+ ],
+ "plan.notIncluded": [
+  "Not included",
+  "Não incluído"
+ ],
+ "plan.confirmStart": [
+  "Start a Party Pass now?",
+  "Começar um Passe de Festa agora?"
+ ],
+ "plan.passStarted": [
+  "Your Party Pass is running. Have fun!",
+  "Seu Passe de Festa começou. Boa festa!"
+ ],
+ "plan.redeemHelp": [
+  "Codes look like KP-XXXX-XXXX. Spaces and small letters are fine.",
+  "Os códigos são assim: KP-XXXX-XXXX. Espaços e letras minúsculas não têm problema."
+ ],
+ "admin.subtitle": [
+  "Give premium or Party Passes, and make codes to hand out.",
+  "Dê premium ou Passes de Festa e crie códigos para distribuir."
+ ],
+ "admin.given": null,
+ "admin.givenTo": [
+  "Given to {{email}}.",
+  "Concedido para {{email}}."
+ ],
+ "admin.kinds.premium": null,
+ "admin.kinds.party_pass": null,
+ "admin.premiumHelp": [
+  "Starts now (or when their current premium ends) and lasts the days below.",
+  "Começa agora (ou quando o premium atual acabar) e dura os dias abaixo."
+ ],
+ "admin.passHelp": [
+  "24 hours of premium rooms, started by them when the party begins.",
+  "24 horas de salas premium; a pessoa começa quando a festa começar."
+ ],
+ "admin.newestFirst": [
+  "Newest first",
+  "Mais novos primeiro"
+ ],
+ "admin.oldestFirst": [
+  "Oldest first",
+  "Mais antigos primeiro"
+ ],
+ "admin.cols.who": [
+  "Account",
+  "Conta"
+ ],
+ "admin.cols.what": [
+  "What",
+  "O quê"
+ ],
+ "admin.cols.period": [
+  "Period",
+  "Período"
+ ],
+ "admin.cols.source": [
+  "Source",
+  "Origem"
+ ],
+ "admin.cols.created": [
+  "Created",
+  "Criado"
+ ],
+ "admin.cols.status": [
+  "Status",
+  "Situação"
+ ],
+ "admin.cols.actions": [
+  "Actions",
+  "Ações"
+ ],
+ "admin.cols.code": [
+  "Code",
+  "Código"
+ ],
+ "admin.cols.uses": [
+  "Used",
+  "Usos"
+ ],
+ "admin.cols.expires": [
+  "Expires",
+  "Expira"
+ ],
+ "admin.status.active": [
+  "Active",
+  "Ativo"
+ ],
+ "admin.status.waiting": [
+  "Not started",
+  "Não começou"
+ ],
+ "admin.status.upcoming": [
+  "Upcoming",
+  "Agendado"
+ ],
+ "admin.status.ended": [
+  "Ended",
+  "Encerrado"
+ ],
+ "admin.status.revoked": [
+  "Revoked",
+  "Revogado"
+ ],
+ "admin.status.disabled": [
+  "Disabled",
+  "Desativado"
+ ],
+ "admin.status.usedUp": [
+  "Used up",
+  "Esgotado"
+ ],
+ "admin.status.expired": [
+  "Expired",
+  "Expirado"
+ ],
+ "admin.never": [
+  "Never",
+  "Nunca"
+ ],
+ "admin.copyAll": [
+  "Copy all",
+  "Copiar todos"
+ ],
+ "admin.confirmDisable": [
+  "Disable code {{code}}?",
+  "Desativar o código {{code}}?"
+ ],
+ "admin.confirmDisableText": [
+  "Nobody can redeem it any more. Plans already given with it stay.",
+  "Ninguém mais consegue resgatá-lo. Os planos já dados com ele continuam."
+ ],
+ "admin.used": null,
+ "admin.expires": null,
+ "admin.revoked": null,
+ "admin.disabled": null,
+ "legal.onThisPage": [
+  "On this page",
+  "Nesta página"
+ ],
+ "legal.credits.title": [
+  "Credits and licences",
+  "Créditos e licenças"
+ ],
+ "legal.credits.intro": [
+  "Encore is made with free and open-source software, fonts and models. Thank you to everyone who made them.",
+  "O Encore é feito com software, fontes e modelos livres e de código aberto. Obrigado a todo mundo que os criou."
+ ],
+ "legal.credits.englishNote": [
+  "The notices and licence texts below stay in English, as their authors wrote them.",
+  "Os avisos e os textos das licenças abaixo ficam em inglês, como os autores escreveram."
+ ],
+ "legal.credits.headings.songs": [
+  "Songs",
+  "Músicas"
+ ],
+ "legal.credits.headings.fonts": [
+  "Fonts",
+  "Fontes"
+ ],
+ "legal.credits.headings.icons": [
+  "Icons and effects",
+  "Ícones e efeitos"
+ ],
+ "legal.credits.headings.browser": [
+  "In your browser",
+  "No seu navegador"
+ ],
+ "legal.credits.headings.servers": [
+  "On our servers",
+  "Nos nossos servidores"
+ ],
+ "legal.credits.headings.models": [
+  "AI models",
+  "Modelos de IA"
+ ],
+ "legal.credits.headings.licences": [
+  "Licence texts",
+  "Textos das licenças"
+ ]
+}

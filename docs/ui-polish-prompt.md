@@ -6,7 +6,7 @@ Do this, in order:
 1. Make sure Docker Desktop is running and `docker compose up -d` works (if port 8080 is busy, another project like SignalDesk is running: ask me before stopping it).
 2. Run the qa-tester agent on Phases 3-6 and fix what it reports (all blockers and majors, the minors that make sense; list the rest for me).
 3. Run the legal-reviewer agent for the final review, including whether the name "Encore" is safe to use (trademark, domain). Act on its "must fix" items and list the rest for me.
-4. Delete the helper scratch folders docs/ui-polish-work/ and design/shots/qa/work/, finish the HANDOFF.md section, and show me a short summary.
+4. Finish the HANDOFF.md section and show me a short summary. Keep docs/ui-polish-work/ and design/shots/qa/work/ (they record how Phases 3-6 were built).
 
 Rules (same as before):
 - Don't change game rules, scoring, audio timing or the API without asking me.
