@@ -14,9 +14,10 @@ from starlette.concurrency import run_in_threadpool
 
 from app.config import get_settings
 from app.db import get_sessionmaker
-from app.models import Performance, PerformanceTake, Song, User
+from app.models import Performance, Song, User
 from app.services import queue
 from app.services.songs import can_access
+from app.services.takes import take_for
 from app.ws import protocol
 from app.ws.room_state import NotAllowed, WrongPhase
 
@@ -71,13 +72,8 @@ def save_scores(performance_id: str, scores: dict[str, int]) -> None:
         performance = db.get(Performance, uuid.UUID(performance_id))
         if performance is None:
             return
-        takes = {str(t.user_id): t for t in performance.takes}
         for user_id, score in scores.items():
-            take = takes.get(user_id)
-            if take is None:
-                performance.takes.append(PerformanceTake(user_id=uuid.UUID(user_id), score=score))
-            else:
-                take.score = score
+            take_for(db, performance.id, uuid.UUID(user_id)).score = score
         db.commit()
 
 

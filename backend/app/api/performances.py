@@ -12,8 +12,9 @@ from sqlalchemy import or_, select
 
 from app.api.songs import SongOut, song_out
 from app.deps import CurrentUser, Db, api_error
-from app.models import Performance, PerformanceTake, Song, User
+from app.models import Performance, Song, User
 from app.services import queue, storage
+from app.services.takes import take_for
 from app.services import rooms as room_service
 
 router = APIRouter(prefix="/api", tags=["performances"])
@@ -127,12 +128,10 @@ def upload_take(
             raise api_error(422, "empty_recording")
         storage.upload_file(key, path, content_type or "application/octet-stream")
 
-    take = next((t for t in performance.takes if t.user_id == user.id), None)
-    if take is None:
-        take = PerformanceTake(user_id=user.id)
-        performance.takes.append(take)
+    take = take_for(db, performance.id, user.id)
     take.recording_key, take.record_start_ms, take.mic_latency_ms = key, record_start_ms, mic_latency_ms
     db.commit()
+    db.refresh(performance)  # see the take just made (and any that arrived meanwhile)
 
     recorded = {str(t.user_id) for t in performance.takes if t.recording_key}
     if recorded >= performance.singer_ids():
