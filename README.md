@@ -2,7 +2,7 @@
 
 A multiplayer karaoke party game that runs in the browser. Players join a room with a short code or by scanning a QR code, and each person sings into their own phone or laptop.
 
-> **Status:** Milestones 1–3 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically), UltraStar import/export, a chart editor, and **Sing Together**: everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay. Spotlight mode (taking turns, with an audience) comes in Milestone 4.
+> **Status:** Milestones 1–4 of 7: accounts, guest play, rooms with codes and QR, a live lobby, a starter song library, uploading your own songs (turned into karaoke charts automatically, with lyrics you can find online), UltraStar import/export, a chart editor, **Sing Together** (everyone sings the same song on their own phone, with live pitch scoring, a scoreboard and a group replay) and **Spotlight** (take turns while everyone else watches, cheers and votes, with a stage screen for the TV and the singer's live voice). Plans and limits (free/premium) come in Milestone 5.
 
 ---
 
@@ -136,6 +136,39 @@ The quickest test uses the **robot singer**: add `?robot` to the room address an
 
 ---
 
+## Try Milestone 4 by hand (Spotlight)
+
+Spotlight is for taking turns: one person (or two, for a duet) sings while everyone else is the audience. You can test it all on this PC with the robot singer, like Milestone 3: a host window on `http://localhost:8080/room/CODE?robot` and a guest window on `http://127.0.0.1:8080/room/CODE?robot`.
+
+1. **Switch the mode.** As host, in the room under **Game mode**, press **Spotlight**. Everyone sees a **Queue** card instead of the song card.
+2. **Queue up.** Every player turns on the mic, does the delay check and presses **I'm ready to sing**, then presses **Add my turn** and picks a song. For a duet (marked *Duet*) choose who sings part 2, or *Nobody* to sing part 1 alone. Each person can have 3 turns in the queue. The host can move turns up or down (↑ ↓) or remove them; you can remove your own.
+3. **Start a turn.** The host presses **Start Lia's turn** (the name of whoever is first). It only works when that singer is connected and ready. The singer sings as in Sing Together.
+4. **Be the audience.** Everyone else sees the singer's lane and lyrics, plus five reaction buttons (👏 🔥 😂 ❤️ 😮). Tap them: the emoji floats up on every screen with your name.
+5. **Vote.** When the song ends, the audience taps 1–5 stars (you can change your vote; singers can't vote for themselves). Votes appear live for everyone. A turn's points are **70% pitch score + 30% stars** (5 stars = 10,000). With nobody to vote, it's just the pitch score.
+6. **Next.** The host presses **Start Ana's turn** (whoever is next), or **Back to the queue**. **Tonight's standings** in the lobby average each singer's turns.
+
+### The stage screen (TV or laptop)
+
+A TV or laptop with good speakers can be the "stage": it plays the music for the whole room and shows the lanes, lyrics, scores, reactions and the join QR code big. It isn't a player.
+
+1. As host, open **Stage screen (TV or laptop)** in the room page. Press **Open the stage screen on this computer**, or scan its QR code with the TV's or another laptop's browser (it uses the `https://<LAN_IP>:8443` address, so accept the certificate warning once).
+2. On the stage, click **Start the stage** once (browsers only allow sound after a click). Put the window full screen (F11).
+3. While a stage screen is open, **phones stop playing the music** (a banner says so). A singer with headphones can tap *Music on this phone* on the sing screen to get it back.
+
+The stage works in both modes. In Sing Together it shows a lane per part and everyone's scores.
+
+### Live voice (LiveKit)
+
+The singer's phone also streams their voice live, through a small streaming server (LiveKit) that runs with the app.
+
+- **On the stage:** the switch at the bottom right, *Singer's voice on these speakers*, plays the singer through the TV. It's **off by default**: in the same room the voice comes out about 0.2 s late, which can throw the singer off, and their mic may pick it up again (echo). Try it, and turn it off if it bothers the singer.
+- **From afar:** an audience member somewhere else (another room, with headphones) taps **Not in the room? Listen from afar** on their phone. The phone plays the singer's voice *and* the music, with the music delayed to line up with the voice. The label says by how much (around 0.2–0.4 s on Wi-Fi). The choice is remembered on that phone.
+- **With the robot:** the robot's voice is streamed too, so you can test this on one PC.
+
+"Afar" means anywhere that can reach this PC: today that's your Wi-Fi. Friends in other houses need the app hosted on the internet, which comes in a later milestone. The voice needs `LAN_IP` set in `.env` (see *Start the app*), and the firewall must let Docker through, which it already does if phones can open the app.
+
+**Free and premium:** `config/limits.yaml` lists Spotlight for premium only. That split isn't enforced yet (Milestone 5), so every host can use it for now.
+
 ## Faster song conversion with an NVIDIA graphics card (optional)
 
 By default the worker runs on the CPU. With an NVIDIA card (any recent GeForce RTX, including the RTX 50 series), conversion should take about a minute instead of several (not yet measured on real hardware):
@@ -170,6 +203,7 @@ The backend tests use a separate `karaoke_test` database, so your own data is ne
 
 ```
 Browser (React)  ──HTTP(S) / WebSocket──▶  Caddy :8080/:8443 ─┬─ /api, /ws ─▶ api  (Python, FastAPI)
+                                                               ├─ /rtc ─▶ livekit (live voice; audio itself on UDP 50000-50060)
                                                                └─ everything else ─▶ web (Vite dev server)
 api ─▶ postgres (data) · redis (job queue) · storage (S3 song files) · mailpit (emails)
 worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREPE → UltraStar chart
@@ -181,12 +215,13 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 | `backend/app/charts/` | UltraStar chart reading/writing (`ultrastar.py`) and the editor format |
 | `backend/app/pipeline/` | Song conversion: ML steps (`steps.py`), notes from pitch (`notes.py`), the job (`jobs.py`) |
 | `backend/app/starter/` | The starter songs (`songs.py`, written as notes and chords) and how they're rendered |
-| `backend/app/ws/` | The live room: who's connected, ready, kicked (`room_state.py` holds the rules) |
+| `backend/app/ws/` | The live room: who's connected, the game rules for Sing Together and Spotlight (`room_state.py`), messages (`game.py`), stage screens (`hub.py`) |
 | `backend/app/services/` | Business logic: auth tokens, room codes, email, plan limits, storage, song access |
 | `backend/alembic/` | Database migrations |
 | `frontend/src/pages/` | Screens: home, sign in, join, lobby, profile, songs, upload, chart editor |
 | `frontend/src/editor/` | Chart editor logic (`chartModel.ts`) and the piano roll |
-| `frontend/src/room/` | WebSocket connection and lobby state |
+| `frontend/src/room/` | WebSocket connection, lobby state, and the game screens (sing, results, Spotlight queue, reactions) |
+| `frontend/src/voice/` | Live voice through LiveKit (`liveVoice.ts`) |
 | `frontend/src/i18n/` | Translations: `en.json` and `pt-BR.json` (always edit both) |
 | `config/limits.yaml` | Free/premium limits (room size, conversions, upload size and length, …) |
 
@@ -213,6 +248,8 @@ worker (Python, RQ) ─▶ converts uploaded songs: Demucs → WhisperX → CREP
 - **Port already in use (8080, 8443, 8025 or 8888):** another program is using it. Stop that program, or change the left-hand number in `docker-compose.yml` (e.g. `"8081:8080"`).
 - **The microphone button says the mic isn't available:** the browser only allows the mic on `https://` addresses and on `localhost`/`127.0.0.1`. On a phone, use `https://<LAN_IP>:8443`. If you pressed *Block* by accident, allow the microphone again in the browser's site settings (the icon left of the address).
 - **The room forgot the chosen song or who was ready:** that live state is kept in the api's memory, so it resets when the api restarts (for example after `docker compose restart api`). Players reconnect automatically. Pick the song and press ready again.
+- **Live voice doesn't come through:** check that `LAN_IP` in `.env` is this PC's current address (`ipconfig`), then run `docker compose up -d` (it restarts LiveKit with the new address). `docker compose logs livekit` shows who connected.
+- **Stage screen says the link doesn't work:** the room was closed or replaced. Open a new link from the host's room page.
 - **Code changes don't show up:** the api and web servers reload automatically. The worker doesn't: run `docker compose restart worker` after changing conversion code.
 - **"The lyrics search isn't working right now":** your PC can't reach lrclib.net (no internet, or the site is down). Paste the lyrics instead, or try later. To turn the search off, set `LRCLIB_URL=` (empty) in `.env`.
 - **Lyrics are in the wrong place after using online lyrics:** the online version may be very different from your file (a live version, a remix). Try another match, or paste plain lyrics. Then fix single lines in the chart editor.

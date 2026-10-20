@@ -37,9 +37,20 @@ The user asked for better lyrics on screamed/metal songs. Built and committed:
 - Test copies left in the database: "King for a Day ... (lyrics test)" in the user's account, plus "King for a Day (test)" and "Speech test (pasted lyrics)" for host@example.com.
 - **Not yet checked by eye:** the rap-note drawing and the lyrics box layout (the browser pane was hidden). The user hasn't sung a known-lyrics song yet.
 
+## Milestone 4 (Spotlight): done and browser-tested with robot singers
+
+The original plan text wasn't available (not in the repo, no transcript on this PC), only "Spotlight: parts, LiveKit spectator audio, reactions, votes". The user chose: audience both in the room (stage screen) and afar; each singer picks their own song; winner = pitch + votes.
+- Server: `room_state.py` has `mode`, `queue` (`QueueEntry`: singer, optional duet partner, song), `turns` (`Turn`: pitch per singer + votes) and `turn_points` (70% pitch, 30% stars). Messages in `protocol.py`/`game.py`: `set_mode`, `queue_add/remove/move`, `reaction` (6 per 3 s per person), `vote`. Room members may view a turn's performance/replay.
+- Stage screen: `rooms.stage_token`, `GET /api/rooms/{code}/stage` (host), `/ws/stage/{code}?t=` (not a player), songs loadable with `&stage=`. Page `pages/StagePage.tsx` (no header). Snapshot `stage_connected` mutes phones (switch on the sing screen).
+- Live voice: `livekit` service (v1.13.7, `infra/livekit/livekit.yaml`, `--node-ip ${LAN_IP}`), Caddy `/rtc*`, tokens from `POST /api/rooms/{code}/voice` (`services/livekit.py`, hand-made HS256 JWT). Frontend `voice/liveVoice.ts`: singer publishes `engine.voiceStream`; stage switch (off by default); audience "Listen from afar" delays music by the measured voice delay.
+- Tried: solo and duet turns, reactions both ways, votes and standings maths, stage screen during a song and results, voice received at full level 0.21 s late.
+- Not tried: real phones, a real voice over LiveKit, echo/feedback with the stage's voice switch on in a real room, how exactly voice and delayed music line up for a far listener.
+- Gotcha: the built-in browser freezes hidden background tabs and LiveKit then leaves the room (`CLIENT_REQUEST_LEAVE`). Test voice in the visible tab.
+- Gotcha: Caddy doesn't reload the Caddyfile on `docker compose up -d` when only the file changed: `docker compose restart caddy`.
+
 ## Next steps
-1. The user tries known lyrics on their own songs (README "Better lyrics"). Fix what they report.
-2. Then, **after the user's go-ahead**, Milestone 4 (Spotlight: parts, LiveKit spectator audio, reactions, votes) and Milestone 5 (limits/premium grants and Party Pass, see the plan). Free-plan `replays: false` in config/limits.yaml is **not enforced yet**. Enforce it in M5.
+1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
+2. Then, **after the user's go-ahead**, Milestone 5 (limits/premium grants and Party Pass). Enforce free-plan `modes: [sing_together]` (Spotlight is open to everyone now) and `replays: false`, which are **not enforced yet**.
 
 ## Useful commands
 - Backend tests: `docker compose exec api pytest`
