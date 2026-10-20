@@ -63,6 +63,10 @@ def jobs(monkeypatch):
     monkeypatch.setattr(queue, "enqueue_import", lambda song_id: queued.append(("import", str(song_id))))
     monkeypatch.setattr(queue, "enqueue_lyrics", lambda song_id: queued.append(("lyrics", str(song_id))))
     monkeypatch.setattr(
+        queue, "enqueue_check",
+        lambda attempt_id, delay_seconds=0, waits_left=5: queued.append(("check", str(attempt_id), delay_seconds)),
+    )
+    monkeypatch.setattr(
         queue, "enqueue_mix", lambda pid, delay_seconds=0: queued.append(("mix", str(pid), delay_seconds))
     )
     return queued

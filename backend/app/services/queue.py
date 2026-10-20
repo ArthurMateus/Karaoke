@@ -32,6 +32,16 @@ def enqueue_import(song_id: uuid.UUID) -> None:
     get_queue().enqueue("app.pipeline.jobs.prepare_import", str(song_id), job_timeout=600)
 
 
+def enqueue_check(attempt_id: uuid.UUID, delay_seconds: float = 0, waits_left: int = 5) -> None:
+    """Re-score a song-of-the-day try from its recording (app/pipeline/check.py)."""
+    queue = get_queue()
+    args = ("app.pipeline.check.check_daily_attempt", str(attempt_id), waits_left)
+    if delay_seconds > 0:
+        queue.enqueue_in(timedelta(seconds=delay_seconds), *args, job_timeout=600)
+    else:
+        queue.enqueue(*args, job_timeout=600)
+
+
 def enqueue_mix(performance_id: uuid.UUID, delay_seconds: float = 0) -> None:
     """Mix the singers' recordings over the backing track into the group replay."""
     queue = get_queue()

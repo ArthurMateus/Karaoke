@@ -12,6 +12,10 @@ from sqlalchemy.orm import Session
 
 from app.models import DailyAttempt, DailySong, Song, User
 
+CHECKED_PLACES = 10  # tries reaching this many places get their recording re-scored
+# Tries the board shows: everything except top-10 tries whose recording never came.
+ON_BOARD = DailyAttempt.check_status != "no_recording"
+
 
 def today(now: datetime) -> date:
     return now.astimezone(UTC).date()
@@ -60,26 +64,27 @@ def attempt_for(db: Session, day: date, user: User) -> DailyAttempt | None:
     return db.scalar(select(DailyAttempt).where(DailyAttempt.day == day, DailyAttempt.user_id == user.id))
 
 
-def leaderboard(db: Session, day: date, limit: int = 20) -> list[tuple[User, int]]:
+def leaderboard(db: Session, day: date, limit: int = 20) -> list[tuple[User, DailyAttempt]]:
     """Finished attempts, best first (earlier wins a tie)."""
     rows = db.execute(
-        select(User, DailyAttempt.score)
+        select(User, DailyAttempt)
         .join(DailyAttempt, DailyAttempt.user_id == User.id)
-        .where(DailyAttempt.day == day, DailyAttempt.score.is_not(None))
+        .where(DailyAttempt.day == day, DailyAttempt.score.is_not(None), ON_BOARD)
         .order_by(DailyAttempt.score.desc(), DailyAttempt.finished_at)
         .limit(limit)
     ).all()
-    return [(user, score) for user, score in rows]
+    return [(user, attempt) for user, attempt in rows]
 
 
 def rank_of(db: Session, day: date, attempt: DailyAttempt) -> int | None:
     """1 + how many finished attempts beat this one."""
-    if attempt.score is None:
+    if attempt.score is None or attempt.check_status == "no_recording":
         return None
     better = db.scalars(
         select(DailyAttempt.id).where(
             DailyAttempt.day == day,
             DailyAttempt.score.is_not(None),
+            ON_BOARD,
             (DailyAttempt.score > attempt.score)
             | ((DailyAttempt.score == attempt.score) & (DailyAttempt.finished_at < attempt.finished_at)),
         )

@@ -83,14 +83,14 @@ def test_one_attempt_per_account_per_day(ana, db):
     # Starting used up the attempt, even before the song ends.
     assert start(ana, today_id, daily_run=True).json()["detail"]["code"] == "already_played_today"
     page = ana.get("/api/daily").json()
-    assert page["my_attempt"] == {"score": None, "rank": None}
+    assert page["my_attempt"] == {"score": None, "rank": None, "check": "pending", "claimed": None}
     assert page["leaderboard"] == []
 
     result = ana.post(f"/api/solo/{started.json()['performance_id']}/finish", json={"score": 8100}).json()
     assert result["daily_rank"] == 1
     page = ana.get("/api/daily").json()
-    assert page["my_attempt"] == {"score": 8100, "rank": 1}
-    assert page["leaderboard"] == [{"rank": 1, "name": "ana", "score": 8100, "is_me": True}]
+    assert page["my_attempt"] == {"score": 8100, "rank": 1, "check": "pending", "claimed": None}
+    assert page["leaderboard"] == [{"rank": 1, "name": "ana", "score": 8100, "is_me": True, "check": "pending"}]
 
 
 def test_guests_practise_but_are_not_on_the_board(client, db):

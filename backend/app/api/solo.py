@@ -111,8 +111,11 @@ def finish_solo(performance_id: uuid.UUID, body: SoloFinish, db: Db, user: Curre
     rank = None
     attempt = db.scalar(select(DailyAttempt).where(DailyAttempt.performance_id == performance.id))
     if attempt is not None and attempt.score is None:
-        attempt.score, attempt.finished_at = body.score, utcnow()
+        attempt.score, attempt.claimed_score, attempt.finished_at = body.score, body.score, utcnow()
     db.commit()
+    if attempt is not None:
+        # Check it once the recording has had time to arrive (the upload also asks for a check).
+        queue.enqueue_check(attempt.id, delay_seconds=20)
     if attempt is not None:
         rank = daily.rank_of(db, attempt.day, attempt)
 
@@ -145,11 +148,14 @@ class BoardRow(BaseModel):
     name: str
     score: int
     is_me: bool
+    check: str  # pending | verified | adjusted | skipped (see app/pipeline/check.py)
 
 
 class MyAttempt(BaseModel):
     score: int | None  # None: started but never finished
     rank: int | None
+    check: str
+    claimed: int | None  # what the phone said, when the server's check changed it
 
 
 class Winner(BaseModel):
@@ -177,14 +183,19 @@ def song_of_the_day(db: Db, user: OptionalUser) -> DailyOut:
     if user is not None and not user.is_guest:
         attempt = daily.attempt_for(db, day, user)
         if attempt is not None:
-            mine = MyAttempt(score=attempt.score, rank=daily.rank_of(db, day, attempt))
+            mine = MyAttempt(
+                score=attempt.score,
+                rank=daily.rank_of(db, day, attempt),
+                check=attempt.check_status,
+                claimed=attempt.claimed_score if attempt.check_status == "adjusted" else None,
+            )
 
     yesterday = None
     previous = daily.leaderboard(db, day - timedelta(days=1), limit=1)
     previous_song = db.get(Song, sid) if (sid := _daily_song_id(db, day - timedelta(days=1))) else None
     if previous:
-        winner, score = previous[0]
-        yesterday = Winner(name=winner.display_name, score=score, song_title=previous_song.title if previous_song else "")
+        winner, best = previous[0]
+        yesterday = Winner(name=winner.display_name, score=best.score, song_title=previous_song.title if previous_song else "")
 
     return DailyOut(
         day=day,
@@ -193,8 +204,9 @@ def song_of_the_day(db: Db, user: OptionalUser) -> DailyOut:
         can_compete=user is not None and not user.is_guest,
         my_attempt=mine,
         leaderboard=[
-            BoardRow(rank=i + 1, name=u.display_name, score=s, is_me=user is not None and u.id == user.id)
-            for i, (u, s) in enumerate(board)
+            BoardRow(rank=i + 1, name=u.display_name, score=a.score, is_me=user is not None and u.id == user.id,
+                     check=a.check_status)
+            for i, (u, a) in enumerate(board)
         ],
         yesterday=yesterday,
     )

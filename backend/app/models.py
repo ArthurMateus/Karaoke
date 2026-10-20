@@ -184,6 +184,11 @@ class DailyAttempt(Base):
     day: Mapped[date] = mapped_column(Date, index=True)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     performance_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("performances.id", ondelete="SET NULL"))
-    score: Mapped[int | None]  # None until the song ends (or if the singer left)
+    score: Mapped[int | None]  # None until the song ends (or if the singer left); the official score
+    # Top-10 tries are re-scored on the server from the recording (app/pipeline/check.py):
+    # pending -> verified (phone's score stands) | adjusted (server's score) | no_recording (off the board)
+    #            | skipped (wasn't in the top 10)
+    claimed_score: Mapped[int | None]  # what the phone said
+    check_status: Mapped[str] = mapped_column(String(16), default="pending", server_default="pending")
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

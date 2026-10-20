@@ -12,7 +12,7 @@ from sqlalchemy import or_, select
 
 from app.api.songs import SongOut, song_out
 from app.deps import CurrentUser, Db, api_error
-from app.models import Performance, Song, User
+from app.models import DailyAttempt, Performance, Song, User
 from app.services import queue, storage
 from app.services.takes import take_for
 from app.services import rooms as room_service
@@ -133,6 +133,10 @@ def upload_take(
     db.commit()
     db.refresh(performance)  # see the take just made (and any that arrived meanwhile)
 
+    if performance.kind == "daily":
+        attempt = db.scalar(select(DailyAttempt).where(DailyAttempt.performance_id == performance.id))
+        if attempt is not None and attempt.score is not None:
+            queue.enqueue_check(attempt.id)  # a song-of-the-day try: check its score now
     recorded = {str(t.user_id) for t in performance.takes if t.recording_key}
     if recorded >= performance.singer_ids():
         queue.enqueue_mix(performance.id)  # everyone is in: mix now
