@@ -15,6 +15,8 @@ import ReadyPanel from '../room/ReadyPanel'
 import ResultsView, { type UploadState } from '../room/ResultsView'
 import SingView from '../room/SingView'
 import SongPicker from '../room/SongPicker'
+import SpotlightLobby from '../room/SpotlightLobby'
+import SpotlightResults from '../room/SpotlightResults'
 import type { LobbyPlayer } from '../room/protocol'
 import { useRoomSocket } from '../room/useRoomSocket'
 
@@ -86,6 +88,7 @@ function Lobby({ code, user }: { code: string; user: User }) {
         buffer={assets.buffer}
         latencyMs={latency ?? 0}
         send={send}
+        subscribe={subscribe}
         onUpload={onUpload}
       />
     )
@@ -94,12 +97,16 @@ function Lobby({ code, user }: { code: string; user: User }) {
   const iAmHost = room?.host_id === user.id
   const anyoneReady = players.some((p) => p.ready && p.connected)
   const song = room?.song ?? null
+  const spotlight = room?.mode === 'spotlight'
 
   return (
     <div className="stack">
-      {room?.phase === 'results' && (
-        <ResultsView room={room} isHost={iAmHost} upload={uploadState} onNext={() => send({ type: 'back_to_lobby' })} />
-      )}
+      {room?.phase === 'results' &&
+        (spotlight ? (
+          <SpotlightResults room={room} me={user.id} upload={uploadState} send={send} subscribe={subscribe} />
+        ) : (
+          <ResultsView room={room} isHost={iAmHost} upload={uploadState} onNext={() => send({ type: 'back_to_lobby' })} />
+        ))}
 
       <div className="lobby">
         <section className="card invite">
@@ -144,6 +151,25 @@ function Lobby({ code, user }: { code: string; user: User }) {
             />
           </section>
 
+          {iAmHost && room && (
+            <section className="card stack">
+              <span className="eyebrow">{t('modes.title')}</span>
+              <div className="segmented" role="radiogroup" aria-label={t('modes.title')}>
+                {(['sing_together', 'spotlight'] as const).map((mode) => (
+                  <button key={mode} type="button" role="radio" aria-checked={room.mode === mode}
+                    className={room.mode === mode ? 'on' : ''} onClick={() => send({ type: 'set_mode', mode })}>
+                    {t(`modes.${mode}`)}
+                  </button>
+                ))}
+              </div>
+              <p className="muted small">{t(`modes.${room.mode}Help`)}</p>
+            </section>
+          )}
+          {!iAmHost && spotlight && <p className="banner small">{t('modes.spotlightHelp')}</p>}
+
+          {spotlight && room ? (
+            <SpotlightLobby room={room} me={user.id} send={send} />
+          ) : (
           <section className="card stack">
             <span className="eyebrow">{t('game.song.next')}</span>
             {song ? (
@@ -176,13 +202,14 @@ function Lobby({ code, user }: { code: string; user: User }) {
                 )}
                 <details className="picker" open={!song}>
                   <summary>{t('game.song.pick')}</summary>
-                  <SongPicker code={code} selectedId={song?.id ?? null} onPick={(id) => send({ type: 'select_song', song_id: id })} />
+                  <SongPicker code={code} selectedId={song?.id ?? null} isHost onPick={(picked) => send({ type: 'select_song', song_id: picked.id })} />
                 </details>
               </>
             ) : (
               <p className="muted small">{t('game.start.waiting')}</p>
             )}
           </section>
+          )}
 
           <div className="row end">
             {iAmHost ? (

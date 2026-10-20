@@ -18,6 +18,31 @@ export interface RoomSong {
 }
 
 export type Phase = 'lobby' | 'countdown' | 'playing' | 'results'
+export type Mode = 'sing_together' | 'spotlight'
+export const REACTIONS = ['clap', 'fire', 'laugh', 'heart', 'wow'] as const
+export type ReactionKind = (typeof REACTIONS)[number]
+
+/** Spotlight: a turn waiting in the queue. A duet has a partner singing part 2. */
+export interface QueueEntry {
+  id: string
+  singer_id: string
+  partner_id: string | null
+  song: RoomSong
+}
+
+/** Spotlight: the audience's stars for the turn just sung. */
+export interface VoteSummary {
+  count: number
+  average: number | null
+  voters: string[]
+  points: Record<string, number> // singer id -> turn points (pitch blended with stars)
+}
+
+export interface Standing {
+  id: string
+  points: number // average over their turns
+  turns: number
+}
 
 export interface LobbyRoom {
   code: string
@@ -30,6 +55,10 @@ export interface LobbyRoom {
   start_at: number | null // server time (ms) the song starts
   parts: Record<string, 'P1' | 'P2'> // who sings, and which part
   scores: Record<string, number>
+  mode: Mode
+  queue: QueueEntry[]
+  votes: VoteSummary | null // Spotlight, for the current turn
+  standings: Standing[] // Spotlight, tonight
 }
 
 export type ServerMessage =
@@ -37,6 +66,8 @@ export type ServerMessage =
   | { type: 'lobby_state'; room: LobbyRoom }
   | { type: 'pong'; t0: number; server_time: number }
   | { type: 'scores'; scores: Record<string, number> }
+  | { type: 'reaction'; from: string; emoji: ReactionKind }
+  | { type: 'votes'; votes: VoteSummary }
   | { type: 'error'; code: string }
   | { type: 'kicked' }
   | { type: 'replaced' }
@@ -53,6 +84,12 @@ export type ClientMessage =
   | { type: 'score'; total: number }
   | { type: 'finished'; total: number }
   | { type: 'back_to_lobby' }
+  | { type: 'set_mode'; mode: Mode }
+  | { type: 'queue_add'; song_id: string; partner_id: string | null }
+  | { type: 'queue_remove'; entry_id: string }
+  | { type: 'queue_move'; entry_id: string; delta: number }
+  | { type: 'reaction'; emoji: ReactionKind }
+  | { type: 'vote'; stars: number }
 
 export const CloseCode = {
   left: 4000,

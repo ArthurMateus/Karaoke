@@ -8,7 +8,8 @@ import { rate, Scorer, type Rating } from '../game/scoring'
 import { buildTimeline, lineIndexAt } from '../game/timeline'
 import { uploadTake } from '../game/uploadTake'
 import NoteLane, { type TrailPoint } from './NoteLane'
-import type { ClientMessage, LobbyRoom } from './protocol'
+import type { ClientMessage, LobbyRoom, ServerMessage } from './protocol'
+import { ReactionBar, ReactionLayer } from './Reactions'
 import Scoreboard from './Scoreboard'
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
   buffer: AudioBuffer | null
   latencyMs: number
   send: (message: ClientMessage) => void
+  subscribe: (listener: (message: ServerMessage) => void) => () => void
   onUpload: (performanceId: string, upload: Promise<void>) => void
 }
 
@@ -32,7 +34,7 @@ interface View {
 
 const TRAIL_SECONDS = 2
 
-export default function SingView({ room, me, engine, clock, chart, buffer, latencyMs, send, onUpload }: Props) {
+export default function SingView({ room, me, engine, clock, chart, buffer, latencyMs, send, subscribe, onUpload }: Props) {
   const { t } = useTranslation()
   const part = room.parts[me]
   const singing = !!part && !!engine
@@ -132,6 +134,8 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
   const current = timeline?.lines[view.line]
   const next = timeline?.lines[view.line + 1]
   const singers = Object.keys(room.parts)
+  const spotlight = room.mode === 'spotlight'
+  const nameOf = useCallback((id: string) => room.players.find((p) => p.id === id)?.name ?? '…', [room.players])
 
   return (
     <div className="sing">
@@ -139,7 +143,11 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
         <div>
           <h1 className="sing-title">{room.song?.title}</h1>
           <p className="muted small">
-            {part ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' }) : t('game.sing.watching')}
+            {part
+              ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
+              : spotlight
+                ? t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })
+                : t('game.sing.watching')}
           </p>
         </div>
         <Scoreboard room={room} singers={singers} me={me} myTotal={singing ? myTotal : null} />
@@ -147,6 +155,7 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
 
       <div className="stage">
         {timeline && <NoteLane timeline={timeline} songTime={songTime} scorer={scorer} trail={trail} />}
+        {spotlight && <ReactionLayer subscribe={subscribe} nameOf={nameOf} />}
         {view.countdown !== null && (
           <div className="countdown" aria-live="assertive">
             {view.countdown <= 3 ? view.countdown : t('game.sing.getReady')}
@@ -171,6 +180,7 @@ export default function SingView({ room, me, engine, clock, chart, buffer, laten
         </p>
         <p className="lyric-next">{next?.text ?? ''}</p>
       </div>
+      {spotlight && !part && <ReactionBar send={send} />}
     </div>
   )
 }

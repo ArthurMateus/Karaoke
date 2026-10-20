@@ -13,6 +13,10 @@ const room: LobbyRoom = {
   start_at: null,
   parts: {},
   scores: {},
+  mode: 'sing_together',
+  queue: [],
+  votes: null,
+  standings: [],
 }
 
 function run(...events: LobbyEvent[]): LobbyState {
@@ -20,6 +24,15 @@ function run(...events: LobbyEvent[]): LobbyState {
 }
 
 describe('lobbyReducer', () => {
+  it('updates Spotlight votes as they come in', () => {
+    const votes = { count: 2, average: 4.5, voters: ['a', 'b'], points: { h: 8200 } }
+    const state = run(
+      { kind: 'message', message: { type: 'lobby_state', room } },
+      { kind: 'message', message: { type: 'votes', votes } },
+    )
+    expect(state.room?.votes).toEqual(votes)
+  })
+
   it('opens and stores who I am and the room', () => {
     const state = run(
       { kind: 'open' },

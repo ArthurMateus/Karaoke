@@ -14,12 +14,9 @@ interface PerformanceInfo {
 
 export type UploadState = 'idle' | 'uploading' | 'done' | 'failed'
 
-/** Final scores, and the group replay once the worker has mixed it. */
-export default function ResultsView({ room, isHost, upload, onNext }: { room: LobbyRoom; isHost: boolean; upload: UploadState; onNext: () => void }) {
-  const { t, i18n } = useTranslation()
-  const performanceId = room.performance_id
-  const order = room.players.map((p) => p.id)
-  const performance = useQuery({
+/** A performance and its replay status, polled until the worker is done mixing. */
+function usePerformance(performanceId: string | null) {
+  return useQuery({
     queryKey: ['performance', performanceId],
     queryFn: () => api<PerformanceInfo>(`/api/performances/${performanceId}`),
     enabled: !!performanceId,
@@ -29,11 +26,17 @@ export default function ResultsView({ room, isHost, upload, onNext }: { room: Lo
     },
     retry: false,
   })
+}
+
+/** Final scores, and the group replay once the worker has mixed it. */
+export default function ResultsView({ room, isHost, upload, onNext }: { room: LobbyRoom; isHost: boolean; upload: UploadState; onNext: () => void }) {
+  const { t, i18n } = useTranslation()
+  const order = room.players.map((p) => p.id)
+  const performance = usePerformance(room.performance_id)
 
   const ranking = Object.entries(room.scores)
     .map(([id, score]) => ({ id, score, name: room.players.find((p) => p.id === id)?.name ?? performance.data?.singers.find((s) => s.id === id)?.name ?? '…' }))
     .sort((a, b) => b.score - a.score)
-  const status = performance.data?.replay_status
 
   return (
     <section className="card wide results">
@@ -64,23 +67,32 @@ export default function ResultsView({ room, isHost, upload, onNext }: { room: Lo
         ))}
       </ol>
 
-      <div className="replay">
-        <h3>{t('game.results.replay')}</h3>
-        {upload === 'uploading' && <p className="muted small">{t('game.results.uploading')}</p>}
-        {upload === 'failed' && <p className="error small">{t('game.results.uploadFailed')}</p>}
-        {status === 'ready' ? (
-          <audio className="replay-player" controls preload="metadata" src={`/api/performances/${performanceId}/replay`} />
-        ) : status === 'failed' ? (
-          <p className="error small">{t('game.results.replayFailed')}</p>
-        ) : status === 'no_recordings' ? (
-          <p className="muted small">{t('game.results.replayNone')}</p>
-        ) : (
-          <div className="row small muted">
-            <span className="spinner" aria-hidden />
-            {t('game.results.replayWaiting')}
-          </div>
-        )}
-      </div>
+      <ReplayPanel performanceId={room.performance_id} upload={upload} />
     </section>
+  )
+}
+
+/** The group replay: a spinner while the worker mixes, then a player. */
+export function ReplayPanel({ performanceId, upload }: { performanceId: string | null; upload: UploadState }) {
+  const { t } = useTranslation()
+  const status = usePerformance(performanceId).data?.replay_status
+  return (
+    <div className="replay">
+      <h3>{t('game.results.replay')}</h3>
+      {upload === 'uploading' && <p className="muted small">{t('game.results.uploading')}</p>}
+      {upload === 'failed' && <p className="error small">{t('game.results.uploadFailed')}</p>}
+      {status === 'ready' ? (
+        <audio className="replay-player" controls preload="metadata" src={`/api/performances/${performanceId}/replay`} />
+      ) : status === 'failed' ? (
+        <p className="error small">{t('game.results.replayFailed')}</p>
+      ) : status === 'no_recordings' ? (
+        <p className="muted small">{t('game.results.replayNone')}</p>
+      ) : (
+        <div className="row small muted">
+          <span className="spinner" aria-hidden />
+          {t('game.results.replayWaiting')}
+        </div>
+      )}
+    </div>
   )
 }

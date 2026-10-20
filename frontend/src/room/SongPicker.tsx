@@ -5,20 +5,25 @@ import type { Song } from '../api/types'
 import ErrorText from '../components/ErrorText'
 import { formatDuration } from '../lib/format'
 
-/** The host's list: their own ready songs, then the starter library. */
-export default function SongPicker({ code, selectedId, onPick }: { code: string; selectedId: string | null; onPick: (id: string) => void }) {
+/** What the room can sing: the host's own ready songs, then the starter library. */
+export default function SongPicker({ code, selectedId, isHost, onPick }: {
+  code: string
+  selectedId: string | null
+  isHost: boolean
+  onPick: (song: Song) => void
+}) {
   const { t } = useTranslation()
   const songs = useQuery({ queryKey: ['room-songs', code], queryFn: () => api<Song[]>(`/api/rooms/${code}/songs`) })
 
   if (songs.isError) return <ErrorText error={songs.error} />
   if (!songs.data) return null
-  const mine = songs.data.filter((s) => s.is_owner)
+  const hosts = songs.data.filter((s) => s.source !== 'starter')
   const starter = songs.data.filter((s) => s.source === 'starter')
 
   return (
     <div className="stack">
       {[
-        { label: t('game.song.mine'), list: mine },
+        { label: isHost ? t('game.song.mine') : t('game.song.hosts'), list: hosts },
         { label: t('game.song.starter'), list: starter },
       ]
         .filter((group) => group.list.length > 0)
@@ -39,7 +44,7 @@ export default function SongPicker({ code, selectedId, onPick }: { code: string;
                   <button
                     className={`button small ${song.id === selectedId ? '' : 'primary'}`}
                     disabled={song.id === selectedId}
-                    onClick={() => onPick(song.id)}
+                    onClick={() => onPick(song)}
                   >
                     {song.id === selectedId ? t('game.song.chosen') : t('game.song.choose')}
                   </button>

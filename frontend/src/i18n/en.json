@@ -144,6 +144,11 @@
     "no_vocals_track": "Only uploaded songs that were converted can get new lyrics.",
     "song_busy": "This song is being worked on. Wait until it's ready.",
     "alignment_failed": "We couldn't fit the lyrics to the voice.",
+    "queue_limit": "You already have 3 turns in the queue.",
+    "not_a_duet": "Only duet songs can have a partner.",
+    "partner_not_here": "Your partner isn't in the room.",
+    "queue_empty": "The queue is empty.",
+    "singer_not_ready": "The next singer isn't ready yet.",
     "unknown_error": "Something went wrong. Please try again."
   },
   "songs": {
@@ -300,7 +305,8 @@
       "loaded": "Song loaded",
       "loadFailed": "The song couldn't be loaded.",
       "mine": "Your songs",
-      "starter": "Starter library"
+      "starter": "Starter library",
+      "hosts": "The host's songs"
     },
     "start": {
       "button": "Start the song",
@@ -363,5 +369,57 @@
     "cancel": "Cancel",
     "busy": "This song is being worked on. Wait until it's ready.",
     "redoFailed": "Redoing the lyrics didn't work, so the previous chart was kept"
+  },
+  "modes": {
+    "title": "Game mode",
+    "sing_together": "Sing Together",
+    "spotlight": "Spotlight",
+    "sing_togetherHelp": "Everyone who is ready sings the same song at once.",
+    "spotlightHelp": "Spotlight: take turns. Add your own song to the queue; while someone sings, everyone else watches, cheers and votes."
+  },
+  "spotlight": {
+    "queue": "Queue",
+    "queueEmpty": "Nobody in the queue yet. Add your turn!",
+    "nextUp": "Next",
+    "duetBy": "{{a}} & {{b}}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove",
+    "startTurn": "Start {{name}}'s turn",
+    "startTurnEmpty": "Start the next turn",
+    "waitingFor": "Waiting for {{names}} to turn on the mic and press ready.",
+    "hostStarts": "The host starts each turn.",
+    "addTurn": "Add my turn",
+    "pickYourSong": "Pick your song",
+    "partner": "Sing it with",
+    "alone": "Nobody (I'll sing part 1 alone)",
+    "partnerHelp": "This is a duet: your partner sings part 2.",
+    "addToQueue": "Add to the queue",
+    "otherSong": "Pick another song",
+    "standings": "Tonight's standings",
+    "turns_one": "{{count}} turn",
+    "turns_other": "{{count}} turns",
+    "howPoints": "Points: 70% pitch score, 30% audience stars (5 stars = 10,000). Several turns are averaged.",
+    "nowSinging": "{{names}} in the spotlight",
+    "react": "Cheer",
+    "reactions": {
+      "clap": "Applause",
+      "fire": "Fire",
+      "laugh": "Laugh",
+      "heart": "Love",
+      "wow": "Wow"
+    },
+    "turnOver": "Turn over",
+    "backToQueue": "Back to the queue",
+    "pitch": "pitch {{score}}",
+    "votes_one": "{{count}} vote, average {{average}} ★",
+    "votes_other": "{{count}} votes, average {{average}} ★",
+    "noVotesYet": "No votes yet",
+    "audienceVoting": "The audience is voting…",
+    "rate": "How was it? Tap the stars.",
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars",
+    "voted": "Thanks! You can still change your vote.",
+    "noAudience": "Everyone sang this one, so there's no audience to vote: pitch score only."
   }
 }

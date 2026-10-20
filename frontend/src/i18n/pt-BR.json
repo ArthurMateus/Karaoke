@@ -144,6 +144,11 @@
     "no_vocals_track": "Só músicas enviadas e convertidas podem ganhar uma nova letra.",
     "song_busy": "Esta música está sendo processada. Espere ficar pronta.",
     "alignment_failed": "Não conseguimos encaixar a letra na voz.",
+    "queue_limit": "Você já tem 3 vezes na fila.",
+    "not_a_duet": "Só duetos podem ter um par.",
+    "partner_not_here": "Seu par não está na sala.",
+    "queue_empty": "A fila está vazia.",
+    "singer_not_ready": "Quem canta agora ainda não está pronto.",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
@@ -300,7 +305,8 @@
       "loaded": "Música carregada",
       "loadFailed": "Não foi possível carregar a música.",
       "mine": "Suas músicas",
-      "starter": "Biblioteca inicial"
+      "starter": "Biblioteca inicial",
+      "hosts": "Músicas do anfitrião"
     },
     "start": {
       "button": "Começar a música",
@@ -363,5 +369,57 @@
     "cancel": "Cancelar",
     "busy": "Esta música está sendo processada. Espere ficar pronta.",
     "redoFailed": "Não deu para refazer a letra, então a cifra anterior foi mantida"
+  },
+  "modes": {
+    "title": "Modo de jogo",
+    "sing_together": "Todos juntos",
+    "spotlight": "Holofote",
+    "sing_togetherHelp": "Todo mundo que está pronto canta a mesma música ao mesmo tempo.",
+    "spotlightHelp": "Holofote: cada um na sua vez. Coloque sua música na fila; enquanto alguém canta, o resto assiste, torce e vota."
+  },
+  "spotlight": {
+    "queue": "Fila",
+    "queueEmpty": "Ninguém na fila ainda. Coloque a sua vez!",
+    "nextUp": "Próx.",
+    "duetBy": "{{a}} e {{b}}",
+    "moveUp": "Subir",
+    "moveDown": "Descer",
+    "remove": "Tirar",
+    "startTurn": "Começar a vez de {{name}}",
+    "startTurnEmpty": "Começar a próxima vez",
+    "waitingFor": "Esperando {{names}} ligar o microfone e ficar pronto.",
+    "hostStarts": "O anfitrião começa cada vez.",
+    "addTurn": "Colocar minha vez",
+    "pickYourSong": "Escolha sua música",
+    "partner": "Cantar com",
+    "alone": "Ninguém (canto a parte 1 sozinho)",
+    "partnerHelp": "É um dueto: seu par canta a parte 2.",
+    "addToQueue": "Colocar na fila",
+    "otherSong": "Escolher outra música",
+    "standings": "Classificação da noite",
+    "turns_one": "{{count}} vez",
+    "turns_other": "{{count}} vezes",
+    "howPoints": "Pontos: 70% afinação, 30% estrelas do público (5 estrelas = 10.000). Várias vezes contam pela média.",
+    "nowSinging": "{{names}} no holofote",
+    "react": "Torcer",
+    "reactions": {
+      "clap": "Aplausos",
+      "fire": "Fogo",
+      "laugh": "Risada",
+      "heart": "Amor",
+      "wow": "Uau"
+    },
+    "turnOver": "Fim da vez",
+    "backToQueue": "Voltar para a fila",
+    "pitch": "afinação {{score}}",
+    "votes_one": "{{count}} voto, média {{average}} ★",
+    "votes_other": "{{count}} votos, média {{average}} ★",
+    "noVotesYet": "Nenhum voto ainda",
+    "audienceVoting": "O público está votando…",
+    "rate": "Que tal? Toque nas estrelas.",
+    "stars_one": "{{count}} estrela",
+    "stars_other": "{{count}} estrelas",
+    "voted": "Valeu! Você ainda pode mudar seu voto.",
+    "noAudience": "Todo mundo cantou esta, então não há público para votar: vale só a afinação."
   }
 }

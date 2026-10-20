@@ -1077,3 +1077,144 @@ details.picker[open] > summary {
     min-width: 64px;
   }
 }
+
+/* ---------- Spotlight ---------- */
+.segmented {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  overflow: hidden;
+}
+.segmented button {
+  flex: 1;
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 12px;
+  border: 0;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+}
+.segmented button + button {
+  border-left: 1px solid var(--line-strong);
+}
+.segmented button.on {
+  background: var(--violet);
+  color: #fff;
+}
+.queue {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.queue-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+}
+.queue-entry.next {
+  border-color: var(--violet);
+  background: var(--violet-soft);
+}
+.queue-place {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 0.8rem;
+  min-width: 2.6em;
+  text-align: center;
+}
+.queue-entry .pick-main {
+  flex: 1;
+  min-width: 0;
+}
+.row.tight {
+  gap: 6px;
+}
+
+/* Reactions: tap a button, the emoji floats up on everyone's screen. */
+.reaction-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.reaction-button {
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--card);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.reaction-button:active {
+  transform: scale(0.9);
+}
+.stage,
+.spotlight-results {
+  position: relative;
+}
+.reaction-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.reaction-float {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2.2rem;
+  animation: reaction-rise 2.6s ease-out forwards;
+}
+.reaction-float small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgb(0 0 0 / 45%);
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+@keyframes reaction-rise {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  12% { opacity: 1; transform: translateY(-20%) scale(1.1); }
+  100% { transform: translateY(-320%) scale(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reaction-float {
+    animation: reaction-fade 2.6s linear forwards;
+    bottom: 40%;
+  }
+  @keyframes reaction-fade {
+    0%, 70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}
+
+/* Votes */
+.stars {
+  display: flex;
+  gap: 4px;
+}
+.star {
+  font-size: 2.2rem;
+  line-height: 1;
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  color: var(--line-strong);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.star.on {
+  color: var(--amber);
+}
