@@ -91,6 +91,9 @@ class Song(Base):
     duration_seconds: Mapped[float | None]
     is_duet: Mapped[bool] = mapped_column(default=False)
     chart_txt: Mapped[str | None] = mapped_column(Text)  # UltraStar format
+    # Known lyrics for the converter (LRC with line times, or plain text). Empty = guess them.
+    lyrics_txt: Mapped[str | None] = mapped_column(Text)
+    lyrics_source: Mapped[str] = mapped_column(String(16), default="", server_default="")  # "" | lrclib | pasted
 
     # Keys in file storage.
     original_key: Mapped[str | None] = mapped_column(String(300))

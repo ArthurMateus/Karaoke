@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import auth, me, performances, rooms, songs
+from app.api import auth, lyrics, me, performances, rooms, songs
 from app.config import get_settings
 from app.services.limits import get_limits
 from app.ws import routes as ws_routes
@@ -22,6 +22,7 @@ app.include_router(auth.router)
 app.include_router(me.router)
 app.include_router(rooms.router)
 app.include_router(songs.router)
+app.include_router(lyrics.router)
 app.include_router(performances.router)
 app.include_router(ws_routes.router)
 

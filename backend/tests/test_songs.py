@@ -310,3 +310,95 @@ def test_delete_removes_files(owner, audio_files, db):
 def test_month_start():
     assert song_service.month_start(datetime(2026, 10, 19, 15, 30, tzinfo=UTC)) == datetime(2026, 10, 1, tzinfo=UTC)
     assert song_service.month_start(utcnow()).day == 1
+
+
+def test_upload_with_lyrics(owner, audio_files, db):
+    response = upload(owner, audio_files["mp3"], lyrics="[00:01.00] Hello there\n[00:03.00] Goodbye", lyrics_source="lrclib")
+    assert response.status_code == 201
+    assert response.json()["has_lyrics"] is True
+    song = db.get(Song, uuid.UUID(response.json()["id"]))
+    assert song.lyrics_source == "lrclib" and song.lyrics_txt.startswith("[00:01.00]")
+    assert owner.get(f"/api/songs/{song.id}/lyrics").json() == {"lyrics": song.lyrics_txt, "source": "lrclib"}
+
+
+def test_upload_without_lyrics_guesses_them(owner, audio_files, db):
+    response = upload(owner, audio_files["mp3"], lyrics="   ")
+    assert response.json()["has_lyrics"] is False
+
+
+@pytest.mark.parametrize(("lyrics", "code"), [("[Chorus]\n\n", "lyrics_empty"), ("la " * 20_000, "lyrics_too_long")])
+def test_bad_lyrics_are_refused(owner, audio_files, lyrics, code):
+    response = upload(owner, audio_files["mp3"], lyrics=lyrics)
+    assert response.status_code == 422
+    assert response.json()["detail"]["code"] == code
+
+
+def test_redo_lyrics(owner, audio_files, jobs, db):
+    song_id = upload(owner, audio_files["mp3"]).json()["id"]
+    song = make_ready(db, song_id)
+    song.vocals_key = f"songs/{song.id}/vocals.m4a"
+    db.commit()
+
+    response = owner.post(f"/api/songs/{song_id}/lyrics", json={"lyrics": "Line one\nLine two", "source": "pasted"})
+    assert response.status_code == 200
+    assert response.json()["status"] == "processing"
+    assert jobs[-1] == ("lyrics", song_id)
+    db.refresh(song)
+    assert song.lyrics_txt == "Line one\nLine two"
+    # Not a new conversion.
+    assert db.query(ConversionUsage).count() == 1
+    # Busy until the worker is done.
+    assert owner.post(f"/api/songs/{song_id}/lyrics", json={"lyrics": "x"}).json()["detail"]["code"] == "song_busy"
+
+
+def test_redo_lyrics_needs_an_uploaded_song_with_vocals(owner, audio_files, client, mailer, db):
+    song_id = upload(owner, audio_files["mp3"]).json()["id"]
+    make_ready(db, song_id)
+    response = owner.post(f"/api/songs/{song_id}/lyrics", json={"lyrics": "Line one"})
+    assert response.json()["detail"]["code"] == "no_vocals_track"
+    stranger = sign_in(client, mailer, "stranger@example.com")
+    assert stranger.post(f"/api/songs/{song_id}/lyrics", json={"lyrics": "Line one"}).status_code == 404
+    assert stranger.get(f"/api/songs/{song_id}/lyrics").status_code == 404
+
+
+def test_lyrics_search(owner, client, monkeypatch):
+    from app.services import lrclib
+
+    def fake_get(path, params):
+        assert params == {"track_name": "Song", "artist_name": "Band"}
+        return [{"id": 7, "trackName": "Song", "artistName": "Band", "albumName": "LP", "duration": 180,
+                 "syncedLyrics": "[00:01.00] words", "plainLyrics": "words"}]
+
+    monkeypatch.setattr(lrclib, "_get_json", fake_get)
+    found = owner.get("/api/lyrics/search", params={"title": "Song", "artist": "Band", "duration": 181}).json()
+    assert found[0]["id"] == 7 and found[0]["synced"] and found[0]["lyrics"] == "[00:01.00] words"
+    # Accounts only.
+    assert anonymous(client).get("/api/lyrics/search", params={"title": "Song"}).status_code == 401
+
+
+def test_lyrics_search_reports_lookup_problems(owner, monkeypatch):
+    from app.services import lrclib
+
+    def broken(path, params):
+        raise lrclib.LookupFailed("offline")
+
+    monkeypatch.setattr(lrclib, "_get_json", broken)
+    response = owner.get("/api/lyrics/search", params={"title": "Song"})
+    assert response.status_code == 502
+    assert response.json()["detail"]["code"] == "lyrics_lookup_failed"
+
+
+def test_failed_lyrics_redo_keeps_the_old_chart(owner, audio_files, db):
+    from app.pipeline import jobs as pipeline_jobs
+
+    song_id = upload(owner, audio_files["mp3"]).json()["id"]
+    song = make_ready(db, song_id)
+    song.vocals_key = f"songs/{song.id}/vocals.m4a"
+    storage.upload_bytes(song.vocals_key, b"not really audio", "audio/mp4")
+    song.status, song.lyrics_txt = "processing", "Line one"
+    db.commit()
+
+    pipeline_jobs.redo_lyrics(song_id)
+    db.refresh(song)
+    assert (song.status, song.error_code) == ("ready", "audio_decode_failed")
+    assert song.chart_txt == CHART

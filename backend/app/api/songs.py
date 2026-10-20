@@ -17,6 +17,7 @@ from app.charts.model import ChartError, validate
 from app.db import utcnow
 from app.deps import CurrentAccount, Db, OptionalUser, api_error
 from app.models import ConversionUsage, Song, User
+from app.pipeline.lyrics import MAX_LYRICS_CHARS, parse_lyrics
 from app.services import audio, queue, storage
 from app.services import rooms as room_service
 from app.services import songs as song_service
@@ -27,6 +28,7 @@ router = APIRouter(prefix="/api/songs", tags=["songs"])
 
 Language = Literal["auto", "en", "pt"]
 Track = Literal["instrumental", "vocals", "original"]
+LyricsSource = Literal["", "lrclib", "pasted"]
 
 
 class SongOut(BaseModel):
@@ -43,6 +45,7 @@ class SongOut(BaseModel):
     is_duet: bool
     is_owner: bool
     has_vocals_track: bool
+    has_lyrics: bool  # the converter was given the lyrics (found online or pasted)
     created_at: datetime
 
 
@@ -75,6 +78,7 @@ def song_out(song: Song, user: User | None) -> SongOut:
         is_duet=song.is_duet,
         is_owner=user is not None and song.owner_id == user.id,
         has_vocals_track=song.vocals_key is not None,
+        has_lyrics=bool(song.lyrics_txt),
         created_at=song.created_at,
     )
 
@@ -131,6 +135,18 @@ def _checked_audio(upload: UploadFile, folder: Path) -> tuple[Path, audio.AudioI
         raise api_error(422, rejected.code) from None
 
 
+def _checked_lyrics(text: str) -> str | None:
+    """Lyrics as given, or None for "guess them". Refuses text without any lyric lines."""
+    text = text.strip()
+    if not text:
+        return None
+    if len(text) > MAX_LYRICS_CHARS:
+        raise api_error(422, "lyrics_too_long")
+    if not parse_lyrics(text):
+        raise api_error(422, "lyrics_empty")
+    return text
+
+
 def _clean(text: str, fallback: str) -> str:
     text = " ".join(text.split())[:200]
     return text or fallback
@@ -164,13 +180,20 @@ def upload_song(
     artist: Annotated[str, Form()] = "",
     language: Annotated[Language, Form()] = "auto",
     rights_confirmed: Annotated[bool, Form()] = False,
+    lyrics: Annotated[str, Form(max_length=MAX_LYRICS_CHARS * 2)] = "",
+    lyrics_source: Annotated[LyricsSource, Form()] = "",
 ) -> SongOut:
-    """Upload your own audio; the worker turns it into a karaoke chart."""
+    """Upload your own audio; the worker turns it into a karaoke chart.
+
+    `lyrics` (optional): the song's lyrics, found online (LRC with line times) or
+    pasted. Given lyrics are fitted to the voice instead of being guessed.
+    """
     if not rights_confirmed:
         raise api_error(422, "rights_required")
     if song_service.conversions_left(db, user, utcnow()) <= 0:
         raise api_error(403, "conversion_limit_reached")
     _check_content_length(request)
+    known_lyrics = _checked_lyrics(lyrics)
 
     with tempfile.TemporaryDirectory() as tmp:
         path, info = _checked_audio(file, Path(tmp))
@@ -183,6 +206,8 @@ def upload_song(
             language="" if language == "auto" else language,
             duration_seconds=info.duration_seconds,
             rights_confirmed_at=utcnow(),
+            lyrics_txt=known_lyrics,
+            lyrics_source=(lyrics_source or "pasted") if known_lyrics else "",
         )
         db.add(song)
         db.flush()
@@ -324,6 +349,44 @@ def retry_song(song_id: uuid.UUID, db: Db, user: CurrentAccount) -> SongOut:
     song.status, song.progress_step, song.progress_pct, song.error_code = "processing", "queued", 0, None
     db.commit()
     (queue.enqueue_conversion if song.source == "upload" else queue.enqueue_import)(song.id)
+    return song_out(song, user)
+
+
+class LyricsIn(BaseModel):
+    lyrics: str
+    source: LyricsSource = ""
+
+
+class LyricsOut(BaseModel):
+    lyrics: str
+    source: str
+
+
+@router.get("/{song_id}/lyrics")
+def get_lyrics(song_id: uuid.UUID, db: Db, user: CurrentAccount) -> LyricsOut:
+    """The lyrics the converter was given (empty if it guessed them)."""
+    song = _get_own_song(db, song_id, user)
+    return LyricsOut(lyrics=song.lyrics_txt or "", source=song.lyrics_source)
+
+
+@router.post("/{song_id}/lyrics")
+def redo_lyrics(song_id: uuid.UUID, body: LyricsIn, db: Db, user: CurrentAccount) -> SongOut:
+    """New lyrics for an uploaded song: rebuild its chart from the saved vocals.
+
+    Replaces the chart (and any edits to it). Doesn't use up a conversion: the
+    slow part, separating the voice, isn't done again.
+    """
+    song = _get_own_song(db, song_id, user)
+    if song.source != "upload" or not song.vocals_key:
+        raise api_error(409, "no_vocals_track")
+    if song.status == "processing":
+        raise api_error(409, "song_busy")
+    known_lyrics = _checked_lyrics(body.lyrics)
+    song.lyrics_txt = known_lyrics
+    song.lyrics_source = (body.source or "pasted") if known_lyrics else ""
+    song.status, song.progress_step, song.progress_pct, song.error_code = "processing", "queued", 0, None
+    db.commit()
+    queue.enqueue_lyrics(song.id)
     return song_out(song, user)
 
 

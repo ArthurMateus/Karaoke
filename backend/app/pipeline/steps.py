@@ -13,7 +13,8 @@ from pathlib import Path
 import numpy as np
 
 from app.config import get_settings
-from app.pipeline.notes import PitchTrack, Word
+from app.pipeline.lyrics import LyricLine, fit_line
+from app.pipeline.notes import PitchTrack, Word, frame_levels
 
 Progress = Callable[[float], None]  # 0..1 within the current step
 
@@ -115,6 +116,52 @@ def transcribe(vocals: Path, language: str | None) -> tuple[list[Word], str]:
     return words, detected
 
 
+def align_lyrics(vocals: Path, lines: list[LyricLine], language: str, progress: Progress) -> list[list[Word]]:
+    """
+    Known lyrics: find when each word is sung (forced alignment), instead of
+    guessing the words. Timed lines are aligned one by one inside their own
+    window; plain lyrics are aligned in one piece across the singing.
+    """
+    import whisperx
+
+    audio = whisperx.load_audio(str(vocals))
+    duration = len(audio) / 16000
+    align_model, metadata = _aligner(language)
+
+    def align(text: str, start: float, end: float) -> list[tuple[float, float] | None]:
+        """Word times for `text` sung between start and end (None where the aligner gave up)."""
+        segment = {"text": text, "start": max(0.0, start), "end": min(duration, end)}
+        try:
+            aligned = whisperx.align([segment], align_model, metadata, audio, device(), return_char_alignments=False)
+        except Exception:  # noqa: BLE001 - one bad line must not stop the song
+            return [None] * len(text.split())
+        found = [w for seg in aligned["segments"] for w in seg.get("words", [])]
+        if len(found) != len(text.split()):
+            return [None] * len(text.split())
+        return [(float(w["start"]), float(w["end"])) if "start" in w and "end" in w else None for w in found]
+
+    if all(line.start is not None for line in lines):
+        result = []
+        for i, line in enumerate(lines):
+            # A little room either side: online line times are often a bit early or late.
+            timings = align(line.text, line.start - 0.4, line.end + 0.6)
+            result.append(fit_line(line.words, timings, max(0.0, line.start - 0.4), min(duration, line.end + 0.6)))
+            progress((i + 1) / len(lines))
+        return result
+
+    # Plain lyrics: one long alignment, then cut back into the lines as written.
+    text = " ".join(line.text for line in lines)
+    timings = align(text, 0.0, duration)
+    words = fit_line(text.split(), timings, 0.0, duration)
+    progress(1.0)
+    result, at = [], 0
+    for line in lines:
+        count = len(line.words)
+        result.append(words[at : at + count])
+        at += count
+    return result
+
+
 # --- 3. The sung melody (CREPE) ------------------------------------------------------
 
 def melody(vocals: Path) -> PitchTrack:
@@ -134,4 +181,5 @@ def melody(vocals: Path) -> PitchTrack:
     hz = pitch.squeeze(0).cpu().numpy()
     confidence = np.nan_to_num(periodicity.squeeze(0).cpu().numpy())
     times = np.arange(len(hz)) * hop / sample_rate
-    return PitchTrack(times=times, hz=hz, confidence=confidence)
+    level = frame_levels(audio.squeeze(0).numpy(), hop, len(hz))
+    return PitchTrack(times=times, hz=hz, confidence=confidence, level=level)

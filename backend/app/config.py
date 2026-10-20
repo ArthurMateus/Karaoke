@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     whisper_model_gpu: str = "large-v3"
     conversion_timeout_seconds: int = 3600
 
+    # Lyrics lookup (LRCLIB: a free, open lyrics database with line timings). "" turns it off.
+    lrclib_url: str = "https://lrclib.net"
+
     @property
     def allowed_origins(self) -> set[str]:
         origins = {self.public_base_url.rstrip("/")}

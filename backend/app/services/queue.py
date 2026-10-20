@@ -22,6 +22,11 @@ def enqueue_conversion(song_id: uuid.UUID) -> None:
     )
 
 
+def enqueue_lyrics(song_id: uuid.UUID) -> None:
+    """Uploaded song with new lyrics: fit them to the saved vocals and rebuild the chart."""
+    get_queue().enqueue("app.pipeline.jobs.redo_lyrics", str(song_id), job_timeout=1800)
+
+
 def enqueue_import(song_id: uuid.UUID) -> None:
     """Imported UltraStar chart: just prepare its audio for browsers."""
     get_queue().enqueue("app.pipeline.jobs.prepare_import", str(song_id), job_timeout=600)
