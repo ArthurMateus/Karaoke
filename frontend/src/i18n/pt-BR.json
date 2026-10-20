@@ -138,6 +138,12 @@
     "mic_missing": "Nenhum microfone foi encontrado neste aparelho.",
     "mic_unsupported": "Este navegador não consegue cantar ao vivo. Tente um Chrome, Edge, Firefox ou Safari recente.",
     "mic_insecure": "O microfone só funciona em páginas seguras. Abra o app pelo endereço https:// (o do QR code).",
+    "lyrics_lookup_failed": "A busca de letras não está funcionando agora. Tente mais tarde ou cole a letra.",
+    "lyrics_too_long": "Essa letra é longa demais.",
+    "lyrics_empty": "Não há versos nesse texto.",
+    "no_vocals_track": "Só músicas enviadas e convertidas podem ganhar uma nova letra.",
+    "song_busy": "Esta música está sendo processada. Espere ficar pronta.",
+    "alignment_failed": "Não conseguimos encaixar a letra na voz.",
     "unknown_error": "Algo deu errado. Tente de novo."
   },
   "songs": {
@@ -168,6 +174,8 @@
       "transcribing": "Escrevendo a letra…",
       "melody": "Encontrando a melodia…",
       "building": "Montando a cifra…",
+      "matching": "Alinhando a letra com o seu arquivo…",
+      "aligning": "Encaixando a letra na voz…",
       "done": "Pronto"
     }
   },
@@ -325,5 +333,35 @@
       "again": "Escolher a próxima música",
       "waitingHost": "Esperando o anfitrião escolher a próxima música…"
     }
+  },
+  "lyrics": {
+    "title": "Letra (opcional)",
+    "intro": "Dê a letra ao conversor e ele encaixa as palavras na voz, em vez de adivinhá-las. Funciona muito melhor com voz gritada, rápida ou muito processada.",
+    "find": "Buscar letra na internet",
+    "searching": "Buscando…",
+    "needTitle": "Digite primeiro o nome da música.",
+    "noneFound": "Nenhuma letra encontrada. Confira o nome e o artista, ou cole a letra abaixo.",
+    "otherVersion": "Outra versão (duração diferente): o tempo será ajustado ao seu arquivo.",
+    "timed": "Com tempo",
+    "plain": "Sem tempo",
+    "use": "Usar esta",
+    "chosen": "Escolhida",
+    "text": "Letra",
+    "placeholder": "Cole a letra aqui, um verso por linha. Ou busque na internet acima.",
+    "hintTimed": "Os tempos entre [colchetes] dizem quando cada verso começa. Deixe-os: eles mantêm cada verso sincronizado.",
+    "hintPlain": "Sem tempos: as palavras serão encaixadas na voz de uma vez. Letras com tempo (da internet) funcionam melhor.",
+    "hintEmpty": "Deixe vazio para o conversor adivinhar as palavras.",
+    "clear": "Apagar a letra",
+    "add": "Adicionar letra",
+    "redoButton": "Refazer letra",
+    "redoTitle": "Refazer letra",
+    "redoIntro": "Encaixar uma nova letra na voz de “{{title}}” e refazer a cifra. Leva alguns minutos e não gasta uma conversão.",
+    "redoWarning": "Isto substitui a cifra da música, incluindo as mudanças feitas no editor.",
+    "redoConfirm": "Substituir a cifra, incluindo suas mudanças no editor?",
+    "redo": "Refazer com esta letra",
+    "redoGuess": "Refazer, adivinhando as palavras",
+    "cancel": "Cancelar",
+    "busy": "Esta música está sendo processada. Espere ficar pronta.",
+    "redoFailed": "Não deu para refazer a letra, então a cifra anterior foi mantida"
   }
 }

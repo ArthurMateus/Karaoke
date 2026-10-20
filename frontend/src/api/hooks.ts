@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type { EditorChart } from '../editor/chartModel'
-import type { Locale, Me, RoomInfo, Song, SongList, User } from './types'
+import type { Locale, LyricsMatch, LyricsSource, Me, RoomInfo, Song, SongList, User } from './types'
 
 export function useMe() {
   return useQuery({ queryKey: ['me'], queryFn: () => api<Me>('/api/me'), staleTime: 60_000 })
@@ -121,6 +121,34 @@ export function useRetrySong() {
   const refresh = useRefreshSongs()
   return useMutation({
     mutationFn: (id: string) => api<Song>(`/api/songs/${id}/retry`, { method: 'POST' }),
+    onSuccess: refresh,
+  })
+}
+
+/** Look a song's lyrics up online. */
+export function useFindLyrics() {
+  return useMutation({
+    mutationFn: ({ title, artist, duration }: { title: string; artist: string; duration: number | null }) => {
+      const query = new URLSearchParams({ title, artist })
+      if (duration) query.set('duration', String(Math.round(duration)))
+      return api<LyricsMatch[]>(`/api/lyrics/search?${query}`)
+    },
+  })
+}
+
+export function useSongLyrics(id: string) {
+  return useQuery({
+    queryKey: ['song-lyrics', id],
+    queryFn: () => api<{ lyrics: string; source: LyricsSource }>(`/api/songs/${id}/lyrics`),
+  })
+}
+
+/** Rebuild an uploaded song's chart with new lyrics (no new conversion used). */
+export function useRedoLyrics(id: string) {
+  const refresh = useRefreshSongs()
+  return useMutation({
+    mutationFn: (body: { lyrics: string; source: LyricsSource }) =>
+      api<Song>(`/api/songs/${id}/lyrics`, { body }),
     onSuccess: refresh,
   })
 }

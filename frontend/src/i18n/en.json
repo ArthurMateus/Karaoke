@@ -138,6 +138,12 @@
     "mic_missing": "No microphone was found on this device.",
     "mic_unsupported": "This browser can't do live singing. Try a recent Chrome, Edge, Firefox or Safari.",
     "mic_insecure": "The microphone only works on secure pages. Open the app at its https:// address (the one in the QR code).",
+    "lyrics_lookup_failed": "The lyrics search isn't working right now. Try again later, or paste the lyrics.",
+    "lyrics_too_long": "Those lyrics are too long.",
+    "lyrics_empty": "There are no lyrics lines in that text.",
+    "no_vocals_track": "Only uploaded songs that were converted can get new lyrics.",
+    "song_busy": "This song is being worked on. Wait until it's ready.",
+    "alignment_failed": "We couldn't fit the lyrics to the voice.",
     "unknown_error": "Something went wrong. Please try again."
   },
   "songs": {
@@ -168,6 +174,8 @@
       "transcribing": "Writing down the lyrics…",
       "melody": "Finding the melody…",
       "building": "Building the chart…",
+      "matching": "Lining the lyrics up with your file…",
+      "aligning": "Fitting the lyrics to the voice…",
       "done": "Done"
     }
   },
@@ -325,5 +333,35 @@
       "again": "Pick the next song",
       "waitingHost": "Waiting for the host to pick the next song…"
     }
+  },
+  "lyrics": {
+    "title": "Lyrics (optional)",
+    "intro": "Give the converter the lyrics and it fits them to the voice instead of guessing the words. Much better for screamed, fast or heavily processed singing.",
+    "find": "Find lyrics online",
+    "searching": "Searching…",
+    "needTitle": "Type the song title first.",
+    "noneFound": "No lyrics found. Check the title and artist, or paste the lyrics below.",
+    "otherVersion": "Another version (different length): the timing will be shifted to fit your file.",
+    "timed": "Timed",
+    "plain": "No timing",
+    "use": "Use these",
+    "chosen": "Chosen",
+    "text": "Lyrics",
+    "placeholder": "Paste the lyrics here, one line per line. Or find them online above.",
+    "hintTimed": "The times in [brackets] say when each line starts. Leave them in: they keep every line in sync.",
+    "hintPlain": "No times: the words will be fitted to the voice in one go. Lyrics with times (found online) work best.",
+    "hintEmpty": "Leave empty to let the converter guess the words.",
+    "clear": "Clear the lyrics",
+    "add": "Add lyrics",
+    "redoButton": "Redo lyrics",
+    "redoTitle": "Redo lyrics",
+    "redoIntro": "Fit new lyrics to the voice of “{{title}}” and rebuild its chart. This takes a few minutes and doesn't use up a conversion.",
+    "redoWarning": "This replaces the song's chart, including any changes you made in the chart editor.",
+    "redoConfirm": "Replace the chart, including your changes in the editor?",
+    "redo": "Redo with these lyrics",
+    "redoGuess": "Redo, guessing the words",
+    "cancel": "Cancel",
+    "busy": "This song is being worked on. Wait until it's ready.",
+    "redoFailed": "Redoing the lyrics didn't work, so the previous chart was kept"
   }
 }

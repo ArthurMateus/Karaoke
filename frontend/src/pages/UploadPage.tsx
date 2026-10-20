@@ -1,10 +1,12 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Navigate, useNavigate } from 'react-router'
 import { useMe, useSongs } from '../api/hooks'
+import type { LyricsSource } from '../api/types'
 import { uploadForm } from '../api/upload'
 import ErrorText from '../components/ErrorText'
+import LyricsField from '../components/LyricsField'
 
 /** Upload your own audio to convert (mode "upload"), or import an UltraStar chart (mode "import"). */
 export default function UploadPage({ mode }: { mode: 'upload' | 'import' }) {
@@ -19,6 +21,9 @@ export default function UploadPage({ mode }: { mode: 'upload' | 'import' }) {
   const [artist, setArtist] = useState('')
   const [language, setLanguage] = useState('auto')
   const [rights, setRights] = useState(false)
+  const [lyrics, setLyrics] = useState('')
+  const [lyricsSource, setLyricsSource] = useState<LyricsSource>('')
+  const duration = useFileDuration(audio)
   const [progress, setProgress] = useState<number | null>(null)
   const [error, setError] = useState<unknown>(null)
 
@@ -39,6 +44,10 @@ export default function UploadPage({ mode }: { mode: 'upload' | 'import' }) {
       form.append('title', title)
       form.append('artist', artist)
       form.append('language', language)
+      if (lyrics.trim()) {
+        form.append('lyrics', lyrics)
+        form.append('lyrics_source', lyricsSource)
+      }
     } else {
       form.append('chart', chart!)
     }
@@ -96,6 +105,16 @@ export default function UploadPage({ mode }: { mode: 'upload' | 'import' }) {
                 </option>
               ))}
             </select>
+            <LyricsField
+              title={title || audio?.name.replace(/\.[^.]+$/, '') || ''}
+              artist={artist}
+              duration={duration}
+              lyrics={lyrics}
+              onChange={(text, source) => {
+                setLyrics(text)
+                setLyricsSource(source)
+              }}
+            />
           </>
         )}
 
@@ -121,4 +140,22 @@ export default function UploadPage({ mode }: { mode: 'upload' | 'import' }) {
       <ErrorText error={error} />
     </section>
   )
+}
+
+/** The length of a chosen audio file in seconds, read by the browser (null until known). */
+function useFileDuration(file: File | null): number | null {
+  const [duration, setDuration] = useState<{ file: File; seconds: number } | null>(null)
+  useEffect(() => {
+    if (!file) return
+    const url = URL.createObjectURL(file)
+    const probe = new Audio()
+    probe.preload = 'metadata'
+    probe.onloadedmetadata = () => Number.isFinite(probe.duration) && setDuration({ file, seconds: probe.duration })
+    probe.src = url
+    return () => {
+      probe.removeAttribute('src')
+      URL.revokeObjectURL(url)
+    }
+  }, [file])
+  return duration && duration.file === file ? duration.seconds : null
 }

@@ -247,6 +247,27 @@ a {
   width: 7em;
   font-variant-numeric: tabular-nums;
 }
+textarea.input {
+  resize: vertical;
+  line-height: 1.5;
+}
+.lyrics-text {
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+/* An optional group inside a form (e.g. lyrics on the upload page). */
+.lyrics-field {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-control);
+  padding: 14px 16px 16px;
+  margin: 4px 0;
+  min-width: 0;
+}
+.lyrics-field legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
 .lang-select {
   padding: 5px 8px;
   font-weight: 600;

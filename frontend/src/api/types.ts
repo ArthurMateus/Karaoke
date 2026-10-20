@@ -38,7 +38,21 @@ export interface Song {
   is_duet: boolean
   is_owner: boolean
   has_vocals_track: boolean
+  has_lyrics: boolean // the converter was given the lyrics (found online or pasted)
   created_at: string
+}
+
+export type LyricsSource = '' | 'lrclib' | 'pasted'
+
+/** A song's lyrics found online (LRCLIB). `lyrics` is LRC text when `synced`, plain text otherwise. */
+export interface LyricsMatch {
+  id: number
+  title: string
+  artist: string
+  album: string
+  duration: number | null
+  synced: boolean
+  lyrics: string
 }
 
 export interface SongList {

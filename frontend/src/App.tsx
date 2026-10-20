@@ -6,6 +6,7 @@ import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
 import JoinPage from './pages/JoinPage'
 import LobbyPage from './pages/LobbyPage'
+import LyricsPage from './pages/LyricsPage'
 import ProfilePage from './pages/ProfilePage'
 import SignInPage from './pages/SignInPage'
 import SongsPage from './pages/SongsPage'
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/songs/upload" element={<UploadPage mode="upload" />} />
           <Route path="/songs/import" element={<UploadPage mode="import" />} />
           <Route path="/songs/:id/edit" element={<EditorPage />} />
+          <Route path="/songs/:id/lyrics" element={<LyricsPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </main>

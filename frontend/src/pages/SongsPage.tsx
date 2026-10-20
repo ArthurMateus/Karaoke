@@ -72,6 +72,8 @@ function SongCard({ song }: { song: Song }) {
   const { t } = useTranslation()
   const remove = useDeleteSong()
   const retry = useRetrySong()
+  // Uploaded songs keep their separated voice, so their lyrics can be redone.
+  const canRedoLyrics = song.is_owner && song.source === 'upload' && song.has_vocals_track
 
   return (
     <li className="song">
@@ -98,15 +100,28 @@ function SongCard({ song }: { song: Song }) {
         </div>
       )}
 
+      {song.status === 'ready' && song.error_code && (
+        <span className="error small">
+          {t('lyrics.redoFailed')}: {t(`errors.${song.error_code}`, { defaultValue: t('errors.unknown_error') })}
+        </span>
+      )}
+
       {song.status === 'failed' && (
         <div className="stack tight">
           <span className="error small">
             {t('songs.failed')}: {t(`errors.${song.error_code ?? 'unknown_error'}`, { defaultValue: t('errors.unknown_error') })}
           </span>
           {song.is_owner && (
-            <button className="button small" onClick={() => retry.mutate(song.id)} disabled={retry.isPending}>
-              {t('songs.retry')}
-            </button>
+            <div className="row wrap">
+              <button className="button small" onClick={() => retry.mutate(song.id)} disabled={retry.isPending}>
+                {t('songs.retry')}
+              </button>
+              {canRedoLyrics && (
+                <Link className="button small" to={`/songs/${song.id}/lyrics`}>
+                  {t('lyrics.add')}
+                </Link>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -120,6 +135,11 @@ function SongCard({ song }: { song: Song }) {
             <a className="button small" href={`/api/songs/${song.id}/export`} download>
               {t('songs.export')}
             </a>
+            {canRedoLyrics && (
+              <Link className="button small" to={`/songs/${song.id}/lyrics`}>
+                {t('lyrics.redoButton')}
+              </Link>
+            )}
           </>
         )}
         {song.is_owner && (
