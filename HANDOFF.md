@@ -66,7 +66,7 @@ No original plan text; the user chose: premium by admin grants and redeem codes,
 - Tried in the browser: free profile and locked Spotlight, admin made a Party Pass code, redeemed it loosely typed, started it from the room, room went 4 -> 16 and Spotlight opened.
 - Tournaments (`tournaments: true` for premium) don't exist yet.
 
-## UI polish step (docs/ui-polish-plan.md): in progress
+## UI polish step (docs/ui-polish-plan.md): done
 
 Done and committed (2026-10-20):
 - Legal start-of-step review: `docs/legal/LEGAL-REVIEW-2026-10-20.md`, drafts in `docs/legal/drafts/`. lucide-react 1.52.0 and canvas-confetti 1.9.4 approved (pinned exactly).
@@ -84,16 +84,23 @@ Done and committed later the same day (2026-10-20, in the new Desktop copy `C:/U
 
 Phases 3-6 done and pushed (2026-10-20): b455266 (sing/results), c8d65a1 (stage), 2d1e183 (songs/solo/daily), 53fa531 (account/admin/legal), 58a8f05 (room snapshot has `plan` + `plan_until`, approved by the user), 310197e (all 58 after shots).
 
-**Paused here (user's credits running out). To resume:**
-1. Run the qa-tester agent on Phases 3-6 (it was stopped before writing a report), fix what it finds.
-2. Run the legal-reviewer agent for the final review (also check the name "Encore": trademark/domain); act on "must fix", list the rest.
-3. Finish this section (what changed, what's left). `docs/ui-polish-work/` (the helpers' brief and texts, see its README) and `design/shots/qa/work/` (their check screenshots) are kept as a record.
+Finished on 2026-10-20 in `C:/projects/Webt Stuff/karaoke-party` (this folder was 15 commits behind; it was pulled, and `docker compose up -d --build` brought the stack up to date):
+- **QA of Phases 3-6:** `docs/qa/QA-REPORT-2026-10-20-phase3-6.md` (256 backend + 109 frontend tests green). No blockers; the one major (F-1: the sing screen opened at the lobby's scroll position, header hidden) and F-2..F-8, F-10..F-13 are fixed (commits 56bb94b..bffc7a6). F-9: the code already said "Encore"; this PC's starter songs were rebuilt with `docker compose exec worker python -m app.starter.seed --force` (fluidsynth lives in the worker, not the api). Open: F-12 badge tooltips (the legend covers them), F-14 links drop `?robot` (testing only).
+- **Final legal review:** `docs/legal/LEGAL-REVIEW-2026-10-20-final.md`. Done: the Privacy wording about who sees the plan (must fix), Hugging Face/pyannote telemetry off in the worker (P-7), seven missing packages on Credits, the owner's email removed from the Phase 2 QA report (still in git history; the repo is public).
+- **Open, for the user to decide (before launch):**
+  - **The name "Encore" is high risk** (other karaoke apps use it, the main domains are taken). Alternatives with free-looking domains: Cantorama, Microfonada, Singaroo, Palco Party, Bis Party. Needs a proper INPI search by a lawyer or agent before spending on branding. "Party Pass" also clashes with KaraFun's product of the same name. Rename places are listed in the report; the redeem code prefix `KP-` would change with it (keep old codes valid).
+  - The first review's launch items: account deletion, retention, age rule (ECA Digital), takedown channel, owner identity, processors, logs, secrets, payments.
+  - A third-party notices file with every MIT/ISC copyright line, built from `node_modules` at build time (no new package needed). The Credits page is still English only.
+  - Pending from Phase 1: `pytest-timeout` for the hanging-suite problem (needs the user's OK for a dev package).
+- Known API gaps (not changed, ask first): Spotlight `votes` doesn't resend `standings` (client recomputes, ranking.ts); yesterday's daily winner has no song id/artist; the Party Pass card assumes 24 h.
+- Not tried: reduced motion in a real browser, clipboard "Copied" state, real phones, a real TV, a real voice over LiveKit.
+- Kept as a record: `docs/ui-polish-work/` (the helpers' brief and texts, see its README) and `design/shots/qa/work/` (their check screenshots).
+- Test data on this PC: qa36-admin, qa36-host (30-day premium, owns "QA36 copy of Twinkle" and "QA36 upload copy"), qa36-pass (running Party Pass and a spare), qa36-free, all `@example.com`.
 
-The QA run on Phases 3-6 was stopped early: it left only two screenshots (`design/shots/qa/2026-10-20-p36-profile-free-en-*.png`) and no report. Start it again from scratch.
-Known from the helpers: the Spotlight `votes` message doesn't resend `standings` (client recomputes, ranking.ts); yesterday's daily winner has no song id/artist in the API; the Party Pass card assumes 24 h.
-Test data: p3-host has a 2-day premium grant, p6-free a running Party Pass, unused test Party Pass codes.
+**The agents** (`.claude/agents/`): `qa-tester` runs all checks and walks the flows in the browser with the robot singer, then writes `docs/qa/QA-REPORT-<date>-*.md` (it doesn't change app code). `legal-reviewer` checks licences, privacy, terms and names, and writes `docs/legal/LEGAL-REVIEW-<date>*.md`. In Claude Code, ask for them by name (for example "run the qa-tester agent on the lobby"). Run one at a time, and don't edit the backend while QA is testing rooms (the api reloads and resets live rooms).
 
 ## Next steps
+0. The user picks the final name (see the UI polish step above) before any branding or launch work.
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.
 2. Then, **after the user's go-ahead**, Milestone 6. Its plan text isn't in the repo: ask the user what it covers (likely candidates mentioned so far: tournaments for premium, payments, hosting online so remote friends can join).
 
