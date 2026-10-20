@@ -1,0 +1,29 @@
+{
+  "home.eyebrow": ["Karaoke for parties", "Karaokê para festas"],
+  "home.joinWithCode": ["Join with a code", "Entrar com um código"],
+  "home.featuresLabel": ["Ways to play", "Jeitos de jogar"],
+  "home.togetherText": [
+    "Everyone sings the same song at once, each on their own phone, with live scores.",
+    "Todo mundo canta a mesma música ao mesmo tempo, cada um no seu celular, com pontuação ao vivo."
+  ],
+  "home.spotlightText": [
+    "Take turns in the spotlight while the others cheer and vote with stars.",
+    "Cada um na sua vez no holofote, enquanto os outros torcem e votam com estrelas."
+  ],
+  "home.dailyNext": ["New song in {{time}}", "Nova música em {{time}}"],
+  "home.howTitle": ["How it works", "Como funciona"],
+  "home.howCreate": [
+    "Sign in, create a room and pick a song.",
+    "Entre na sua conta, crie uma sala e escolha uma música."
+  ],
+  "home.howJoinTitle": ["Friends join", "Os amigos entram"],
+  "home.howJoin": [
+    "They scan the QR code or type the room code. No account needed.",
+    "Eles escaneiam o QR code ou digitam o código da sala. Não precisa de conta."
+  ],
+  "home.howSingTitle": ["Everyone sings", "Todo mundo canta"],
+  "home.howSing": [
+    "Each person sings on their own phone and sees the scores live.",
+    "Cada um canta no próprio celular e vê a pontuação ao vivo."
+  ]
+}
