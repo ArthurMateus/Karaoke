@@ -1,0 +1,32 @@
+/* ---------- Plans and admin ---------- */
+.plan-limits {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pass-box {
+  border: 1px dashed var(--violet);
+  border-radius: var(--r-control);
+  padding: 12px 14px;
+  background: var(--violet-soft);
+}
+.ok-text {
+  color: var(--ok);
+}
+.table-scroll {
+  overflow-x: auto;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.mono {
+  font-family: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+}

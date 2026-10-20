@@ -1,0 +1,75 @@
+/* ---------- Home ---------- */
+.home {
+  max-width: 980px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+.hero {
+  display: grid;
+  gap: 18px;
+}
+.hero h1 {
+  font-size: clamp(2.1rem, 6.4vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 14ch;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--violet);
+}
+.hero p {
+  font-size: 1.1rem;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+.lane-art {
+  display: block;
+  width: 100%;
+  height: clamp(96px, 16vw, 140px);
+  border-radius: var(--r-card);
+  background: var(--stage);
+}
+.lane-grid {
+  stroke: var(--stage-line);
+  stroke-width: 1;
+}
+.lane-note {
+  fill: var(--stage-note);
+}
+.lane-note.hit {
+  fill: var(--violet);
+}
+.lane-trace {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lane-now {
+  stroke: var(--coral);
+  stroke-opacity: 0.35;
+  stroke-width: 2;
+}
+.lane-dot {
+  fill: var(--coral);
+}
+.home-actions {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 760px) {
+  .home-actions {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+.home-actions .card {
+  margin: 0;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

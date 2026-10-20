@@ -1,0 +1,81 @@
+/* Pitch Lane: bright paper, ink type, one strong violet. The note lane (dark "stage")
+   is the signature: it appears as artwork on the home page and is the main view while
+   singing and editing. Fonts are self-hosted (see main.tsx). */
+:root {
+  --paper: #fbfaf7;
+  --paper-2: #f3f1ec;
+  --card: #ffffff;
+  --line: #e4e0d7;
+  --line-strong: #cdc8bc;
+  --ink: #15131a;
+  --ink-2: #3b3745;
+  --muted: #6c6775;
+  --violet: #5b3df5;
+  --violet-dark: #4529dc;
+  --violet-soft: #eeeaff;
+  --coral: #ff6b4a;
+  --teal: #1f9e86;
+  --amber: #e0951a;
+  --blue: #2f7cf6;
+  --pink: #df4699;
+  --lime: #67a018;
+  --danger: #d2392e;
+  --danger-soft: #fdecea;
+  --ok: #1f9e86;
+  --stage: #15131a;
+  --stage-2: #211e29;
+  --stage-line: #2c2836;
+  --stage-note: #3d3850;
+  --stage-text: #f3f1fa;
+
+  --f-display: 'Unbounded Variable', 'Unbounded', system-ui, sans-serif;
+  --f-body: 'Figtree Variable', 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --r-card: 16px;
+  --r-control: 11px;
+  --r-pill: 999px;
+
+  /* Text versions of the bright colours: AA contrast (4.5:1) on paper and white. */
+  --coral-ink: #c23a1c;
+  --teal-ink: #137360;
+  --amber-ink: #8f5600;
+  --pink-ink: #b02a75;
+  --coral-soft: #ffece6;
+  --teal-soft: #e3f5f0;
+  --amber-soft: #fdf2dc;
+  --pink-soft: #fce8f3;
+
+  /* Elevation: cards, raised (hover), floating (dialogs, bars). */
+  --shadow-1: 0 1px 2px rgb(21 19 26 / 5%), 0 8px 24px -16px rgb(21 19 26 / 25%);
+  --shadow-2: 0 2px 4px rgb(21 19 26 / 6%), 0 18px 36px -18px rgb(21 19 26 / 38%);
+  --shadow-3: 0 4px 10px rgb(21 19 26 / 8%), 0 28px 60px -14px rgb(21 19 26 / 42%);
+  --shadow: var(--shadow-1);
+
+  /* Spacing in 4 px steps, and the page width. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 48px;
+  --container: 1200px;
+
+  /* Accent gradients, used sparingly. */
+  --grad-celebrate: linear-gradient(135deg, var(--violet) 0%, #9a3fe0 55%, var(--pink) 100%);
+  --grad-live: linear-gradient(135deg, var(--coral) 0%, var(--amber) 100%);
+  --grad-stage: radial-gradient(120% 90% at 85% 0%, #2d2544 0%, transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, #2a1f2a 0%, transparent 55%), var(--stage);
+
+  /* Motion. Reduced motion turns these off (base.css). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 400ms;
+
+  color-scheme: light;
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}

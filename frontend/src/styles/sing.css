@@ -1,0 +1,254 @@
+/* ---------- Sing Together ---------- */
+.meter {
+  width: 120px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.meter-bar {
+  height: 100%;
+  background: var(--teal);
+  transition: width 0.08s linear;
+}
+.calibrating {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  border-radius: var(--r-control);
+  background: var(--violet-soft);
+  color: var(--violet-dark);
+  text-align: center;
+}
+details.picker > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--violet);
+  padding-block: 4px;
+}
+details.picker[open] > summary {
+  margin-bottom: 10px;
+}
+.pick-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pick,
+.chosen-song {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--paper);
+}
+.pick.selected,
+.chosen-song {
+  border-color: var(--violet);
+  background: var(--violet-soft);
+}
+.pick-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.sing {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--stage);
+  color: var(--stage-text);
+  border-radius: var(--r-card);
+  padding: 16px;
+  min-height: calc(100dvh - 120px);
+}
+.sing .muted {
+  color: #a49fb5;
+}
+.sing-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sing-title {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+}
+.scoreboard {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.score-chip {
+  display: flex;
+  flex-direction: column;
+  min-width: 78px;
+  padding: 6px 10px 8px;
+  border-radius: 10px;
+  background: var(--stage-2);
+}
+.score-chip b {
+  font-family: var(--f-display);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+.score-name {
+  font-size: 0.75rem;
+  color: #a49fb5;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  border-radius: var(--r-control);
+  overflow: hidden;
+  border: 1px solid var(--stage-line);
+}
+.note-lane {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.countdown {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 12vw, 6rem);
+  color: var(--stage-text);
+  background: rgb(21 19 26 / 55%);
+}
+.rating {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  animation: rating-pop 1.4s ease-out forwards;
+}
+.rating.perfect,
+.rating.great {
+  color: var(--amber);
+}
+.rating.good {
+  color: #8f7bff;
+}
+.rating.ok,
+.rating.miss {
+  color: #a49fb5;
+}
+@keyframes rating-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  15% {
+    opacity: 1;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.lyrics {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 4.5em;
+}
+.lyric-line {
+  font-family: var(--f-body);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 4.5vw, 2rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.lyric-line .sung {
+  color: #8f7bff;
+}
+.lyric-next {
+  color: #a49fb5;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+}
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ranking {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rank {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  background: var(--paper);
+}
+.rank.first {
+  border-color: var(--violet);
+  background: var(--violet-soft);
+}
+.rank-place {
+  font-family: var(--f-display);
+  font-weight: 800;
+  width: 1.5em;
+  text-align: center;
+}
+.rank-score {
+  font-variant-numeric: tabular-nums;
+}
+.replay {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.replay-player {
+  width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rating {
+    animation: none;
+  }
+}
+@media (max-width: 420px) {
+  .sing {
+    padding: 12px;
+    margin-inline: -4px;
+  }
+  .score-chip {
+    min-width: 64px;
+  }
+}

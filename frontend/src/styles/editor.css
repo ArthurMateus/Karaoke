@@ -1,0 +1,174 @@
+/* ---------- Chart editor ---------- */
+.problems {
+  margin: 0;
+  padding: 10px 14px 10px 30px;
+  background: var(--danger-soft);
+  border-radius: var(--r-control);
+}
+details.card > summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.form-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.form-grid label .muted {
+  font-weight: 400;
+}
+@media (min-width: 760px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.audio-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 58px);
+  z-index: 4;
+  padding: 12px 16px;
+}
+.audio-bar .seek {
+  flex: 1;
+  min-width: 140px;
+  accent-color: var(--violet);
+}
+.audio-bar .time {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.editor-grid {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 960px) {
+  .editor-grid {
+    grid-template-columns: 330px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.lines-panel {
+  max-height: 70vh;
+  overflow: auto;
+}
+.lines {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.line-row {
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--r-control);
+  border: 1px solid transparent;
+}
+.line-row:hover {
+  background: var(--paper-2);
+}
+.line-row.active {
+  background: var(--violet-soft);
+  border-color: var(--violet);
+}
+.line-play,
+.line-select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.line-play {
+  padding: 6px 10px;
+  color: var(--violet);
+}
+.line-select {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 7px 8px 7px 0;
+  min-width: 0;
+}
+.line-select .muted {
+  font-variant-numeric: tabular-nums;
+}
+.line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.piano-roll {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-control);
+  background: var(--stage);
+  touch-action: none;
+}
+.piano-roll svg {
+  display: block;
+}
+.roll-row {
+  fill: transparent;
+}
+.roll-row.alt {
+  fill: rgb(255 255 255 / 2.5%);
+}
+.roll-row.c {
+  fill: rgb(255 255 255 / 6%);
+}
+.roll-beat {
+  stroke: var(--stage-line);
+}
+.roll-label {
+  fill: #8f8a9c;
+  font-size: 10px;
+  font-family: var(--f-body);
+}
+.roll-note {
+  fill: var(--violet);
+  stroke: transparent;
+  stroke-width: 2;
+}
+.roll-note.editable {
+  cursor: grab;
+}
+.roll-note.golden {
+  fill: var(--amber);
+}
+.roll-note.freestyle {
+  fill: rgb(255 255 255 / 12%);
+  stroke: #8f8a9c;
+  stroke-dasharray: 4 3;
+}
+.roll-note.rap,
+.roll-note.rap_golden {
+  fill: var(--teal);
+}
+.roll-note.selected {
+  stroke: #fff;
+}
+.roll-text {
+  fill: var(--stage-text);
+  font-size: 11px;
+  font-family: var(--f-body);
+  pointer-events: none;
+}
+.roll-playhead {
+  stroke: var(--coral);
+  stroke-width: 2;
+}

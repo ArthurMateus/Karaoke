@@ -1,0 +1,78 @@
+/* ---------- Lobby ---------- */
+.lobby {
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 760px) {
+  .lobby {
+    grid-template-columns: 310px 1fr;
+    align-items: start;
+  }
+  .lobby .card {
+    max-width: none;
+  }
+}
+.invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.room-code {
+  font-family: var(--f-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.qr {
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
+  flex-wrap: wrap;
+}
+.player.away {
+  opacity: 0.5;
+}
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--violet);
+  color: #fff;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.player-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
