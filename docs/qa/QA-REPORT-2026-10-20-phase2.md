@@ -103,7 +103,7 @@ The kick and close-room actions no longer use `window.confirm`. Both open the ap
 
 ## Environment and test data left behind
 
-- The API was started with `ADMIN_EMAILS="arthurfsmat@gmail.com,qa-p2-host@example.com"` and **restored** at the end with a plain `docker compose up -d api`. `docker compose exec -T api sh -c 'echo $ADMIN_EMAILS'` prints `arthurfsmat@gmail.com`. Other Docker projects were not touched. All karaoke containers are up.
+- The API was started with `ADMIN_EMAILS="<owner email>,qa-p2-host@example.com"` and **restored** at the end with a plain `docker compose up -d api`. `docker compose exec -T api sh -c 'echo $ADMIN_EMAILS'` prints `<owner email>`. Other Docker projects were not touched. All karaoke containers are up.
 - Accounts: `qa-p2-host@example.com` (name "Anfitriã QA Fase Dois", Premium grant "QA phase 2" active for 7 days, grant "QA revoke test" revoked, today's song-of-the-day entry 9,962 points). `qa-p2-free@example.com` (Party Pass "QA phase 2 pass" started, runs until tomorrow ~10:19 local). Guest users "Convidada QA" and "Convidada Maravilhosa QA". Both browser tabs are signed out.
 - Songs: two imported copies of the Twinkle starter ("QA delete-test Twinkle", "… 2") were made and **deleted**.
 - Live rooms were reset by the API restart.
