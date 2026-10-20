@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronDown, LogIn, LogOut, Mic, Music, ShieldCheck, User as UserIcon } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, useNavigate } from 'react-router'
 import { useMe, usePlan, useSignOut } from '../api/hooks'
@@ -15,7 +15,14 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   return (
     <>
-      <a className="skip-link" href="#main">
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(e) => {
+          e.preventDefault() // keep "#main" out of the address people copy
+          document.getElementById('main')?.focus()
+        }}
+      >
         {t('ui.skip')}
       </a>
       <Header />
@@ -29,7 +36,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
 function Header() {
   const { t } = useTranslation()
-  const { data } = useMe()
+  const { data, isPending } = useMe()
   const user = data?.user
   const nav = [
     { to: '/songs', label: t('nav.songs'), icon: Music },
@@ -53,7 +60,9 @@ function Header() {
       </nav>
       <div className="header-end">
         <LanguageSwitcher />
-        {user ? (
+        {isPending ? (
+          <span className="profile-chip placeholder" aria-hidden />
+        ) : user ? (
           <ProfileMenu user={user} />
         ) : (
           <ButtonLink to="/sign-in" size="sm" variant="primary" icon={LogIn} className="header-sign-in">
@@ -73,24 +82,43 @@ function ProfileMenu({ user }: { user: User }) {
   const plan = usePlan(!user.is_guest)
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
+  const chip = useRef<HTMLButtonElement>(null)
   const kind = plan.data?.plan
 
   useEffect(() => {
     if (!open) return
     const outside = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false)
-    const escape = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     document.addEventListener('pointerdown', outside)
-    document.addEventListener('keydown', escape)
     root.current?.querySelector<HTMLElement>('[role=menuitem]')?.focus()
-    return () => {
-      document.removeEventListener('pointerdown', outside)
-      document.removeEventListener('keydown', escape)
-    }
+    return () => document.removeEventListener('pointerdown', outside)
   }, [open])
 
+  // Menu keys: Esc closes and returns to the chip, arrows move between the items.
+  const onMenuKey = (e: KeyboardEvent) => {
+    const items = [...(root.current?.querySelectorAll<HTMLElement>('[role=menuitem]') ?? [])]
+    const at = items.indexOf(document.activeElement as HTMLElement)
+    const go = (i: number) => items[(i + items.length) % items.length]?.focus()
+    if (e.key === 'Escape') {
+      setOpen(false)
+      chip.current?.focus()
+    } else if (e.key === 'ArrowDown') go(at + 1)
+    else if (e.key === 'ArrowUp') go(at - 1)
+    else if (e.key === 'Home') go(0)
+    else if (e.key === 'End') go(-1)
+    else return
+    e.preventDefault()
+  }
+
   return (
-    <div className="profile-menu" ref={root}>
+    <div
+      className="profile-menu"
+      ref={root}
+      onKeyDown={open ? onMenuKey : undefined}
+      // Tabbing out of the menu closes it.
+      onBlur={(e) => open && !root.current?.contains(e.relatedTarget as Node) && setOpen(false)}
+    >
       <button
+        ref={chip}
         type="button"
         className="profile-chip"
         aria-haspopup="menu"

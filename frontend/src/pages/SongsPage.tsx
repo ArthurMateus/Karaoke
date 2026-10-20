@@ -148,7 +148,7 @@ function SongCard({ song }: { song: Song }) {
           <button
             className="link-button danger small"
             onClick={async () => {
-              if (await confirm({ title: t('songs.confirmDelete', { title: song.title }), confirmLabel: t('songs.delete'), danger: true })) remove.mutate(song.id)
+              if (await confirm({ title: t('songs.confirmDelete', { title: song.title }), message: t('songs.deleteWarning'), confirmLabel: t('songs.delete'), danger: true })) remove.mutate(song.id)
             }}
           >
             {t('songs.delete')}

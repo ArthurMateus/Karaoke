@@ -42,7 +42,7 @@ function LyricsForm(props: {
   const [artist, setArtist] = useState(props.artist)
 
   const submit = async () => {
-    if (!(await confirm({ title: t('lyrics.redoConfirm'), message: t('lyrics.redoWarning'), confirmLabel: t('lyrics.redo'), danger: true }))) return
+    if (!(await confirm({ title: t('lyrics.redoConfirm'), message: t('lyrics.redoWarning'), confirmLabel: t('lyrics.redoShort'), danger: true }))) return
     redo.mutate({ lyrics, source }, { onSuccess: () => navigate('/songs') })
   }
 

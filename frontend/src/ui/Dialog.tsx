@@ -16,12 +16,23 @@ export function Modal({ open, onClose, title, children, actions, size = 'sm' }: 
 }) {
   const { t } = useTranslation()
   const ref = useRef<HTMLDialogElement>(null)
+  const opener = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const dialog = ref.current
     if (!dialog) return
-    if (open && !dialog.open) dialog.showModal()
-    if (!open && dialog.open) dialog.close()
+    if (open && !dialog.open) {
+      opener.current = document.activeElement as HTMLElement | null
+      dialog.showModal()
+      // showModal() focuses the first button (the X); move to the one marked data-autofocus.
+      dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
+    }
+    if (!open && dialog.open) {
+      dialog.close()
+      // Back to the button that opened it, or the page if that button is gone (e.g. a deleted row).
+      const back = opener.current?.isConnected ? opener.current : document.getElementById('main')
+      back?.focus()
+    }
   }, [open])
 
   return (
@@ -72,7 +83,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
             <Button variant="ghost" onClick={() => answer(false)}>
               {t('ui.cancel')}
             </Button>
-            <Button variant={request?.danger ? 'danger' : 'primary'} onClick={() => answer(true)} autoFocus>
+            <Button variant={request?.danger ? 'danger' : 'primary'} onClick={() => answer(true)} data-autofocus>
               {request?.confirmLabel}
             </Button>
           </>

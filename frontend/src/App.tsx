@@ -26,6 +26,11 @@ export default function App() {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en'
   }, [i18n.resolvedLanguage])
 
+  // A new page opens at the top, not at the old page's scroll position.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   // The stage screen (a TV) is the whole window: no header, no page margins.
   if (location.pathname.startsWith('/stage/')) {
     return (

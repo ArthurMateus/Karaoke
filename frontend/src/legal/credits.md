@@ -24,7 +24,7 @@ Songs you upload belong to their owners. Lyrics found with **[LRCLIB](https://lr
 - **Unbounded**: Copyright 2022 The Unbounded Project Authors (github.com/googlefonts/unbounded). SIL Open Font License 1.1.
 - **Figtree**: Copyright 2022 The Figtree Project Authors (github.com/erikdkennedy/figtree). SIL Open Font License 1.1.
 
-Packaged by Fontsource. Licence: https://openfontlicense.org Full texts: [Unbounded](/licenses/OFL-1.1-unbounded.txt), [Figtree](/licenses/OFL-1.1-figtree.txt).
+Packaged by Fontsource. Licence: [SIL Open Font License 1.1](https://openfontlicense.org). Full texts: [Unbounded](/licenses/OFL-1.1-unbounded.txt), [Figtree](/licenses/OFL-1.1-figtree.txt).
 
 ## Icons and effects
 
@@ -48,8 +48,6 @@ Packaged by Fontsource. Licence: https://openfontlicense.org Full texts: [Unboun
 | sdp, sdp-transform, events, loglevel, jose, typed-emitter, machina, pngjs, dijkstrajs | MIT, their authors |
 | tslib | 0BSD, Microsoft Corp. |
 
-`[Check the copyright holders against each package's LICENSE file when generating the final page.]`
-
 ## On our servers
 
 | Software | Licence |
@@ -66,7 +64,7 @@ Packaged by Fontsource. Licence: https://openfontlicense.org Full texts: [Unboun
 | FFmpeg | GPL-2.0-or-later |
 | FluidSynth | LGPL-2.1-or-later |
 | PostgreSQL | PostgreSQL Licence |
-| Redis `[or Valkey]` | RSALv2/SSPLv1 `[Valkey: BSD-3-Clause]` |
+| Redis | RSALv2/SSPLv1 |
 | SeaweedFS, Caddy, LiveKit server | Apache-2.0 |
 
 ## AI models
