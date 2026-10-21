@@ -428,6 +428,7 @@
     "sing": {
       "getReady": "Prepare-se…",
       "youSing": "Você canta {{part}}",
+      "youSingSolo": "Você está cantando",
       "watching": "Você está assistindo esta. Ligue o microfone e prepare-se para cantar a próxima.",
       "points": "pontos",
       "ratings": {
@@ -449,6 +450,7 @@
         "on": "Ligado",
         "off": "Desligado",
         "hint": "Use fones de ouvido (com fio é melhor)",
+        "settings": "Efeitos",
         "level": "Minha voz",
         "effect": "Efeito",
         "wet": "Quantidade do efeito",

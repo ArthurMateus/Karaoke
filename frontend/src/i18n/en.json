@@ -428,6 +428,7 @@
     "sing": {
       "getReady": "Get ready…",
       "youSing": "You sing {{part}}",
+      "youSingSolo": "You're singing",
       "watching": "You're watching this one. Turn on your mic and get ready to sing the next song.",
       "points": "points",
       "ratings": {
@@ -449,6 +450,7 @@
         "on": "On",
         "off": "Off",
         "hint": "Use headphones (wired is best)",
+        "settings": "Effects",
         "level": "My voice",
         "effect": "Effect",
         "wet": "Effect amount",

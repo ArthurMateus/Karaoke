@@ -1,4 +1,4 @@
-import { Headphones } from 'lucide-react'
+import { ChevronDown, Headphones } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AudioEngine } from '../audio/engine'
@@ -29,6 +29,8 @@ export function ViewToggle({ view, onView }: { view: SingViewMode; onView: (view
 export function MonitorControls({ engine }: { engine: AudioEngine }) {
   const { t } = useTranslation()
   const [prefs, setPrefs] = useState<MonitorPrefs>(readMonitor)
+  // The settings fold away (one row) so they don't push the lyrics down on a phone.
+  const [open, setOpen] = useState(false)
   const monitor = useRef<Monitor | null>(null)
   const update = (patch: Partial<MonitorPrefs>) =>
     setPrefs((p) => {
@@ -60,10 +62,16 @@ export function MonitorControls({ engine }: { engine: AudioEngine }) {
           {t('game.sing.monitor.switch')}
           <span className="switch-state">{prefs.on ? t('game.sing.monitor.on') : t('game.sing.monitor.off')}</span>
         </button>
+        {prefs.on && (
+          <button type="button" className="sing-switch monitor-more" aria-expanded={open} aria-controls="monitor-panel" onClick={() => setOpen(!open)}>
+            {t('game.sing.monitor.settings')}
+            <ChevronDown size={16} aria-hidden className={open ? 'flip' : undefined} />
+          </button>
+        )}
         <span className="small monitor-hint">{t('game.sing.monitor.hint')}</span>
       </div>
-      {prefs.on && (
-        <div className="monitor-panel">
+      {prefs.on && open && (
+        <div className="monitor-panel" id="monitor-panel">
           <label className="monitor-slider">
             <span>{t('game.sing.monitor.level')}</span>
             <input type="range" min={0} max={1} step={0.05} value={prefs.level} onChange={(e) => update({ level: Number(e.target.value) })} />

@@ -436,8 +436,14 @@
 }
 .monitor-slider input {
   width: 130px;
-  min-height: 32px;
+  min-height: 44px;
   accent-color: var(--violet);
+}
+.monitor-more {
+  gap: 6px;
+}
+.monitor-more .flip {
+  transform: rotate(180deg);
 }
 
 /* The Simple view: big karaoke-bar lyrics inside the stage box (no note lane). */
