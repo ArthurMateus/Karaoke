@@ -186,8 +186,11 @@ export default function SingView(props: Props) {
     [room.parts, nameOf, t],
   )
 
+  // Name the part only when the song has two; on a one-part song you just sing.
   const role = part
-    ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
+    ? room.song?.is_duet
+      ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
+      : t('game.sing.youSingSolo')
     : spotlight
       ? t('spotlight.nowSinging', { names: singers.map(nameOf).join(' & ') })
       : t('game.sing.watching')
