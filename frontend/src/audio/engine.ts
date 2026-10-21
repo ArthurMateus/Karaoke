@@ -31,6 +31,7 @@ export class AudioEngine {
   private listeners = new Set<FrameListener>()
   private input: MediaStream | null = null
   private analyser: AudioWorkletNode | null = null
+  private micNode: AudioNode | null = null
   private recorder: { recorder: MediaRecorder; chunks: Blob[] } | null = null
   private fakeVoice: { osc: OscillatorNode; gain: GainNode; dest: MediaStreamAudioDestinationNode } | null = null
   readonly simulated: boolean
@@ -97,6 +98,7 @@ export class AudioEngine {
       const frame = { t: frameWallTime(time, this.ctx.currentTime, wallNow()), hz, clarity, level }
       this.listeners.forEach((listener) => listener(frame))
     }
+    this.micNode = source
     source.connect(this.analyser)
     // The analyser must be connected to the output to keep running; it outputs silence.
     const mute = this.ctx.createGain()
@@ -108,6 +110,11 @@ export class AudioEngine {
   /** The voice being analysed (the mic, or the robot): what Spotlight streams to listeners. */
   get voiceStream(): MediaStream | null {
     return this.input
+  }
+
+  /** The mic (or robot) node the analyser listens to, for side branches such as the monitor. */
+  get micSource(): AudioNode | null {
+    return this.micNode
   }
 
   onFrame(listener: FrameListener): () => void {
