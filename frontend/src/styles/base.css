@@ -362,6 +362,15 @@ a {
 .footer-operator a {
   color: inherit;
 }
+/* Thumb-sized footer links on phones. */
+@media (pointer: coarse), (max-width: 559px) {
+  .footer-links a,
+  .footer-operator a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
 .footer-note {
   margin-left: auto;
   color: var(--muted);
