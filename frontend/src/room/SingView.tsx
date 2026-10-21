@@ -3,15 +3,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AudioEngine } from '../audio/engine'
 import { hzToMidi } from '../audio/yin'
-import type { EditorChart } from '../editor/chartModel'
+import { isDuet, type EditorChart, type Singer } from '../editor/chartModel'
 import { wallNow, type ClockSync } from '../game/clock'
 import { rate, Scorer, type Rating } from '../game/scoring'
+import { readView, writeView, type SingViewMode } from '../game/singPrefs'
 import { buildTimeline, lineIndexAt } from '../game/timeline'
 import { uploadTake } from '../game/uploadTake'
 import NoteLane, { type TrailPoint } from './NoteLane'
 import type { ClientMessage, LobbyRoom, ServerMessage } from './protocol'
 import { ReactionBar, ReactionLayer } from './Reactions'
 import Scoreboard from './Scoreboard'
+import { MonitorControls, SimpleLyrics, ViewToggle } from './SingTools'
 import { CountdownRing, SongCover } from '../ui'
 import { useListenVoice, usePublishVoice } from '../voice/liveVoice'
 
@@ -71,6 +73,12 @@ export default function SingView(props: Props) {
   const trail = useMemo<TrailPoint[] | null>(() => (scorer ? [] : null), [scorer])
   const [myTotal, setMyTotal] = useState(0)
   const [view, setView] = useState<View>({ line: 0, sung: 0, countdown: null, rating: null })
+  // Simple (lyrics only) or Advanced (note lane + lyrics), remembered on this device.
+  const [mode, setMode] = useState<SingViewMode>(readView)
+  const changeMode = (next: SingViewMode) => {
+    setMode(next)
+    writeView(next)
+  }
 
   // The lobby is usually scrolled down (song picker); start each song at the top.
   useEffect(() => {
@@ -168,6 +176,16 @@ export default function SingView(props: Props) {
   const singers = Object.keys(room.parts)
   const nameOf = useCallback((id: string) => room.players.find((p) => p.id === id)?.name ?? '…', [room.players])
 
+  const duet = useMemo(() => !!chart && isDuet(chart), [chart])
+  const partLabel = useCallback(
+    (singer: Singer) => {
+      if (singer === 'both') return t('game.sing.bothParts')
+      const names = Object.keys(room.parts).filter((id) => room.parts[id] === singer).map(nameOf)
+      return names.length ? names.join(' & ') : singer
+    },
+    [room.parts, nameOf, t],
+  )
+
   const role = part
     ? t('game.sing.youSing', { part: part === 'P1' ? 'P1' : 'P2' })
     : spotlight
@@ -191,6 +209,10 @@ export default function SingView(props: Props) {
         <Scoreboard room={room} singers={singers} me={me} myTotal={singing ? myTotal : null} />
       </header>
       <SongProgress songTime={songTime} length={songLength} />
+      <div className="sing-tools">
+        <ViewToggle view={mode} onView={changeMode} />
+        {singing && <MonitorControls engine={engine} />}
+      </div>
       <div className="row wrap sing-switches">
         {room.stage_connected && engine && !listening && (
           <button type="button" className="sing-switch music-switch" aria-pressed={musicHere} onClick={() => onMusicHere(!musicHere)}>
@@ -214,8 +236,11 @@ export default function SingView(props: Props) {
         )}
       </div>
 
-      <div className="stage">
-        {timeline && <NoteLane timeline={timeline} songTime={songTime} scorer={scorer} trail={trail} />}
+      <div className={mode === 'simple' ? 'stage simple-stage' : 'stage'}>
+        {mode === 'advanced' && timeline && <NoteLane timeline={timeline} songTime={songTime} scorer={scorer} trail={trail} />}
+        {mode === 'simple' && chart && (
+          <SimpleLyrics chart={chart} part={part ?? null} songTime={songTime} duet={duet} partLabel={partLabel} />
+        )}
         {spotlight && <ReactionLayer subscribe={subscribe} nameOf={nameOf} />}
         {view.countdown !== null && (
           <div className="countdown" aria-live="assertive">
@@ -237,7 +262,7 @@ export default function SingView(props: Props) {
         )}
       </div>
 
-      <div className="lyrics" aria-live="off">
+      {mode === 'advanced' && <div className="lyrics" aria-live="off">
         <p className="lyric-line">
           {current?.notes.map((note, i) =>
             note.text === '~' ? null : (
@@ -248,7 +273,7 @@ export default function SingView(props: Props) {
           )}
         </p>
         <p className="lyric-next">{next?.text ?? ''}</p>
-      </div>
+      </div>}
       {spotlight && !part && <ReactionBar send={send} />}
     </div>
   )

@@ -437,7 +437,32 @@
         "ok": "OK",
         "miss": "Missed"
       },
-      "scoreboard": "Live scores"
+      "scoreboard": "Live scores",
+      "bothParts": "Together",
+      "view": {
+        "label": "Sing view",
+        "simple": "Simple",
+        "advanced": "Advanced"
+      },
+      "monitor": {
+        "switch": "Hear myself",
+        "on": "On",
+        "off": "Off",
+        "hint": "Use headphones (wired is best)",
+        "level": "My voice",
+        "effect": "Effect",
+        "wet": "Effect amount",
+        "effects": {
+          "off": "None",
+          "offLong": "No effect",
+          "room": "Room",
+          "roomLong": "Reverb (room)",
+          "hall": "Hall",
+          "hallLong": "Reverb (hall)",
+          "echo": "Echo",
+          "echoLong": "Echo"
+        }
+      }
     },
     "results": {
       "title": "Results",

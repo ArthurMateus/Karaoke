@@ -158,6 +158,17 @@ Ampere A1 ARM64 4 OCPU/24 GB, Ubuntu 24.04, Sao Paulo; `miccheck-party.duckdns.o
   weekly Mon 05:00 Sao Paulo time, DuckDNS every 5 min). Tested locally against a prod-like stack (backup + restore
   round trip, routes, headers, log filtering, S3 login from `.env`).
 
+## Sing screen extras (2026-10-21)
+
+All off by default and remembered per device (`game/singPrefs.ts`, keys `kp_sing_view`, `kp_monitor`).
+- **Simple / Advanced view** (`room/SingTools.tsx` `SimpleLyrics`, helper `game/lyricLines.ts`): Simple shows big lyrics
+  instead of the note lane; same line/word timing as the lane (tested against `buildTimeline`/`lineIndexAt`). Duets show
+  a part chip (P1 violet, P2 coral, both teal); watchers see every part's lines. Rap words italic + dashed teal underline.
+- **Hear myself** (`audio/monitor.ts`): a side branch from `engine.micSource` (the node the analyser listens to) to the
+  speakers, with Room/Hall reverb (generated impulse) or Echo. Never reaches the analyser, the recording or LiveKit.
+  Only shown to the person singing. Tried with the robot: Twinkle 10,000 with Hall on. Not tried with a real mic/phone.
+- Row, Row, Row with the robot scores ~9,960-9,990 with or without these features (robot quirk, not new).
+
 ## Next steps
 0. The user picks the final name (see the UI polish step above) before any branding or launch work.
 1. The user tries Spotlight, the stage screen and live voice (README "Try Milestone 4 by hand"). Fix what they report.

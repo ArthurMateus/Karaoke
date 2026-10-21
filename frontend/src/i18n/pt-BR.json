@@ -437,7 +437,32 @@
         "ok": "OK",
         "miss": "Errou"
       },
-      "scoreboard": "Placar ao vivo"
+      "scoreboard": "Placar ao vivo",
+      "bothParts": "Juntos",
+      "view": {
+        "label": "Modo da tela",
+        "simple": "Simples",
+        "advanced": "Avançado"
+      },
+      "monitor": {
+        "switch": "Ouvir minha voz",
+        "on": "Ligado",
+        "off": "Desligado",
+        "hint": "Use fones de ouvido (com fio é melhor)",
+        "level": "Minha voz",
+        "effect": "Efeito",
+        "wet": "Quantidade do efeito",
+        "effects": {
+          "off": "Nenhum",
+          "offLong": "Sem efeito",
+          "room": "Sala",
+          "roomLong": "Reverb (sala)",
+          "hall": "Salão",
+          "hallLong": "Reverb (salão)",
+          "echo": "Eco",
+          "echoLong": "Eco"
+        }
+      }
     },
     "results": {
       "title": "Resultado",
